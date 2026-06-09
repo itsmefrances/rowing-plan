@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rowing Plan · Pace Targets</title>
+<style>
+:root{
+  --bg:#0f172a; --panel:#1e293b; --panel2:#273449; --text:#e2e8f0; --muted:#94a3b8;
+  --line:#334155; --accent:#38bdf8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.5;padding:0 0 80px}
+header{background:linear-gradient(135deg,#1e3a8a,#0c4a6e);padding:28px 24px;border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
+.sub{color:#bae6fd;margin-top:6px;font-size:14px}
+.pbbar{display:flex;gap:24px;flex-wrap:wrap;margin-top:16px;font-size:13px;color:#e0f2fe}
+.pbbar b{color:#fff}
+
+.controls{position:sticky;top:0;z-index:20;background:rgba(15,23,42,.92);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);padding:12px 0}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:6px 13px;
+  border-radius:999px;font-size:13px;cursor:pointer;transition:.15s;user-select:none}
+.chip:hover{border-color:var(--accent)}
+.chip.active{background:var(--accent);color:#0f172a;border-color:var(--accent);font-weight:600}
+.chip .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.toggle{margin-left:auto;font-size:13px;color:var(--muted);cursor:pointer}
+
+.week{margin-top:26px}
+.wk-head{display:flex;align-items:baseline;gap:12px;padding:0 0 10px;border-bottom:2px solid var(--line);margin-bottom:14px}
+.wk-num{font-size:18px;font-weight:700;color:var(--accent)}
+.wk-dates{color:var(--muted);font-size:14px}
+.wk-count{margin-left:auto;color:var(--muted);font-size:13px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  border-left:5px solid var(--c);transition:.15s}
+.card:hover{transform:translateY(-2px);border-color:var(--c)}
+.card.hidden{display:none}
+.c-top{padding:14px 16px 10px}
+.c-day{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.c-name{font-size:17px;font-weight:650;margin:3px 0 2px}
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;
+  background:var(--c);color:#fff;margin-top:4px}
+.paces{display:flex;gap:10px;padding:0 16px 14px;flex-wrap:wrap}
+.pace-box{background:var(--panel2);border-radius:10px;padding:9px 12px;flex:1;min-width:120px}
+.pace-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.pace-val{font-size:19px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;margin-top:2px}
+.pace-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.c-meta{display:flex;gap:14px;padding:0 16px 12px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.c-meta b{color:var(--text)}
+.c-foot{border-top:1px solid var(--line);padding:11px 16px 14px}
+.c-foot-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.c-desc{font-size:13px;color:var(--muted);line-height:1.55}
+
+.aside{position:fixed;right:18px;bottom:18px;z-index:30}
+.zonebtn{background:var(--accent);color:#0f172a;border:none;border-radius:999px;padding:11px 18px;
+  font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:380px;width:100%;padding:22px;max-height:85vh;overflow:auto}
+.modal-card h3{font-size:18px;margin-bottom:4px}
+.modal-card p{color:var(--muted);font-size:13px;margin-bottom:14px}
+table.zone{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+table.zone th,table.zone td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);font-size:14px}
+table.zone th{color:var(--muted);font-size:12px;text-transform:uppercase}
+.closex{float:right;color:var(--muted);cursor:pointer;font-size:20px;line-height:1}
+.empty{text-align:center;color:var(--muted);padding:40px;font-size:15px}
+@media(max-width:560px){ .grid{grid-template-columns:1fr} h1{font-size:22px} }
+</style></head>
+<body>
+<header><div class="wrap">
+  <h1>🚣 Rowing Plan — Pace Targets</h1>
+  <div class="sub">Future non-strength sessions from HubFit, with target splits from your 500m PB.</div>
+  <div class="pbbar">
+    <span>500m PB <b>1:39.9</b></span>
+    <span><b>37</b> workouts</span>
+    <span><b>12</b> weeks · Jun 8 – Aug 30</span>
+    <span>Pace model: <b>conkers rowcalc</b> (1% = 1s/500m)</span>
+  </div>
+</div></header>
+
+<div class="controls"><div class="wrap"><div class="filters" id="filters"></div></div></div>
+
+<div class="wrap" id="weeks"></div>
+
+<div class="aside"><button class="zonebtn" onclick="document.getElementById('zoneModal').classList.add('show')">Pace zones ⚡</button></div>
+<div class="modal" id="zoneModal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal-card">
+    <span class="closex" onclick="document.getElementById('zoneModal').classList.remove('show')">✕</span>
+    <h3>Pace Zone Reference</h3>
+    <p>Target 500m split at each % of your 1:39.9 PB. Higher % = harder/faster.</p>
+    <table class="zone"><thead><tr><th>% of PB</th><th>500m split</th></tr></thead>
+    <tbody><tr><td>50%</td><td>2:29.9</td></tr><tr><td>55%</td><td>2:24.9</td></tr><tr><td>60%</td><td>2:19.9</td></tr><tr><td>65%</td><td>2:14.9</td></tr><tr><td>70%</td><td>2:09.9</td></tr><tr><td>75%</td><td>2:04.9</td></tr><tr><td>80%</td><td>1:59.9</td></tr><tr><td>85%</td><td>1:54.9</td></tr><tr><td>90%</td><td>1:49.9</td></tr><tr><td>95%</td><td>1:44.9</td></tr><tr><td>100%</td><td>1:39.9</td></tr><tr><td>105%</td><td>1:34.9</td></tr><tr><td>110%</td><td>1:29.9</td></tr><tr><td>115%</td><td>1:24.9</td></tr><tr><td>120%</td><td>1:19.9</td></tr></tbody></table>
+  </div>
+</div>
+
+<script>
+const DATA = [{"date": "2026-06-08", "dow": "Mon", "nice": "Jun 8", "full": "Monday, June 8", "week": 1, "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "splitLow": "1:50", "splitHigh": "1:45", "repRange": "0:42–0:44", "dist": 200, "dur": "", "reps": 12, "rate": "36-38", "rest": "2 min", "desc": "Warm-up: 12 minutes of light rowing. After 7 minutes, perform some intense 10-stroke bursts. Power Intervals: 200m x 12 rolling starts. Rest 2 minutes between each interval, 36-38 strokes/minute Intensity: 90%-95% of 500m PB Cool-down: 10 minutes of easy rowing.", "test": false}, {"date": "2026-06-10", "dow": "Wed", "nice": "Jun 10", "full": "Wednesday, June 10", "week": 1, "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [75, 85], "splitRange": "1:55–2:05", "splitLow": "2:05", "splitHigh": "1:55", "repRange": "", "dist": null, "dur": "40s", "reps": 24, "rate": "28-30", "rest": "20s / 4 min sets", "desc": "Warm-up: 12 min light. Interval Training: (40s hard/ 20s rest x 12) x 2 sets. Rest 4 min between sets. 28-30 s/m. Intensity: 75-85% of 500m PB.", "test": false}, {"date": "2026-06-13", "dow": "Sat", "nice": "Jun 13", "full": "Saturday, June 13", "week": 1, "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 77], "splitRange": "2:03–2:15", "splitLow": "2:15", "splitHigh": "2:03", "repRange": "3:17–3:36", "dist": 800, "dur": "", "reps": 8, "rate": "26", "rest": "2:30", "desc": "Warm-up: 10 min light. Single Interval: 8 x 800m, 26 s/m. Rest 2:30. Intensity: 65-77% of 500m PB.", "test": false}, {"date": "2026-06-15", "dow": "Mon", "nice": "Jun 15", "full": "Monday, June 15", "week": 2, "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "splitLow": "1:50", "splitHigh": "1:45", "repRange": "0:31–0:33", "dist": 150, "dur": "", "reps": 20, "rate": "36-38", "rest": "1:30", "desc": "Warm-up: 10 min easy. Power Intervals: 150m x 20, 1:30 rest. 36-38 s/m. Intensity: 90-95% of 500m PB.", "test": false}, {"date": "2026-06-17", "dow": "Wed", "nice": "Jun 17", "full": "Wednesday, June 17", "week": 2, "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [75, 85], "splitRange": "1:55–2:05", "splitLow": "2:05", "splitHigh": "1:55", "repRange": "", "dist": null, "dur": "1:20", "reps": 10, "rate": "28-30", "rest": "60s", "desc": "Warm-up: 12 min light. Interval Training: 1:20 hard, 60s rest x 10. 28-30 s/m. Intensity: 75-85% of 500m PB.", "test": false}, {"date": "2026-06-21", "dow": "Sun", "nice": "Jun 21", "full": "Sunday, June 21", "week": 2, "name": "Summer Solstice Challenge", "type": "Endurance", "color": "#8b5cf6", "intensity": [55, 65], "splitRange": "2:15–2:25", "splitLow": "2:25", "splitHigh": "2:15", "repRange": "94:52–101:54", "dist": 21097, "dur": "", "reps": 1, "rate": "22-26", "rest": "—", "desc": "Warm-up: 5 min light. Single Distance: 21,097m (half marathon). 22-26 s/m. Intensity: 55-65% of 500m PB.", "test": false}, {"date": "2026-06-22", "dow": "Mon", "nice": "Jun 22", "full": "Monday, June 22", "week": 3, "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "splitLow": "1:50", "splitHigh": "1:45", "repRange": "0:52–0:55", "dist": 250, "dur": "", "reps": 8, "rate": "36-38", "rest": "3 min", "desc": "Warm-up: 12 min light. Power Intervals: 250m x 8. Rest 3 min. 36-38 s/m. Intensity: 90-95% of 500m PB.", "test": false}, {"date": "2026-06-24", "dow": "Wed", "nice": "Jun 24", "full": "Wednesday, June 24", "week": 3, "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [75, 80], "splitRange": "2:00–2:05", "splitLow": "2:05", "splitHigh": "2:00", "repRange": "2:00–2:05", "dist": 500, "dur": "", "reps": 8, "rate": "28-30", "rest": "2:00", "desc": "Warm-up: 10 min light. Interval Training: 8 x 500m. Rest 2:00. 28-30 s/m. Intensity: 75-80% of 500m PB.", "test": false}, {"date": "2026-06-27", "dow": "Sat", "nice": "Jun 27", "full": "Saturday, June 27", "week": 3, "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 75], "splitRange": "2:05–2:15", "splitLow": "2:15", "splitHigh": "2:05", "repRange": "", "dist": null, "dur": "7:00", "reps": 4, "rate": "26", "rest": "3 min", "desc": "Warm-up: 10 min light. Interval training: 4 x 7 minutes. Rest 3 min. 26 s/m. Intensity: 65-75% of 500m PB.", "test": false}, {"date": "2026-06-29", "dow": "Mon", "nice": "Jun 29", "full": "Monday, June 29", "week": 4, "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "splitLow": "1:50", "splitHigh": "1:45", "repRange": "1:03–1:06", "dist": 300, "dur": "", "reps": 5, "rate": "36-38", "rest": "5 min", "desc": "Warm-up: 15 min light. Interval Training: 5 x 300m at 90-95% with 5 min rest. 36-38 s/m.", "test": false}, {"date": "2026-07-01", "dow": "Wed", "nice": "Jul 1", "full": "Wednesday, July 1", "week": 4, "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [70, 80], "splitRange": "2:00–2:10", "splitLow": "2:10", "splitHigh": "2:00", "repRange": "", "dist": null, "dur": "4:00", "reps": 4, "rate": "28-30", "rest": "4:00", "desc": "Warm-up: 10 min light. Interval training: 4 x 4 min. Rest 4:00. 28-30 s/m. Intensity: 70-80% of 500m PB.", "test": false}, {"date": "2026-07-04", "dow": "Sat", "nice": "Jul 4", "full": "Saturday, July 4", "week": 4, "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [62, 75], "splitRange": "2:05–2:18", "splitLow": "2:18", "splitHigh": "2:05", "repRange": "", "dist": null, "dur": "30:00", "reps": 1, "rate": "26-28", "rest": "—", "desc": "Warm-up: 10 min light. Interval Training: 30 min continuous. 26-28 s/m. Intensity: 62-75% of 500m PB.", "test": false}, {"date": "2026-07-06", "dow": "Mon", "nice": "Jul 6", "full": "Monday, July 6", "week": 5, "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "splitLow": "1:50", "splitHigh": "1:45", "repRange": "0:52–0:55", "dist": 250, "dur": "", "reps": 8, "rate": "36-38", "rest": "4 min", "desc": "Warm-up: 10 min light. Interval Training: 8 x 250m with 4 min rest. 36-38 s/m. Intensity: 90-95% of 500m PB.", "test": false}, {"date": "2026-07-08", "dow": "Wed", "nice": "Jul 8", "full": "Wednesday, July 8", "week": 5, "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [70, 80], "splitRange": "2:00–2:10", "splitLow": "2:10", "splitHigh": "2:00", "repRange": "", "dist": null, "dur": "pyramid", "reps": 7, "rate": "28-30", "rest": "3 min", "desc": "Warm-up: 10 min easy. Interval Training: 1,2,3,4,3,2,1 min pyramid. Rest 3 min. 28-30 s/m. Powerful strokes on the 1 min. Intensity: 70-80% of 500m PB.", "test": false}, {"date": "2026-07-11", "dow": "Sat", "nice": "Jul 11", "full": "Saturday, July 11", "week": 5, "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 75], "splitRange": "2:05–2:15", "splitLow": "2:15", "splitHigh": "2:05", "repRange": "", "dist": null, "dur": "12:00", "reps": 2, "rate": "26", "rest": "3 min", "desc": "Warm-up: 10 min light. Interval Training: 2 x 12 min with 3 min rest. 26 s/m. Intensity: 65-75% of 500m PB.", "test": false}, {"date": "2026-07-13", "dow": "Mon", "nice": "Jul 13", "full": "Monday, July 13", "week": 6, "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "splitLow": "1:50", "splitHigh": "1:45", "repRange": "1:03–1:06", "dist": 300, "dur": "", "reps": 8, "rate": "36-38", "rest": "4 / 2 min", "desc": "Warm-up: 10 min light. Interval training: 300m x 4 at 90% (36-38 s/m, 4 min rest) + 150m x 4 at 95% (36-38 s/m, 2 min rest). 90-95% of 500m PB.", "test": false}, {"date": "2026-07-15", "dow": "Wed", "nice": "Jul 15", "full": "Wednesday, July 15", "week": 6, "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [73, 80], "splitRange": "2:00–2:07", "splitLow": "2:07", "splitHigh": "2:00", "repRange": "", "dist": null, "dur": "1:00", "reps": 12, "rate": "28-30", "rest": "1:00", "desc": "Warm-up: 10 min light. Interval Training: 12 x 1:00 with 1:00 rest. 28-30 s/m. Intensity: 73-80% of 500m PB.", "test": false}, {"date": "2026-07-18", "dow": "Sat", "nice": "Jul 18", "full": "Saturday, July 18", "week": 6, "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 75], "splitRange": "2:05–2:15", "splitLow": "2:15", "splitHigh": "2:05", "repRange": "6:15–6:45", "dist": 1500, "dur": "", "reps": 5, "rate": "26-28", "rest": "3 min", "desc": "Warm-up: 10 min light. 5 x 1500m. Rest 3 min. 26-28 s/m. Intensity: 65-75% of 500m PB.", "test": false}, {"date": "2026-07-20", "dow": "Mon", "nice": "Jul 20", "full": "Monday, July 20", "week": 7, "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "splitLow": "1:50", "splitHigh": "1:45", "repRange": "0:42–0:44", "dist": 200, "dur": "", "reps": 12, "rate": "36-40", "rest": "2 min", "desc": "Warm-up: 10 min light. Interval training: 200m x 6 (36 s/m), 100m x 6 (40 s/m). Rest 2 min. Intensity: 90-95% of 500m PB.", "test": false}, {"date": "2026-07-22", "dow": "Wed", "nice": "Jul 22", "full": "Wednesday, July 22", "week": 7, "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [70, 80], "splitRange": "2:00–2:10", "splitLow": "2:10", "splitHigh": "2:00", "repRange": "1:36–1:44", "dist": 400, "dur": "", "reps": 10, "rate": "28-30", "rest": "1:30", "desc": "Warm-up: 10 min light. Interval Training: 400m x 10. Rest 1:30. 28-30 s/m. Intensity: 70-80% of 500m PB.", "test": false}, {"date": "2026-07-25", "dow": "Sat", "nice": "Jul 25", "full": "Saturday, July 25", "week": 7, "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 75], "splitRange": "2:05–2:15", "splitLow": "2:15", "splitHigh": "2:05", "repRange": "", "dist": null, "dur": "4:00", "reps": 8, "rate": "26-28", "rest": "3 min", "desc": "Warm-up: 10 min light. Interval Training: 8 x 4 minutes. Rest 3 min. 26-28 s/m. Intensity: 65-75% of 500m PB.", "test": false}, {"date": "2026-07-27", "dow": "Mon", "nice": "Jul 27", "full": "Monday, July 27", "week": 8, "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [92, 96], "splitRange": "1:44–1:48", "splitLow": "1:48", "splitHigh": "1:44", "repRange": "", "dist": null, "dur": "30s", "reps": 15, "rate": "36-38", "rest": "2:00", "desc": "Warm-up: 12 min light. Interval training: 15 x 30 sec. Rest 2:00. 36-38 s/m. Intensity: 92-96% of 500m PB.", "test": false}, {"date": "2026-07-29", "dow": "Wed", "nice": "Jul 29", "full": "Wednesday, July 29", "week": 8, "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [72, 80], "splitRange": "2:00–2:08", "splitLow": "2:08", "splitHigh": "2:00", "repRange": "3:30–3:44", "dist": 875, "dur": "", "reps": 4, "rate": "30-34", "rest": "4 min", "desc": "Warm-up: 10 min light. Interval training: 1250m, 1000m, 750m, 500m descending. Rest 4 min. 30-34 s/m. Intensity: 72-80% of 500m PB.", "test": false}, {"date": "2026-08-01", "dow": "Sat", "nice": "Aug 1", "full": "Saturday, August 1", "week": 8, "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [62, 75], "splitRange": "2:05–2:18", "splitLow": "2:18", "splitHigh": "2:05", "repRange": "", "dist": null, "dur": "30:00", "reps": 1, "rate": "26-28", "rest": "—", "desc": "Warm-up: 10 min light. Interval Training: 30 min continuous. 26-28 s/m. Intensity: 62-75% of 500m PB.", "test": false}, {"date": "2026-08-03", "dow": "Mon", "nice": "Aug 3", "full": "Monday, August 3", "week": 9, "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 98], "splitRange": "1:42–1:50", "splitLow": "1:50", "splitHigh": "1:42", "repRange": "", "dist": null, "dur": "20s", "reps": 12, "rate": "38-40", "rest": "2 min", "desc": "Warm-up: 10 min light. Interval training: 20 sec x 12. Rest 2 min. 38-40 s/m. Intensity: 90-98% of 500m PB.", "test": false}, {"date": "2026-08-05", "dow": "Wed", "nice": "Aug 5", "full": "Wednesday, August 5", "week": 9, "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [75, 80], "splitRange": "2:00–2:05", "splitLow": "2:05", "splitHigh": "2:00", "repRange": "2:00–2:05", "dist": 500, "dur": "", "reps": 8, "rate": "30-32", "rest": "2 min", "desc": "Warm-up: 10 min light. Interval training: 8 x 500m. Rest 2 min. 30-32 s/m. Intensity: 75-80% of 500m PB.", "test": false}, {"date": "2026-08-08", "dow": "Sat", "nice": "Aug 8", "full": "Saturday, August 8", "week": 9, "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 75], "splitRange": "2:05–2:15", "splitLow": "2:15", "splitHigh": "2:05", "repRange": "4:10–4:30", "dist": 1000, "dur": "", "reps": 6, "rate": "26-28", "rest": "3:00", "desc": "Warm-up: 10 min light. Interval Training: 6 x 1000m. Rest 3:00. 26-28 s/m. Intensity: 65-75% of 500m PB.", "test": false}, {"date": "2026-08-10", "dow": "Mon", "nice": "Aug 10", "full": "Monday, August 10", "week": 10, "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "splitLow": "1:50", "splitHigh": "1:45", "repRange": "0:52–0:55", "dist": 250, "dur": "", "reps": 8, "rate": "38-40", "rest": "3 min", "desc": "Warm-up: 12 min light. Power Intervals: 250m x 8. Rest 3 min. 38-40 s/m. Intensity: 90-95% of 500m PB.", "test": false}, {"date": "2026-08-12", "dow": "Wed", "nice": "Aug 12", "full": "Wednesday, August 12", "week": 10, "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [70, 80], "splitRange": "2:00–2:10", "splitLow": "2:10", "splitHigh": "2:00", "repRange": "", "dist": null, "dur": "4:00", "reps": 4, "rate": "28-30", "rest": "4:00", "desc": "Warm-up: 10 min light. Interval training: 4 x 4 min. Rest 4:00. 28-30 s/m. Intensity: 70-80% of 500m PB.", "test": false}, {"date": "2026-08-15", "dow": "Sat", "nice": "Aug 15", "full": "Saturday, August 15", "week": 10, "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [62, 75], "splitRange": "2:05–2:18", "splitLow": "2:18", "splitHigh": "2:05", "repRange": "", "dist": null, "dur": "30:00", "reps": 1, "rate": "26-28", "rest": "—", "desc": "Warm-up: 10 min light. 30 min continuous. 26-28 s/m. Intensity: 62-75% of 500m PB.", "test": false}, {"date": "2026-08-17", "dow": "Mon", "nice": "Aug 17", "full": "Monday, August 17", "week": 11, "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [85, 90], "splitRange": "1:50–1:55", "splitLow": "1:55", "splitHigh": "1:50", "repRange": "1:28–1:32", "dist": 400, "dur": "", "reps": 2, "rate": "38+", "rest": "7 min", "desc": "Warm-up: 10 min light. Interval Training: 400m x 2 with 7 min rest. 38+ s/m. Intensity: 85-90% of 500m PB.", "test": false}, {"date": "2026-08-19", "dow": "Wed", "nice": "Aug 19", "full": "Wednesday, August 19", "week": 11, "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [73, 80], "splitRange": "2:00–2:07", "splitLow": "2:07", "splitHigh": "2:00", "repRange": "", "dist": null, "dur": "pyramid", "reps": 7, "rate": "28-30", "rest": "3 min", "desc": "Warm-up: 10 min easy. Interval Training: 1,2,3,4,3,2,1 min pyramid. Rest 3 min. 28-30 s/m. Powerful strokes on the 1 min. Intensity: 73-80% of 500m PB.", "test": false}, {"date": "2026-08-22", "dow": "Sat", "nice": "Aug 22", "full": "Saturday, August 22", "week": 11, "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 75], "splitRange": "2:05–2:15", "splitLow": "2:15", "splitHigh": "2:05", "repRange": "6:15–6:45", "dist": 1500, "dur": "", "reps": 4, "rate": "26-28", "rest": "—", "desc": "Warm-up: 10 min light. Interval Training: 4 x 1500m at 26-28 s/m. Intensity: 65-75% of 500m PB.", "test": false}, {"date": "2026-08-24", "dow": "Mon", "nice": "Aug 24", "full": "Monday, August 24", "week": 12, "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "splitLow": "1:50", "splitHigh": "1:45", "repRange": "0:52–0:55", "dist": 250, "dur": "", "reps": 4, "rate": "40+", "rest": "4:00", "desc": "Warm-up: 12 min light. Interval Training: 4 x 250m. Rest 4:00. 40+ s/m. Intensity: 90-95% of 500m PB.", "test": false}, {"date": "2026-08-26", "dow": "Wed", "nice": "Aug 26", "full": "Wednesday, August 26", "week": 12, "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [75, 80], "splitRange": "2:00–2:05", "splitLow": "2:05", "splitHigh": "2:00", "repRange": "2:00–2:05", "dist": 500, "dur": "", "reps": 4, "rate": "32-34", "rest": "2 min", "desc": "Warm-up: 10 min light. Interval Training: 4 x 500m. Rest 2 min. 32-34 s/m. Intensity: 75-80% of 500m PB.", "test": false}, {"date": "2026-08-29", "dow": "Sat", "nice": "Aug 29", "full": "Saturday, August 29", "week": 12, "name": "Rowfit Games – Virtual Race: 1-Minute Test", "type": "Test", "color": "#10b981", "intensity": [100, 120], "splitRange": "1:20–1:40", "splitLow": "1:40", "splitHigh": "1:20", "repRange": "", "dist": null, "dur": "1:00", "reps": 1, "rate": "max", "rest": "—", "desc": "Warm-up: 15 min light. 1-Minute Test: row for maximum distance in 1 minute. Maximal effort. Record distance, watts, pace, stroke rate.", "test": true}, {"date": "2026-08-30", "dow": "Sun", "nice": "Aug 30", "full": "Sunday, August 30", "week": 12, "name": "Rowfit Games – Virtual Race: 2000m Test", "type": "Test", "color": "#10b981", "intensity": [95, 110], "splitRange": "1:30–1:45", "splitLow": "1:45", "splitHigh": "1:30", "repRange": "6:00–7:00", "dist": 2000, "dur": "", "reps": 1, "rate": "28-32", "rest": "—", "desc": "Warm-up: 15 min light. 2000m Test: maximal effort time trial. Even pacing, strong finish. Record time, splits, watts.", "test": true}];
+const TYPES = [...new Set(DATA.map(d=>d.type))];
+const TYPECOLOR = {}; DATA.forEach(d=>TYPECOLOR[d.type]=d.color);
+let active = new Set(TYPES);
+
+function renderFilters(){
+  const f=document.getElementById('filters');
+  f.innerHTML='';
+  const all=document.createElement('div');
+  all.className='chip'+(active.size===TYPES.length?' active':'');
+  all.textContent='All';
+  all.onclick=()=>{active=new Set(TYPES);renderFilters();renderWeeks();};
+  f.appendChild(all);
+  TYPES.forEach(t=>{
+    const c=document.createElement('div');
+    c.className='chip'+(active.has(t)?' active':'');
+    c.innerHTML=`<span class="dot" style="background:${TYPECOLOR[t]}"></span>${t}`;
+    c.onclick=()=>{ if(active.has(t)&&active.size===TYPES.length){active=new Set([t]);}
+      else if(active.has(t)){active.delete(t);} else {active.add(t);}
+      if(active.size===0)active=new Set(TYPES);
+      renderFilters();renderWeeks();};
+    f.appendChild(c);
+  });
+}
+
+function renderWeeks(){
+  const host=document.getElementById('weeks');
+  host.innerHTML='';
+  const weeks=[...new Set(DATA.map(d=>d.week))].sort((a,b)=>a-b);
+  let shownTotal=0;
+  weeks.forEach(wk=>{
+    const items=DATA.filter(d=>d.week===wk && active.has(d.type));
+    if(!items.length) return;
+    shownTotal+=items.length;
+    const sec=document.createElement('div'); sec.className='week';
+    const dates=DATA.filter(d=>d.week===wk);
+    sec.innerHTML=`<div class="wk-head"><span class="wk-num">Week ${wk}</span>
+      <span class="wk-dates">${dates[0].nice} – ${dates[dates.length-1].nice}</span>
+      <span class="wk-count">${items.length} session${items.length>1?'s':''}</span></div>`;
+    const grid=document.createElement('div'); grid.className='grid';
+    items.forEach(w=>grid.appendChild(card(w)));
+    sec.appendChild(grid); host.appendChild(sec);
+  });
+  if(shownTotal===0) host.innerHTML='<div class="empty">No workouts match this filter.</div>';
+}
+
+function card(w){
+  const el=document.createElement('div'); el.className='card'; el.style.setProperty('--c',w.color);
+  const repBox = w.repRange ? `<div class="pace-box"><div class="pace-lbl">Per rep ${w.dist?('· '+w.dist+'m'):''}</div>
+      <div class="pace-val">${w.repRange}</div><div class="pace-sub">target time / interval</div></div>` : '';
+  const structure = [
+    w.reps?`<span><b>${w.reps}</b> ${w.dist?('× '+w.dist+'m'):(w.dur?('× '+w.dur):'reps')}</span>`:'',
+    w.rate?`<span>Rate <b>${w.rate}</b> s/m</span>`:'',
+    (w.rest && w.rest!=='—')?`<span>Rest <b>${w.rest}</b></span>`:'',
+    `<span>Intensity <b>${w.intensity[0]}–${w.intensity[1]}%</b></span>`
+  ].filter(Boolean).join('');
+  el.innerHTML=`
+    <div class="c-top">
+      <div class="c-day">${w.dow} · ${w.nice}</div>
+      <div class="c-name">${w.name}</div>
+      <span class="badge">${w.type}</span>
+    </div>
+    <div class="paces">
+      <div class="pace-box"><div class="pace-lbl">500m split</div>
+        <div class="pace-val">${w.splitRange}</div><div class="pace-sub">${w.intensity[1]}% → ${w.intensity[0]}%</div></div>
+      ${repBox}
+    </div>
+    <div class="c-meta">${structure}</div>
+    <div class="c-foot"><div class="c-foot-lbl">Full workout</div><div class="c-desc">${w.desc}</div></div>`;
+  return el;
+}
+
+renderFilters(); renderWeeks();
+</script>
+</body></html>
