@@ -71,6 +71,9 @@ h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
 .r-val.zone-in{color:var(--good)}
 .r-extra{margin-top:8px;font-size:12px;color:var(--muted)}
 .r-extra b{color:var(--text)}
+.logbook-link{display:inline-flex;align-items:center;gap:5px;margin-top:9px;font-size:12px;
+  font-weight:600;color:var(--good);text-decoration:none}
+.logbook-link:hover{text-decoration:underline}
 
 .c-foot{border-top:1px solid var(--line);padding:11px 16px 14px}
 .c-foot-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
@@ -238,6 +241,7 @@ function card(w){
         <div class="r-box"><div class="r-lbl">Zone</div><div class="r-val ${zoneCls}">${dn.in_zone?'In ✓':'Off'}</div></div>
       </div>
       <div class="r-extra"><b>${(dn.distance_m||0).toLocaleString()}m</b> · <b>${dn.time}</b> · rate <b>${dn.avg_rate}</b> · <b>${dn.calories}</b> cal${dn.actual_split_note?(' · '+dn.actual_split_note):''}</div>
+      ${dn.concept2_id?`<a class="logbook-link" href="https://log.concept2.com/log/${dn.concept2_id}" target="_blank" rel="noopener">↗ View in Concept2 logbook</a>`:''}
     </div>`;
   }
 
