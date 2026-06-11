@@ -241,7 +241,7 @@ function card(w){
         <div class="r-box"><div class="r-lbl">Zone</div><div class="r-val ${zoneCls}">${dn.in_zone?'In ✓':'Off'}</div></div>
       </div>
       <div class="r-extra"><b>${(dn.distance_m||0).toLocaleString()}m</b> · <b>${dn.time}</b> · rate <b>${dn.avg_rate}</b> · <b>${dn.calories}</b> cal${dn.actual_split_note?(' · '+dn.actual_split_note):''}</div>
-      ${dn.concept2_id?`<a class="logbook-link" href="https://log.concept2.com/log/${dn.concept2_id}" target="_blank" rel="noopener">↗ View in Concept2 logbook</a>`:''}
+      ${dn.concept2_id?`<a class="logbook-link" href="https://log.concept2.com/profile/2198296/log/${dn.concept2_id}" target="_blank" rel="noopener">↗ View in Concept2 logbook</a>`:''}
     </div>`;
   }
 
