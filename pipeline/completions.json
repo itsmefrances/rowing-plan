@@ -13,6 +13,19 @@
    "calories": 264,
    "intervals_done": 24,
    "in_zone": true
+  },
+  "2026-06-13": {
+   "concept2_id": 117458302,
+   "date_done": "2026-06-11",
+   "actual_split": "2:08.8",
+   "actual_split_note": "work intervals only (8 × 800m)",
+   "overall_pace": "2:08.8",
+   "distance_m": 6400,
+   "time": "44:59",
+   "avg_rate": 26,
+   "calories": 393,
+   "intervals_done": 8,
+   "in_zone": true
   }
  },
  "today": "2026-06-11"
