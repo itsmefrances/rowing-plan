@@ -1,0 +1,659 @@
+[
+ {
+  "date": "2026-06-08",
+  "name": "Sprint Training",
+  "desc": "Warm-up: 12 minutes of light rowing. After 7 minutes, perform some intense 10-stroke bursts. Power Intervals: 200m x 12 rolling starts. Rest 2 minutes between each interval, 36-38 strokes/minute Intensity: 90%-95% of 500m PB Cool-down: 10 minutes of easy rowing.",
+  "intensity": [
+   90,
+   95
+  ],
+  "reps": 12,
+  "dist": 200,
+  "rate": "36-38",
+  "rest": "2 min",
+  "split_low_pct": "1:50",
+  "split_high_pct": "1:45",
+  "split_range": "1:45–1:50",
+  "rep_time_range": "0:42–0:44",
+  "rep_time_fast": "0:42",
+  "rep_time_slow": "0:44"
+ },
+ {
+  "date": "2026-06-10",
+  "name": "VO₂ Max Training",
+  "desc": "Warm-up: 12 min light. Interval Training: (40s hard/ 20s rest x 12) x 2 sets. Rest 4 min between sets. 28-30 s/m. Intensity: 75-85% of 500m PB.",
+  "intensity": [
+   75,
+   85
+  ],
+  "reps": 24,
+  "dur": "40s",
+  "rate": "28-30",
+  "rest": "20s / 4 min sets",
+  "split_low_pct": "2:05",
+  "split_high_pct": "1:55",
+  "split_range": "1:55–2:05"
+ },
+ {
+  "date": "2026-06-13",
+  "name": "Threshold Training",
+  "desc": "Warm-up: 10 min light. Single Interval: 8 x 800m, 26 s/m. Rest 2:30. Intensity: 65-77% of 500m PB.",
+  "intensity": [
+   65,
+   77
+  ],
+  "reps": 8,
+  "dist": 800,
+  "rate": "26",
+  "rest": "2:30",
+  "split_low_pct": "2:15",
+  "split_high_pct": "2:03",
+  "split_range": "2:03–2:15",
+  "rep_time_range": "3:17–3:36",
+  "rep_time_fast": "3:17",
+  "rep_time_slow": "3:36"
+ },
+ {
+  "date": "2026-06-15",
+  "name": "Sprint Training",
+  "desc": "Warm-up: 10 min easy. Power Intervals: 150m x 20, 1:30 rest. 36-38 s/m. Intensity: 90-95% of 500m PB.",
+  "intensity": [
+   90,
+   95
+  ],
+  "reps": 20,
+  "dist": 150,
+  "rate": "36-38",
+  "rest": "1:30",
+  "split_low_pct": "1:50",
+  "split_high_pct": "1:45",
+  "split_range": "1:45–1:50",
+  "rep_time_range": "0:31–0:33",
+  "rep_time_fast": "0:31",
+  "rep_time_slow": "0:33"
+ },
+ {
+  "date": "2026-06-17",
+  "name": "VO₂ Max Training",
+  "desc": "Warm-up: 12 min light. Interval Training: 1:20 hard, 60s rest x 10. 28-30 s/m. Intensity: 75-85% of 500m PB.",
+  "intensity": [
+   75,
+   85
+  ],
+  "reps": 10,
+  "dur": "1:20",
+  "rate": "28-30",
+  "rest": "60s",
+  "split_low_pct": "2:05",
+  "split_high_pct": "1:55",
+  "split_range": "1:55–2:05"
+ },
+ {
+  "date": "2026-06-21",
+  "name": "Summer Solstice Challenge",
+  "desc": "Warm-up: 5 min light. Single Distance: 21,097m (half marathon). 22-26 s/m. Intensity: 55-65% of 500m PB.",
+  "intensity": [
+   55,
+   65
+  ],
+  "reps": 1,
+  "dist": 21097,
+  "rate": "22-26",
+  "rest": "—",
+  "split_low_pct": "2:25",
+  "split_high_pct": "2:15",
+  "split_range": "2:15–2:25",
+  "rep_time_range": "94:52–101:54",
+  "rep_time_fast": "94:52",
+  "rep_time_slow": "101:54"
+ },
+ {
+  "date": "2026-06-22",
+  "name": "Sprint Training",
+  "desc": "Warm-up: 12 min light. Power Intervals: 250m x 8. Rest 3 min. 36-38 s/m. Intensity: 90-95% of 500m PB.",
+  "intensity": [
+   90,
+   95
+  ],
+  "reps": 8,
+  "dist": 250,
+  "rate": "36-38",
+  "rest": "3 min",
+  "split_low_pct": "1:50",
+  "split_high_pct": "1:45",
+  "split_range": "1:45–1:50",
+  "rep_time_range": "0:52–0:55",
+  "rep_time_fast": "0:52",
+  "rep_time_slow": "0:55"
+ },
+ {
+  "date": "2026-06-24",
+  "name": "VO₂ Max Training",
+  "desc": "Warm-up: 10 min light. Interval Training: 8 x 500m. Rest 2:00. 28-30 s/m. Intensity: 75-80% of 500m PB.",
+  "intensity": [
+   75,
+   80
+  ],
+  "reps": 8,
+  "dist": 500,
+  "rate": "28-30",
+  "rest": "2:00",
+  "split_low_pct": "2:05",
+  "split_high_pct": "2:00",
+  "split_range": "2:00–2:05",
+  "rep_time_range": "2:00–2:05",
+  "rep_time_fast": "2:00",
+  "rep_time_slow": "2:05"
+ },
+ {
+  "date": "2026-06-27",
+  "name": "Threshold Training",
+  "desc": "Warm-up: 10 min light. Interval training: 4 x 7 minutes. Rest 3 min. 26 s/m. Intensity: 65-75% of 500m PB.",
+  "intensity": [
+   65,
+   75
+  ],
+  "reps": 4,
+  "dur": "7:00",
+  "rate": "26",
+  "rest": "3 min",
+  "split_low_pct": "2:15",
+  "split_high_pct": "2:05",
+  "split_range": "2:05–2:15"
+ },
+ {
+  "date": "2026-06-29",
+  "name": "Sprint Training",
+  "desc": "Warm-up: 15 min light. Interval Training: 5 x 300m at 90-95% with 5 min rest. 36-38 s/m.",
+  "intensity": [
+   90,
+   95
+  ],
+  "reps": 5,
+  "dist": 300,
+  "rate": "36-38",
+  "rest": "5 min",
+  "split_low_pct": "1:50",
+  "split_high_pct": "1:45",
+  "split_range": "1:45–1:50",
+  "rep_time_range": "1:03–1:06",
+  "rep_time_fast": "1:03",
+  "rep_time_slow": "1:06"
+ },
+ {
+  "date": "2026-07-01",
+  "name": "VO₂ Max Training",
+  "desc": "Warm-up: 10 min light. Interval training: 4 x 4 min. Rest 4:00. 28-30 s/m. Intensity: 70-80% of 500m PB.",
+  "intensity": [
+   70,
+   80
+  ],
+  "reps": 4,
+  "dur": "4:00",
+  "rate": "28-30",
+  "rest": "4:00",
+  "split_low_pct": "2:10",
+  "split_high_pct": "2:00",
+  "split_range": "2:00–2:10"
+ },
+ {
+  "date": "2026-07-04",
+  "name": "Threshold Training",
+  "desc": "Warm-up: 10 min light. Interval Training: 30 min continuous. 26-28 s/m. Intensity: 62-75% of 500m PB.",
+  "intensity": [
+   62,
+   75
+  ],
+  "reps": 1,
+  "dur": "30:00",
+  "rate": "26-28",
+  "rest": "—",
+  "split_low_pct": "2:18",
+  "split_high_pct": "2:05",
+  "split_range": "2:05–2:18"
+ },
+ {
+  "date": "2026-07-06",
+  "name": "Sprint Training",
+  "desc": "Warm-up: 10 min light. Interval Training: 8 x 250m with 4 min rest. 36-38 s/m. Intensity: 90-95% of 500m PB.",
+  "intensity": [
+   90,
+   95
+  ],
+  "reps": 8,
+  "dist": 250,
+  "rate": "36-38",
+  "rest": "4 min",
+  "split_low_pct": "1:50",
+  "split_high_pct": "1:45",
+  "split_range": "1:45–1:50",
+  "rep_time_range": "0:52–0:55",
+  "rep_time_fast": "0:52",
+  "rep_time_slow": "0:55"
+ },
+ {
+  "date": "2026-07-08",
+  "name": "VO₂ Max Training",
+  "desc": "Warm-up: 10 min easy. Interval Training: 1,2,3,4,3,2,1 min pyramid. Rest 3 min. 28-30 s/m. Powerful strokes on the 1 min. Intensity: 70-80% of 500m PB.",
+  "intensity": [
+   70,
+   80
+  ],
+  "reps": 7,
+  "dur": "pyramid",
+  "rate": "28-30",
+  "rest": "3 min",
+  "split_low_pct": "2:10",
+  "split_high_pct": "2:00",
+  "split_range": "2:00–2:10"
+ },
+ {
+  "date": "2026-07-11",
+  "name": "Threshold Training",
+  "desc": "Warm-up: 10 min light. Interval Training: 2 x 12 min with 3 min rest. 26 s/m. Intensity: 65-75% of 500m PB.",
+  "intensity": [
+   65,
+   75
+  ],
+  "reps": 2,
+  "dur": "12:00",
+  "rate": "26",
+  "rest": "3 min",
+  "split_low_pct": "2:15",
+  "split_high_pct": "2:05",
+  "split_range": "2:05–2:15"
+ },
+ {
+  "date": "2026-07-13",
+  "name": "Sprint Training",
+  "desc": "Warm-up: 10 min light. Interval training: 300m x 4 at 90% (36-38 s/m, 4 min rest) + 150m x 4 at 95% (36-38 s/m, 2 min rest). 90-95% of 500m PB.",
+  "intensity": [
+   90,
+   95
+  ],
+  "reps": 8,
+  "dist": 300,
+  "rate": "36-38",
+  "rest": "4 / 2 min",
+  "split_low_pct": "1:50",
+  "split_high_pct": "1:45",
+  "split_range": "1:45–1:50",
+  "rep_time_range": "1:03–1:06",
+  "rep_time_fast": "1:03",
+  "rep_time_slow": "1:06"
+ },
+ {
+  "date": "2026-07-15",
+  "name": "VO₂ Max Training",
+  "desc": "Warm-up: 10 min light. Interval Training: 12 x 1:00 with 1:00 rest. 28-30 s/m. Intensity: 73-80% of 500m PB.",
+  "intensity": [
+   73,
+   80
+  ],
+  "reps": 12,
+  "dur": "1:00",
+  "rate": "28-30",
+  "rest": "1:00",
+  "split_low_pct": "2:07",
+  "split_high_pct": "2:00",
+  "split_range": "2:00–2:07"
+ },
+ {
+  "date": "2026-07-18",
+  "name": "Threshold Training",
+  "desc": "Warm-up: 10 min light. 5 x 1500m. Rest 3 min. 26-28 s/m. Intensity: 65-75% of 500m PB.",
+  "intensity": [
+   65,
+   75
+  ],
+  "reps": 5,
+  "dist": 1500,
+  "rate": "26-28",
+  "rest": "3 min",
+  "split_low_pct": "2:15",
+  "split_high_pct": "2:05",
+  "split_range": "2:05–2:15",
+  "rep_time_range": "6:15–6:45",
+  "rep_time_fast": "6:15",
+  "rep_time_slow": "6:45"
+ },
+ {
+  "date": "2026-07-20",
+  "name": "Sprint Training",
+  "desc": "Warm-up: 10 min light. Interval training: 200m x 6 (36 s/m), 100m x 6 (40 s/m). Rest 2 min. Intensity: 90-95% of 500m PB.",
+  "intensity": [
+   90,
+   95
+  ],
+  "reps": 12,
+  "dist": 200,
+  "rate": "36-40",
+  "rest": "2 min",
+  "split_low_pct": "1:50",
+  "split_high_pct": "1:45",
+  "split_range": "1:45–1:50",
+  "rep_time_range": "0:42–0:44",
+  "rep_time_fast": "0:42",
+  "rep_time_slow": "0:44"
+ },
+ {
+  "date": "2026-07-22",
+  "name": "VO₂ Max Training",
+  "desc": "Warm-up: 10 min light. Interval Training: 400m x 10. Rest 1:30. 28-30 s/m. Intensity: 70-80% of 500m PB.",
+  "intensity": [
+   70,
+   80
+  ],
+  "reps": 10,
+  "dist": 400,
+  "rate": "28-30",
+  "rest": "1:30",
+  "split_low_pct": "2:10",
+  "split_high_pct": "2:00",
+  "split_range": "2:00–2:10",
+  "rep_time_range": "1:36–1:44",
+  "rep_time_fast": "1:36",
+  "rep_time_slow": "1:44"
+ },
+ {
+  "date": "2026-07-25",
+  "name": "Threshold Training",
+  "desc": "Warm-up: 10 min light. Interval Training: 8 x 4 minutes. Rest 3 min. 26-28 s/m. Intensity: 65-75% of 500m PB.",
+  "intensity": [
+   65,
+   75
+  ],
+  "reps": 8,
+  "dur": "4:00",
+  "rate": "26-28",
+  "rest": "3 min",
+  "split_low_pct": "2:15",
+  "split_high_pct": "2:05",
+  "split_range": "2:05–2:15"
+ },
+ {
+  "date": "2026-07-27",
+  "name": "Sprint Training",
+  "desc": "Warm-up: 12 min light. Interval training: 15 x 30 sec. Rest 2:00. 36-38 s/m. Intensity: 92-96% of 500m PB.",
+  "intensity": [
+   92,
+   96
+  ],
+  "reps": 15,
+  "dur": "30s",
+  "rate": "36-38",
+  "rest": "2:00",
+  "split_low_pct": "1:48",
+  "split_high_pct": "1:44",
+  "split_range": "1:44–1:48"
+ },
+ {
+  "date": "2026-07-29",
+  "name": "VO₂ Max Training",
+  "desc": "Warm-up: 10 min light. Interval training: 1250m, 1000m, 750m, 500m descending. Rest 4 min. 30-34 s/m. Intensity: 72-80% of 500m PB.",
+  "intensity": [
+   72,
+   80
+  ],
+  "reps": 4,
+  "dist": 875,
+  "rate": "30-34",
+  "rest": "4 min",
+  "split_low_pct": "2:08",
+  "split_high_pct": "2:00",
+  "split_range": "2:00–2:08",
+  "rep_time_range": "3:30–3:44",
+  "rep_time_fast": "3:30",
+  "rep_time_slow": "3:44"
+ },
+ {
+  "date": "2026-08-01",
+  "name": "Threshold Training",
+  "desc": "Warm-up: 10 min light. Interval Training: 30 min continuous. 26-28 s/m. Intensity: 62-75% of 500m PB.",
+  "intensity": [
+   62,
+   75
+  ],
+  "reps": 1,
+  "dur": "30:00",
+  "rate": "26-28",
+  "rest": "—",
+  "split_low_pct": "2:18",
+  "split_high_pct": "2:05",
+  "split_range": "2:05–2:18"
+ },
+ {
+  "date": "2026-08-03",
+  "name": "Sprint Training",
+  "desc": "Warm-up: 10 min light. Interval training: 20 sec x 12. Rest 2 min. 38-40 s/m. Intensity: 90-98% of 500m PB.",
+  "intensity": [
+   90,
+   98
+  ],
+  "reps": 12,
+  "dur": "20s",
+  "rate": "38-40",
+  "rest": "2 min",
+  "split_low_pct": "1:50",
+  "split_high_pct": "1:42",
+  "split_range": "1:42–1:50"
+ },
+ {
+  "date": "2026-08-05",
+  "name": "VO₂ Max Training",
+  "desc": "Warm-up: 10 min light. Interval training: 8 x 500m. Rest 2 min. 30-32 s/m. Intensity: 75-80% of 500m PB.",
+  "intensity": [
+   75,
+   80
+  ],
+  "reps": 8,
+  "dist": 500,
+  "rate": "30-32",
+  "rest": "2 min",
+  "split_low_pct": "2:05",
+  "split_high_pct": "2:00",
+  "split_range": "2:00–2:05",
+  "rep_time_range": "2:00–2:05",
+  "rep_time_fast": "2:00",
+  "rep_time_slow": "2:05"
+ },
+ {
+  "date": "2026-08-08",
+  "name": "Threshold Training",
+  "desc": "Warm-up: 10 min light. Interval Training: 6 x 1000m. Rest 3:00. 26-28 s/m. Intensity: 65-75% of 500m PB.",
+  "intensity": [
+   65,
+   75
+  ],
+  "reps": 6,
+  "dist": 1000,
+  "rate": "26-28",
+  "rest": "3:00",
+  "split_low_pct": "2:15",
+  "split_high_pct": "2:05",
+  "split_range": "2:05–2:15",
+  "rep_time_range": "4:10–4:30",
+  "rep_time_fast": "4:10",
+  "rep_time_slow": "4:30"
+ },
+ {
+  "date": "2026-08-10",
+  "name": "Sprint Training",
+  "desc": "Warm-up: 12 min light. Power Intervals: 250m x 8. Rest 3 min. 38-40 s/m. Intensity: 90-95% of 500m PB.",
+  "intensity": [
+   90,
+   95
+  ],
+  "reps": 8,
+  "dist": 250,
+  "rate": "38-40",
+  "rest": "3 min",
+  "split_low_pct": "1:50",
+  "split_high_pct": "1:45",
+  "split_range": "1:45–1:50",
+  "rep_time_range": "0:52–0:55",
+  "rep_time_fast": "0:52",
+  "rep_time_slow": "0:55"
+ },
+ {
+  "date": "2026-08-12",
+  "name": "VO₂ Max Training",
+  "desc": "Warm-up: 10 min light. Interval training: 4 x 4 min. Rest 4:00. 28-30 s/m. Intensity: 70-80% of 500m PB.",
+  "intensity": [
+   70,
+   80
+  ],
+  "reps": 4,
+  "dur": "4:00",
+  "rate": "28-30",
+  "rest": "4:00",
+  "split_low_pct": "2:10",
+  "split_high_pct": "2:00",
+  "split_range": "2:00–2:10"
+ },
+ {
+  "date": "2026-08-15",
+  "name": "Threshold Training",
+  "desc": "Warm-up: 10 min light. 30 min continuous. 26-28 s/m. Intensity: 62-75% of 500m PB.",
+  "intensity": [
+   62,
+   75
+  ],
+  "reps": 1,
+  "dur": "30:00",
+  "rate": "26-28",
+  "rest": "—",
+  "split_low_pct": "2:18",
+  "split_high_pct": "2:05",
+  "split_range": "2:05–2:18"
+ },
+ {
+  "date": "2026-08-17",
+  "name": "Sprint Training",
+  "desc": "Warm-up: 10 min light. Interval Training: 400m x 2 with 7 min rest. 38+ s/m. Intensity: 85-90% of 500m PB.",
+  "intensity": [
+   85,
+   90
+  ],
+  "reps": 2,
+  "dist": 400,
+  "rate": "38+",
+  "rest": "7 min",
+  "split_low_pct": "1:55",
+  "split_high_pct": "1:50",
+  "split_range": "1:50–1:55",
+  "rep_time_range": "1:28–1:32",
+  "rep_time_fast": "1:28",
+  "rep_time_slow": "1:32"
+ },
+ {
+  "date": "2026-08-19",
+  "name": "VO₂ Max Training",
+  "desc": "Warm-up: 10 min easy. Interval Training: 1,2,3,4,3,2,1 min pyramid. Rest 3 min. 28-30 s/m. Powerful strokes on the 1 min. Intensity: 73-80% of 500m PB.",
+  "intensity": [
+   73,
+   80
+  ],
+  "reps": 7,
+  "dur": "pyramid",
+  "rate": "28-30",
+  "rest": "3 min",
+  "split_low_pct": "2:07",
+  "split_high_pct": "2:00",
+  "split_range": "2:00–2:07"
+ },
+ {
+  "date": "2026-08-22",
+  "name": "Threshold Training",
+  "desc": "Warm-up: 10 min light. Interval Training: 4 x 1500m at 26-28 s/m. Intensity: 65-75% of 500m PB.",
+  "intensity": [
+   65,
+   75
+  ],
+  "reps": 4,
+  "dist": 1500,
+  "rate": "26-28",
+  "rest": "—",
+  "split_low_pct": "2:15",
+  "split_high_pct": "2:05",
+  "split_range": "2:05–2:15",
+  "rep_time_range": "6:15–6:45",
+  "rep_time_fast": "6:15",
+  "rep_time_slow": "6:45"
+ },
+ {
+  "date": "2026-08-24",
+  "name": "Sprint Training",
+  "desc": "Warm-up: 12 min light. Interval Training: 4 x 250m. Rest 4:00. 40+ s/m. Intensity: 90-95% of 500m PB.",
+  "intensity": [
+   90,
+   95
+  ],
+  "reps": 4,
+  "dist": 250,
+  "rate": "40+",
+  "rest": "4:00",
+  "split_low_pct": "1:50",
+  "split_high_pct": "1:45",
+  "split_range": "1:45–1:50",
+  "rep_time_range": "0:52–0:55",
+  "rep_time_fast": "0:52",
+  "rep_time_slow": "0:55"
+ },
+ {
+  "date": "2026-08-26",
+  "name": "VO₂ Max Training",
+  "desc": "Warm-up: 10 min light. Interval Training: 4 x 500m. Rest 2 min. 32-34 s/m. Intensity: 75-80% of 500m PB.",
+  "intensity": [
+   75,
+   80
+  ],
+  "reps": 4,
+  "dist": 500,
+  "rate": "32-34",
+  "rest": "2 min",
+  "split_low_pct": "2:05",
+  "split_high_pct": "2:00",
+  "split_range": "2:00–2:05",
+  "rep_time_range": "2:00–2:05",
+  "rep_time_fast": "2:00",
+  "rep_time_slow": "2:05"
+ },
+ {
+  "date": "2026-08-29",
+  "name": "Rowfit Games – Virtual Race: 1-Minute Test",
+  "desc": "Warm-up: 15 min light. 1-Minute Test: row for maximum distance in 1 minute. Maximal effort. Record distance, watts, pace, stroke rate.",
+  "intensity": [
+   100,
+   120
+  ],
+  "reps": 1,
+  "dur": "1:00",
+  "rate": "max",
+  "test": true,
+  "rest": "—",
+  "split_low_pct": "1:40",
+  "split_high_pct": "1:20",
+  "split_range": "1:20–1:40"
+ },
+ {
+  "date": "2026-08-30",
+  "name": "Rowfit Games – Virtual Race: 2000m Test",
+  "desc": "Warm-up: 15 min light. 2000m Test: maximal effort time trial. Even pacing, strong finish. Record time, splits, watts.",
+  "intensity": [
+   95,
+   110
+  ],
+  "reps": 1,
+  "dist": 2000,
+  "rate": "28-32",
+  "test": true,
+  "rest": "—",
+  "split_low_pct": "1:45",
+  "split_high_pct": "1:30",
+  "split_range": "1:30–1:45",
+  "rep_time_range": "6:00–7:00",
+  "rep_time_fast": "6:00",
+  "rep_time_slow": "7:00"
+ }
+]
