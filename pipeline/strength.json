@@ -1,0 +1,59 @@
+{
+ "strength_days": [
+  {
+   "date": "2026-06-15", "name": "CFNYC — Deadlift", "kind": "cfnyc",
+   "summary": "Deadlift 5-5-5 building, 5-5 across + metcon",
+   "blocks": [
+    "Strength: Deadlift 5-5-5 building, then 5-5 across (leave 1-2 reps in reserve)",
+    "Conditioning: 3 RFT — 10 strict pull-ups, 10 power cleans (75/105), 20/16 cal row",
+    "Note: heavy posterior-chain + grip; pace the metcon, it sets up the week"
+   ],
+   "nutrition": {"kcal": 1700, "protein_g": 150, "carb_g": 162, "fat_g": 50,
+     "pre": "45g carb / 25g protein", "pre_when": "~90 min before",
+     "post": "45g carb / 35g protein / 10g fat", "post_when": "within 45 min",
+     "tip": "Highest-carb training day — heavy pull + grippy metcon. Electrolytes intra."}
+  },
+  {
+   "date": "2026-06-17", "name": "Back Squat + Power", "kind": "squat",
+   "summary": "Box jumps → back squat 4×5 @ 185 lb → jump squats → accessories",
+   "blocks": [
+    "Warm-up squats: bar×5, 95×5, 135×3, 165×2 (ramp to working weight)",
+    "A. Box Jumps 5×3 — done FIRST, fully fresh, max solid landing height (RFD for the sprint)",
+    "B. Back Squat 4×5 @ 185 lb (80% of 230) — drive up fast, 1–2 reps in reserve, rest 2:30–3:00",
+    "C. Jump Squats 4×4 — empty bar or 2×15–25 lb DBs, explosive, full reset each rep, rest 90s",
+    "D. DB Walking Lunges 3×10/leg (~25–35 lb DBs) · DB RDL 3×10 (~30–40 lb, light — back still recovering) · Calf Raises 3×15",
+    "Optional finisher: 3×20s hard row/bike, 2 min rest",
+    "Progression: if all 4×5 @ 185 feel ≤7/10 effort, go 190–195 next week toward the Week 6 test"
+   ],
+   "nutrition": {"kcal": 1750, "protein_g": 150, "carb_g": 175, "fat_g": 50,
+     "pre": "45g carb / 25g protein", "pre_when": "~90 min before (+5g creatine)",
+     "post": "45g carb / 35g protein / 10g fat", "post_when": "within 45 min",
+     "tip": "Highest-calorie day — fuel the power work. Carbs around the session."}
+  },
+  {
+   "date": "2026-06-19", "name": "CFNYC — Bench Press", "kind": "cfnyc",
+   "summary": "Bench 5-4-3 + back-off, DB row + metcon",
+   "blocks": [
+    "Strength: A1 Bench Press 5-4-3 building + 1 back-off set (-20%); A2 3-pt DB Row 4×8-10/side",
+    "Conditioning: 12-min AMRAP, 6-9-12 ring dips / toes-to-bar / cal row",
+    "Note: upper body — no leg conflict; row the AMRAP smooth, not as a sprint"
+   ],
+   "nutrition": {"kcal": 1600, "protein_g": 150, "carb_g": 149, "fat_g": 45,
+     "pre": "45g carb / 25g protein", "pre_when": "~90 min before",
+     "post": "45g carb / 35g protein / 10g fat", "post_when": "within 45 min",
+     "tip": "Upper-body day. Prioritize veggies/fiber + hydration since legs are light."}
+  },
+  {
+   "date": "2026-06-21", "name": "Rest / Mobility", "kind": "rest",
+   "summary": "Full recovery after the long row",
+   "blocks": [
+    "Full rest, or 20–30 min easy walk + mobility (hips, ankles, T-spine, lats)",
+    "Optional: 10–15 min light rowing technique drills (legs-only, arms-only), no intensity",
+    "Sets up Monday's deadlifts fresh"
+   ],
+   "nutrition": {"kcal": 1450, "protein_g": 150, "carb_g": 111, "fat_g": 45,
+     "pre": "—", "post": "—",
+     "tip": "Rest day (lowest cals). No pre/post needed — spread protein ~35-40g across 4 meals. Anti-inflammatory foods, hydration."}
+  }
+ ]
+}

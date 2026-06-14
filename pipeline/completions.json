@@ -1,19 +1,6 @@
 {
- "last_synced": "2026-06-13",
+ "last_synced": "2026-06-11",
  "completed": {
-  "2026-06-08": {
-   "concept2_id": 117522655,
-   "date_done": "2026-06-13",
-   "actual_split": "1:47.1",
-   "actual_split_note": "work intervals only",
-   "overall_pace": "1:47.1",
-   "distance_m": 2400,
-   "time": "30:34.3",
-   "avg_rate": 35,
-   "calories": 180,
-   "intervals_done": 12,
-   "in_zone": true
-  },
   "2026-06-10": {
    "concept2_id": 117421691,
    "date_done": "2026-06-10",
@@ -21,25 +8,12 @@
    "actual_split_note": "work intervals only",
    "overall_pace": "1:58.2",
    "distance_m": 4062,
-   "time": "27:20.0",
+   "time": "27:20",
    "avg_rate": 30,
    "calories": 264,
    "intervals_done": 24,
    "in_zone": true
-  },
-  "2026-06-13": {
-   "concept2_id": 117458302,
-   "date_done": "2026-06-11",
-   "actual_split": "2:08.8",
-   "actual_split_note": "work intervals only",
-   "overall_pace": "2:08.8",
-   "distance_m": 6400,
-   "time": "44:59.0",
-   "avg_rate": 26,
-   "calories": 393,
-   "intervals_done": 8,
-   "in_zone": true
   }
  },
- "today": "2026-06-13"
+ "today": "2026-06-11"
 }

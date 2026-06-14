@@ -6,6 +6,21 @@ COMPLETED = comp.get("completed", {})
 LAST_SYNCED = comp.get("last_synced", "")
 TODAY = datetime.date.fromisoformat(comp.get("today", datetime.date.today().isoformat()))
 
+# Optional: re-place rowing sessions onto better days (rowing is movable;
+# CFNYC Mon/Fri + squat day are fixed). reschedule.json maps original->new date.
+try:
+    MOVES = json.load(open("reschedule.json")).get("moves", {})
+except FileNotFoundError:
+    MOVES = {}
+for w in d:
+    if w["date"] in MOVES:
+        w["date"] = MOVES[w["date"]]
+
+try:
+    NUTRITION = json.load(open("nutrition.json")).get("by_date", {})
+except FileNotFoundError:
+    NUTRITION = {}
+
 for w in d:
     dt = datetime.date.fromisoformat(w["date"])
     iso = dt.isocalendar()
@@ -50,8 +65,35 @@ for w in d:
         "dur": w.get("dur", ""), "reps": w.get("reps"), "rate": w.get("rate", ""),
         "rest": w.get("rest", ""), "desc": w["desc"], "test": w.get("test", False),
         "done": c if c else None,
+        "kind": "row",
+        "nutrition": NUTRITION.get(w["date"], ""),
     })
 
+# Merge in strength / squat days (CFNYC + programmed lower-body). These are
+# informational cards — no Concept2 auto-completion (rowing only is synced).
+STRENGTH_COLORS = {"cfnyc": ("#3b82f6", "CFNYC"), "squat": ("#a855f7", "Squat + Power"), "rest": ("#64748b", "Rest")}
+try:
+    strength = json.load(open("strength.json")).get("strength_days", [])
+except FileNotFoundError:
+    strength = []
+for s in strength:
+    dt = datetime.date.fromisoformat(s["date"])
+    iso = dt.isocalendar()
+    isoweek = (iso[0], iso[1])
+    if isoweek not in wkmap:
+        wkmap[isoweek] = len(wkmap) + 1
+    color, tagname = STRENGTH_COLORS.get(s.get("kind", "cfnyc"), ("#64748b", "Strength"))
+    records.append({
+        "date": s["date"], "dow": dt.strftime("%a"), "nice": dt.strftime("%b %-d"),
+        "week": wkmap[isoweek],
+        "section": ("current" if isoweek == CURRENT_ISO else ("past" if isoweek < CURRENT_ISO else "future")),
+        "name": s["name"], "type": tagname, "color": color,
+        "kind": s.get("kind", "cfnyc"), "summary": s.get("summary", ""),
+        "blocks": s.get("blocks", []), "done": None,
+        "nutrition": s.get("nutrition", ""),
+    })
+
+records.sort(key=lambda r: r["date"])
 js_data = json.dumps(records, ensure_ascii=False)
 
 def split_at(pct):
@@ -140,6 +182,18 @@ h1{{font-size:26px;font-weight:700;letter-spacing:-.3px}}
 .c-foot{{border-top:1px solid var(--line);padding:11px 16px 14px}}
 .c-foot-lbl{{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}}
 .c-desc{{font-size:13px;color:var(--muted);line-height:1.55}}
+.strength-list{{list-style:none;padding:0;margin:0}}
+.strength-list li{{font-size:13px;color:#cbd5e1;padding:3px 0 3px 14px;position:relative;line-height:1.5}}
+.strength-list li:before{{content:"–";position:absolute;left:0;color:var(--muted)}}
+.fuel{{margin:0 16px 14px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.28);
+  border-radius:11px;padding:11px 13px}}
+.fuel-total{{font-size:15px;font-weight:700;color:#fff;margin-bottom:9px;font-variant-numeric:tabular-nums}}
+.fuel-macroline{{font-size:12px;font-weight:500;color:var(--muted)}}
+.fuel-pp{{display:flex;flex-direction:column;gap:6px}}
+.pp-line{{font-size:12.5px;color:#e2e8f0;font-variant-numeric:tabular-nums;line-height:1.45}}
+.pp-line .lbl{{display:inline-block;min-width:96px;color:var(--accent);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.3px}}
+.pp-line .when{{color:var(--muted);font-size:11px}}
+.fuel-tip{{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.45;font-style:italic}}
 
 .archive-toggle{{margin-top:34px;width:100%;background:var(--panel);border:1px solid var(--line);
   color:var(--text);border-radius:12px;padding:14px 18px;font-size:15px;font-weight:600;cursor:pointer;
@@ -278,7 +332,34 @@ function renderAll(){{
     document.getElementById('upcoming').innerHTML='<div class="empty">No workouts match this filter.</div>';
 }}
 
+function fuelHtml(n){{
+  if(!n) return '';
+  const pp = [];
+  if(n.pre && n.pre!=='—') pp.push(`<div class="pp-line"><span class="lbl">Pre-workout</span> ${{n.pre}}${{n.pre_when?` <span class="when">· ${{n.pre_when}}</span>`:''}}</div>`);
+  if(n.post && n.post!=='—') pp.push(`<div class="pp-line"><span class="lbl">Post-workout</span> ${{n.post}}${{n.post_when?` <span class="when">· ${{n.post_when}}</span>`:''}}</div>`);
+  const tip = n.tip?`<div class="fuel-tip">${{n.tip}}</div>`:'';
+  return `<div class="fuel">
+    <div class="fuel-total">${{n.kcal.toLocaleString()}} cals <span class="fuel-macroline">(${{n.protein_g}}g protein / ${{n.carb_g}}g carbs / ${{n.fat_g}}g fat)</span></div>
+    <div class="fuel-pp">${{pp.join('')}}</div>
+    ${{tip}}
+  </div>`;
+}}
+
 function card(w){{
+  if(w.kind==='cfnyc' || w.kind==='squat' || w.kind==='rest'){{
+    const el=document.createElement('div'); el.className='card strength-card'; el.style.setProperty('--c',w.color);
+    const blocks = (w.blocks||[]).map(b=>`<li>${{b}}</li>`).join('');
+    el.innerHTML=`
+      <div class="c-top">
+        <div class="c-day">${{w.dow}} · ${{w.nice}}</div>
+        <div class="c-name">${{w.name}}</div>
+        <span class="badge">${{w.type}}</span>
+      </div>
+      <div class="c-meta" style="padding-top:0"><span>${{w.summary||''}}</span></div>
+      <div class="c-foot"><div class="c-foot-lbl">Session</div><ul class="strength-list">${{blocks}}</ul></div>
+      ${{fuelHtml(w.nutrition)}}`;
+    return el;
+  }}
   const el=document.createElement('div'); el.className='card'+(w.done?' done':''); el.style.setProperty('--c',w.color);
   const check = w.done?'<div class="check">✓</div>':'';
   const repBox = w.repRange ? `<div class="pace-box"><div class="pace-lbl">Per rep ${{w.dist?('· '+w.dist+'m'):''}}</div>
@@ -320,7 +401,8 @@ function card(w){{
     </div>
     <div class="c-meta">${{structure}}</div>
     ${{resultHtml}}
-    <div class="c-foot"><div class="c-foot-lbl">Full workout</div><div class="c-desc">${{w.desc}}</div></div>`;
+    <div class="c-foot"><div class="c-foot-lbl">Full workout</div><div class="c-desc">${{w.desc}}</div></div>
+    ${{fuelHtml(w.nutrition)}}`;
   return el;
 }}
 
