@@ -29,7 +29,14 @@ for w in d:
     w["_nice"] = dt.strftime("%b %-d")
 
 weeks = sorted(set(w["_isoweek"] for w in d))
-wkmap = {wk: i + 1 for i, wk in enumerate(weeks)}
+# Anchor display week numbers to the CFNYC block: ISO week of Jun 15, 2026 = "Week 3".
+ANCHOR_ISO = datetime.date(2026, 6, 15).isocalendar()[:2]
+ANCHOR_LABEL = 3
+def _wk_to_iso_index(wk):
+    # ordinal distance in ISO weeks between wk and the anchor
+    (ay, aw) = ANCHOR_ISO
+    return (wk[0] - ay) * 52 + (wk[1] - aw)
+wkmap = {wk: ANCHOR_LABEL + _wk_to_iso_index(wk) for wk in weeks}
 
 today_iso = TODAY.isocalendar()
 CURRENT_ISO = (today_iso[0], today_iso[1])
@@ -91,6 +98,7 @@ for s in strength:
         "kind": s.get("kind", "cfnyc"), "summary": s.get("summary", ""),
         "blocks": s.get("blocks", []), "done": None,
         "nutrition": s.get("nutrition", ""),
+        "phase": s.get("phase", ""), "template": s.get("template", False),
     })
 
 records.sort(key=lambda r: r["date"])
@@ -185,6 +193,9 @@ h1{{font-size:26px;font-weight:700;letter-spacing:-.3px}}
 .strength-list{{list-style:none;padding:0;margin:0}}
 .strength-list li{{font-size:13px;color:#cbd5e1;padding:3px 0 3px 14px;position:relative;line-height:1.5}}
 .strength-list li:before{{content:"–";position:absolute;left:0;color:var(--muted)}}
+.phase{{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(168,85,247,.18);color:#d8b4fe;text-transform:uppercase;letter-spacing:.4px;margin-top:4px}}
+.card.tpl{{opacity:.78;border-style:dashed}}
+.card.tpl .strength-list li{{color:var(--muted)}}
 .fuel{{margin:0 16px 14px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.28);
   border-radius:11px;padding:11px 13px}}
 .fuel-total{{font-size:15px;font-weight:700;color:#fff;margin-bottom:9px;font-variant-numeric:tabular-nums}}
@@ -347,13 +358,14 @@ function fuelHtml(n){{
 
 function card(w){{
   if(w.kind==='cfnyc' || w.kind==='squat' || w.kind==='rest'){{
-    const el=document.createElement('div'); el.className='card strength-card'; el.style.setProperty('--c',w.color);
+    const el=document.createElement('div'); el.className='card strength-card'+(w.template?' tpl':''); el.style.setProperty('--c',w.color);
     const blocks = (w.blocks||[]).map(b=>`<li>${{b}}</li>`).join('');
+    const phaseBadge = w.phase?`<span class="phase">${{w.phase}}</span>`:'';
     el.innerHTML=`
       <div class="c-top">
         <div class="c-day">${{w.dow}} · ${{w.nice}}</div>
         <div class="c-name">${{w.name}}</div>
-        <span class="badge">${{w.type}}</span>
+        <span class="badge">${{w.type}}</span> ${{phaseBadge}}
       </div>
       <div class="c-meta" style="padding-top:0"><span>${{w.summary||''}}</span></div>
       <div class="c-foot"><div class="c-foot-lbl">Session</div><ul class="strength-list">${{blocks}}</ul></div>

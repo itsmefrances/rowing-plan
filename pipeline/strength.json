@@ -1,59 +1,390 @@
 {
  "strength_days": [
   {
-   "date": "2026-06-15", "name": "CFNYC — Deadlift", "kind": "cfnyc",
+   "date": "2026-06-15",
+   "name": "CFNYC — Deadlift",
+   "kind": "cfnyc",
+   "template": false,
    "summary": "Deadlift 5-5-5 building, 5-5 across + metcon",
    "blocks": [
-    "Strength: Deadlift 5-5-5 building, then 5-5 across (leave 1-2 reps in reserve)",
+    "Strength: Deadlift 5-5-5 building, then 5-5 across (1-2 reps in reserve)",
     "Conditioning: 3 RFT — 10 strict pull-ups, 10 power cleans (75/105), 20/16 cal row",
-    "Note: heavy posterior-chain + grip; pace the metcon, it sets up the week"
+    "Note: heavy posterior-chain + grip; pace the metcon"
    ],
-   "nutrition": {"kcal": 1700, "protein_g": 150, "carb_g": 162, "fat_g": 50,
-     "pre": "45g carb / 25g protein", "pre_when": "~90 min before",
-     "post": "45g carb / 35g protein / 10g fat", "post_when": "within 45 min",
-     "tip": "Highest-carb training day — heavy pull + grippy metcon. Electrolytes intra."}
+   "nutrition": {
+    "kcal": 1950,
+    "protein_g": 150,
+    "carb_g": 207,
+    "fat_g": 58,
+    "pre": "55g carb / 25g protein",
+    "pre_when": "~90 min before",
+    "post": "55g carb / 35g protein / 12g fat",
+    "post_when": "within 45 min",
+    "tip": "Heavy pull + grippy metcon. Electrolytes intra."
+   }
   },
   {
-   "date": "2026-06-17", "name": "Back Squat + Power", "kind": "squat",
-   "summary": "Box jumps → back squat 4×5 @ 185 lb → jump squats → accessories",
+   "date": "2026-06-17",
+   "name": "Back Squat + Power",
+   "kind": "squat",
+   "template": false,
+   "phase": "Accumulate",
+   "summary": "Box jumps → Back Squat 4×5 @ 185 → jump squats → posterior accessory + core",
    "blocks": [
-    "Warm-up squats: bar×5, 95×5, 135×3, 165×2 (ramp to working weight)",
-    "A. Box Jumps 5×3 — done FIRST, fully fresh, max solid landing height (RFD for the sprint)",
-    "B. Back Squat 4×5 @ 185 lb (80% of 230) — drive up fast, 1–2 reps in reserve, rest 2:30–3:00",
-    "C. Jump Squats 4×4 — empty bar or 2×15–25 lb DBs, explosive, full reset each rep, rest 90s",
-    "D. DB Walking Lunges 3×10/leg (~25–35 lb DBs) · DB RDL 3×10 (~30–40 lb, light — back still recovering) · Calf Raises 3×15",
-    "Optional finisher: 3×20s hard row/bike, 2 min rest",
-    "Progression: if all 4×5 @ 185 feel ≤7/10 effort, go 190–195 next week toward the Week 6 test"
+    "Warm-up: 5 min bike/row + leg swings, walking lunges, 10 air squats; squat ramp bar→95→135→155→170",
+    "A. POWER — Box Jumps 5×3, step down, tallest box you land solid. Rest 90s. (RFD focus)",
+    "B. STRENGTH — Back Squat 4×5 @ 185 lb (80%), drive up FAST, 1-2 reps in reserve. Rest 2:30-3:00",
+    "C. SPEED — Jump Squats 4×4, empty bar or 2×15-25 lb DBs, explosive, full reset. Rest 90s",
+    "D. ACCESSORY — DB Walking Lunge 3×10/leg · DB RDL 3×10 (light, ~35 lb) · Calf Raise 3×15",
+    "CORE — Hollow hold 3×30s + Pallof press 3×10/side",
+    "ZONE 2 COOLDOWN — 8-10 min easy row, conversational (~2:20+/500m), nasal breathing",
+    "Power test (log it): best box jump height + a single max broad jump at the end — track weekly"
    ],
-   "nutrition": {"kcal": 1750, "protein_g": 150, "carb_g": 175, "fat_g": 50,
-     "pre": "45g carb / 25g protein", "pre_when": "~90 min before (+5g creatine)",
-     "post": "45g carb / 35g protein / 10g fat", "post_when": "within 45 min",
-     "tip": "Highest-calorie day — fuel the power work. Carbs around the session."}
+   "nutrition": {
+    "kcal": 2000,
+    "protein_g": 150,
+    "carb_g": 215,
+    "fat_g": 60,
+    "pre": "55g carb / 25g protein",
+    "pre_when": "~90 min before (+5g creatine)",
+    "post": "60g carb / 35g protein / 12g fat",
+    "post_when": "within 45 min",
+    "tip": "Highest-cal day — near maintenance to fuel power work."
+   }
   },
   {
-   "date": "2026-06-19", "name": "CFNYC — Bench Press", "kind": "cfnyc",
+   "date": "2026-06-19",
+   "name": "CFNYC — Bench Press",
+   "kind": "cfnyc",
+   "template": false,
    "summary": "Bench 5-4-3 + back-off, DB row + metcon",
    "blocks": [
-    "Strength: A1 Bench Press 5-4-3 building + 1 back-off set (-20%); A2 3-pt DB Row 4×8-10/side",
+    "Strength: A1 Bench Press 5-4-3 building + back-off (-20%); A2 3-pt DB Row 4×8-10/side",
     "Conditioning: 12-min AMRAP, 6-9-12 ring dips / toes-to-bar / cal row",
-    "Note: upper body — no leg conflict; row the AMRAP smooth, not as a sprint"
+    "Note: upper body — no leg conflict; row the AMRAP smooth"
    ],
-   "nutrition": {"kcal": 1600, "protein_g": 150, "carb_g": 149, "fat_g": 45,
-     "pre": "45g carb / 25g protein", "pre_when": "~90 min before",
-     "post": "45g carb / 35g protein / 10g fat", "post_when": "within 45 min",
-     "tip": "Upper-body day. Prioritize veggies/fiber + hydration since legs are light."}
+   "nutrition": {
+    "kcal": 1800,
+    "protein_g": 150,
+    "carb_g": 176,
+    "fat_g": 55,
+    "pre": "45g carb / 25g protein",
+    "pre_when": "~90 min before",
+    "post": "50g carb / 35g protein / 10g fat",
+    "post_when": "within 45 min",
+    "tip": "Upper-body day. Veggies/fiber + hydration."
+   }
   },
   {
-   "date": "2026-06-21", "name": "Rest / Mobility", "kind": "rest",
-   "summary": "Full recovery after the long row",
+   "date": "2026-06-21",
+   "name": "Rest / Mobility",
+   "kind": "rest",
+   "template": false,
+   "summary": "Full recovery + light mobility",
    "blocks": [
-    "Full rest, or 20–30 min easy walk + mobility (hips, ankles, T-spine, lats)",
-    "Optional: 10–15 min light rowing technique drills (legs-only, arms-only), no intensity",
-    "Sets up Monday's deadlifts fresh"
+    "Full rest, or 20-30 min easy walk + mobility (hips, ankles, T-spine, lats)",
+    "Optional: 10-15 min rowing technique drills (legs-only, arms-only), no intensity",
+    "CORE (optional): dead bug 3×10 + bird dog 3×10/side"
    ],
-   "nutrition": {"kcal": 1450, "protein_g": 150, "carb_g": 111, "fat_g": 45,
-     "pre": "—", "post": "—",
-     "tip": "Rest day (lowest cals). No pre/post needed — spread protein ~35-40g across 4 meals. Anti-inflammatory foods, hydration."}
+   "nutrition": {
+    "kcal": 1650,
+    "protein_g": 150,
+    "carb_g": 139,
+    "fat_g": 55,
+    "pre": "—",
+    "pre_when": "",
+    "post": "—",
+    "post_when": "",
+    "tip": "Rest day. Protein 150g spread across meals; anti-inflammatory foods, hydration."
+   }
+  },
+  {
+   "date": "2026-06-22",
+   "name": "CFNYC — Deadlift",
+   "kind": "cfnyc",
+   "template": true,
+   "summary": "Awaiting CrossFit NYC newsletter (auto-fills Sunday)",
+   "blocks": [
+    "⏳ Deadlift day — the Sunday job will pull this week's programming from the CFNYC newsletter and fill it in here.",
+    "Fixed slot: this day stays put; rowing + squat work are scheduled around it."
+   ],
+   "nutrition": {
+    "kcal": 1900,
+    "protein_g": 150,
+    "carb_g": 189,
+    "fat_g": 57,
+    "pre": "50g carb / 25g protein",
+    "pre_when": "~90 min before",
+    "post": "55g carb / 35g protein / 12g fat",
+    "post_when": "within 45 min",
+    "tip": "Strength day — final macros set when the workout is known."
+   }
+  },
+  {
+   "date": "2026-06-24",
+   "name": "Back Squat + Power",
+   "kind": "squat",
+   "template": false,
+   "phase": "Accumulate +",
+   "summary": "Box jumps → Back Squat 5×4 @ 190 → loaded jump squats → accessory + core",
+   "blocks": [
+    "Warm-up: same flow; squat ramp bar→95→135→160→175",
+    "A. POWER — Box Jumps 5×3, aim 1-2\" higher than last week. Rest 90s",
+    "B. STRENGTH — Back Squat 5×4 @ 190 lb (83%), fast concentric, 1-2 RIR. Rest 2:30-3:00",
+    "C. SPEED — Jump Squats 4×4 @ 2×20-30 lb DBs, explosive. Rest 90s",
+    "D. ACCESSORY — Bulgarian Split Squat 3×8/leg · DB RDL 3×10 · Calf Raise 3×15",
+    "CORE — Hollow rock 3×12 + Side plank 3×30s/side",
+    "ZONE 2 COOLDOWN — 10 min easy row",
+    "Power test: log box jump height + broad jump (expect equal or better than wk3)"
+   ],
+   "nutrition": {
+    "kcal": 2000,
+    "protein_g": 150,
+    "carb_g": 215,
+    "fat_g": 60,
+    "pre": "55g carb / 25g protein",
+    "pre_when": "~90 min before (+5g creatine)",
+    "post": "60g carb / 35g protein / 12g fat",
+    "post_when": "within 45 min",
+    "tip": "Highest-cal day — near maintenance to fuel power work."
+   }
+  },
+  {
+   "date": "2026-06-26",
+   "name": "CFNYC — Bench Press",
+   "kind": "cfnyc",
+   "template": true,
+   "summary": "Awaiting CrossFit NYC newsletter (auto-fills Sunday)",
+   "blocks": [
+    "⏳ Bench Press day — the Sunday job will pull this week's programming from the CFNYC newsletter and fill it in here.",
+    "Fixed slot: this day stays put; rowing + squat work are scheduled around it."
+   ],
+   "nutrition": {
+    "kcal": 1900,
+    "protein_g": 150,
+    "carb_g": 189,
+    "fat_g": 57,
+    "pre": "50g carb / 25g protein",
+    "pre_when": "~90 min before",
+    "post": "55g carb / 35g protein / 12g fat",
+    "post_when": "within 45 min",
+    "tip": "Strength day — final macros set when the workout is known."
+   }
+  },
+  {
+   "date": "2026-06-28",
+   "name": "Rest / Mobility",
+   "kind": "rest",
+   "template": false,
+   "summary": "Full recovery + light mobility",
+   "blocks": [
+    "Full rest, or 20-30 min easy walk + mobility (hips, ankles, T-spine, lats)",
+    "Optional: 10-15 min rowing technique drills (legs-only, arms-only), no intensity",
+    "CORE (optional): dead bug 3×10 + bird dog 3×10/side"
+   ],
+   "nutrition": {
+    "kcal": 1650,
+    "protein_g": 150,
+    "carb_g": 139,
+    "fat_g": 55,
+    "pre": "—",
+    "pre_when": "",
+    "post": "—",
+    "post_when": "",
+    "tip": "Rest day. Protein 150g spread across meals; anti-inflammatory foods, hydration."
+   }
+  },
+  {
+   "date": "2026-06-29",
+   "name": "CFNYC — Deadlift",
+   "kind": "cfnyc",
+   "template": true,
+   "summary": "Awaiting CrossFit NYC newsletter (auto-fills Sunday)",
+   "blocks": [
+    "⏳ Deadlift day — the Sunday job will pull this week's programming from the CFNYC newsletter and fill it in here.",
+    "Fixed slot: this day stays put; rowing + squat work are scheduled around it."
+   ],
+   "nutrition": {
+    "kcal": 1900,
+    "protein_g": 150,
+    "carb_g": 189,
+    "fat_g": 57,
+    "pre": "50g carb / 25g protein",
+    "pre_when": "~90 min before",
+    "post": "55g carb / 35g protein / 12g fat",
+    "post_when": "within 45 min",
+    "tip": "Strength day — final macros set when the workout is known."
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "name": "Back Squat + Power",
+   "kind": "squat",
+   "template": false,
+   "phase": "Intensify",
+   "summary": "Depth jumps → Back Squat 4×3 @ 200 → speed squats 5×3 @ 115 → accessory + core",
+   "blocks": [
+    "Warm-up: thorough; squat ramp bar→95→135→170→180",
+    "A. POWER — Depth Jumps 4×3 from a 12-18\" box: step off, land + rebound instantly (reactive RFD). Rest 2 min. Skip if joints cranky → sub box jumps",
+    "B. STRENGTH — Back Squat 4×3 @ 200 lb (87%), max-intent up, 1 RIR. Rest 3:00",
+    "C. CONTRAST SPEED — Speed Squats 5×3 @ 115 lb (50%), as fast as possible. Rest 90s",
+    "D. ACCESSORY — Walking Lunge 3×10/leg · DB RDL 3×8 · Calf Raise 3×15",
+    "CORE — Weighted hollow hold 3×30s + Pallof press 3×10/side",
+    "ZONE 2 COOLDOWN — 10 min easy row",
+    "Power test: box/broad jump — this is the week explosiveness should pop"
+   ],
+   "nutrition": {
+    "kcal": 2000,
+    "protein_g": 150,
+    "carb_g": 215,
+    "fat_g": 60,
+    "pre": "55g carb / 25g protein",
+    "pre_when": "~90 min before (+5g creatine)",
+    "post": "60g carb / 35g protein / 12g fat",
+    "post_when": "within 45 min",
+    "tip": "Highest-cal day — near maintenance to fuel power work."
+   }
+  },
+  {
+   "date": "2026-07-03",
+   "name": "CFNYC — Bench Press",
+   "kind": "cfnyc",
+   "template": true,
+   "summary": "Awaiting CrossFit NYC newsletter (auto-fills Sunday)",
+   "blocks": [
+    "⏳ Bench Press day — the Sunday job will pull this week's programming from the CFNYC newsletter and fill it in here.",
+    "Fixed slot: this day stays put; rowing + squat work are scheduled around it."
+   ],
+   "nutrition": {
+    "kcal": 1900,
+    "protein_g": 150,
+    "carb_g": 189,
+    "fat_g": 57,
+    "pre": "50g carb / 25g protein",
+    "pre_when": "~90 min before",
+    "post": "55g carb / 35g protein / 12g fat",
+    "post_when": "within 45 min",
+    "tip": "Strength day — final macros set when the workout is known."
+   }
+  },
+  {
+   "date": "2026-07-05",
+   "name": "Rest / Mobility",
+   "kind": "rest",
+   "template": false,
+   "summary": "Full recovery + light mobility",
+   "blocks": [
+    "Full rest, or 20-30 min easy walk + mobility (hips, ankles, T-spine, lats)",
+    "Optional: 10-15 min rowing technique drills (legs-only, arms-only), no intensity",
+    "CORE (optional): dead bug 3×10 + bird dog 3×10/side"
+   ],
+   "nutrition": {
+    "kcal": 1650,
+    "protein_g": 150,
+    "carb_g": 139,
+    "fat_g": 55,
+    "pre": "—",
+    "pre_when": "",
+    "post": "—",
+    "post_when": "",
+    "tip": "Rest day. Protein 150g spread across meals; anti-inflammatory foods, hydration."
+   }
+  },
+  {
+   "date": "2026-07-06",
+   "name": "CFNYC — Deadlift",
+   "kind": "cfnyc",
+   "template": true,
+   "summary": "Awaiting CrossFit NYC newsletter (auto-fills Sunday)",
+   "blocks": [
+    "⏳ Deadlift day — the Sunday job will pull this week's programming from the CFNYC newsletter and fill it in here.",
+    "Fixed slot: this day stays put; rowing + squat work are scheduled around it."
+   ],
+   "nutrition": {
+    "kcal": 1900,
+    "protein_g": 150,
+    "carb_g": 189,
+    "fat_g": 57,
+    "pre": "50g carb / 25g protein",
+    "pre_when": "~90 min before",
+    "post": "55g carb / 35g protein / 12g fat",
+    "post_when": "within 45 min",
+    "tip": "Strength day — final macros set when the workout is known."
+   }
+  },
+  {
+   "date": "2026-07-08",
+   "name": "Back Squat + Power",
+   "kind": "squat",
+   "template": false,
+   "phase": "Peak / express power",
+   "summary": "Max-intent jumps → Back Squat 3×2 @ 205 (fast) → broad jumps → light core",
+   "blocks": [
+    "Warm-up: extra thorough, low volume; squat ramp bar→95→135→175→185",
+    "A. POWER — Max-intent Jump Squats 5×3 (bodyweight or light), every rep maximal height. Rest 2 min",
+    "B. STRENGTH — Back Squat 3×2 @ 205 lb (90%), move FAST, leave 2 RIR (this is speed-strength, not a grind). Rest 3:00",
+    "C. EXPRESS — Standing Broad Jumps 5×2, max distance, full recovery. Rest 90s",
+    "D. ACCESSORY (light) — DB RDL 2×10 · Calf Raise 2×15 (low volume — you're peaking)",
+    "CORE — Hollow hold 2×30s",
+    "ZONE 2 COOLDOWN — 8 min very easy row",
+    "Peak week: volume is low on purpose so power is fresh and expressed. Log your best jumps — compare to wk3."
+   ],
+   "nutrition": {
+    "kcal": 2000,
+    "protein_g": 150,
+    "carb_g": 215,
+    "fat_g": 60,
+    "pre": "55g carb / 25g protein",
+    "pre_when": "~90 min before (+5g creatine)",
+    "post": "60g carb / 35g protein / 12g fat",
+    "post_when": "within 45 min",
+    "tip": "Highest-cal day — near maintenance to fuel power work."
+   }
+  },
+  {
+   "date": "2026-07-10",
+   "name": "CFNYC — Bench Press",
+   "kind": "cfnyc",
+   "template": true,
+   "summary": "Awaiting CrossFit NYC newsletter (auto-fills Sunday)",
+   "blocks": [
+    "⏳ Bench Press day — the Sunday job will pull this week's programming from the CFNYC newsletter and fill it in here.",
+    "Fixed slot: this day stays put; rowing + squat work are scheduled around it."
+   ],
+   "nutrition": {
+    "kcal": 1900,
+    "protein_g": 150,
+    "carb_g": 189,
+    "fat_g": 57,
+    "pre": "50g carb / 25g protein",
+    "pre_when": "~90 min before",
+    "post": "55g carb / 35g protein / 12g fat",
+    "post_when": "within 45 min",
+    "tip": "Strength day — final macros set when the workout is known."
+   }
+  },
+  {
+   "date": "2026-07-12",
+   "name": "Rest / Mobility",
+   "kind": "rest",
+   "template": false,
+   "summary": "Full recovery + light mobility",
+   "blocks": [
+    "Full rest, or 20-30 min easy walk + mobility (hips, ankles, T-spine, lats)",
+    "Optional: 10-15 min rowing technique drills (legs-only, arms-only), no intensity",
+    "CORE (optional): dead bug 3×10 + bird dog 3×10/side"
+   ],
+   "nutrition": {
+    "kcal": 1650,
+    "protein_g": 150,
+    "carb_g": 139,
+    "fat_g": 55,
+    "pre": "—",
+    "pre_when": "",
+    "post": "—",
+    "post_when": "",
+    "tip": "Rest day. Protein 150g spread across meals; anti-inflammatory foods, hydration."
+   }
   }
  ]
 }

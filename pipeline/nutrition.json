@@ -1,17 +1,38 @@
 {
- "_comment": "Structured nutrition by FINAL (rescheduled) date for rowing days. 130 lb, lean deficit, protein 150g/day floor.",
+ "_comment": "Corrected: ~2200 maintenance, slight deficit, 150g protein floor.",
  "by_date": {
-  "2026-06-16": {"kcal": 1650, "protein_g": 150, "carb_g": 161, "fat_g": 45,
-    "pre": "40g carb / 20g protein", "pre_when": "1-2h before (light for a sprint)",
-    "post": "40g carb / 30g protein / 8g fat", "post_when": "within 45 min",
-    "tip": "Sprint quality day — carbs around the session, refill for tomorrow's squats."},
-  "2026-06-18": {"kcal": 1600, "protein_g": 150, "carb_g": 149, "fat_g": 45,
-    "pre": "30g carb / 15g protein", "pre_when": "~60 min before",
-    "post": "35g carb / 30g protein / 8g fat", "post_when": "within 45 min",
-    "tip": "Whole-food carbs (sweet potato, oats) to recover legs after squats."},
-  "2026-06-20": {"kcal": 1900, "protein_g": 150, "carb_g": 212, "fat_g": 50,
-    "pre": "60g carb / 20g protein", "pre_when": "carb-load night before + AM",
-    "post": "70g carb / 35g protein / 12g fat", "post_when": "within 60 min + rehydrate",
-    "tip": "Biggest fuel day — half marathon. DURING: 30-45g carbs/hr + electrolytes."}
+  "2026-06-16": {
+   "kcal": 1850,
+   "protein_g": 150,
+   "carb_g": 189,
+   "fat_g": 55,
+   "pre": "45g carb / 20g protein",
+   "pre_when": "1-2h before (light for a sprint)",
+   "post": "45g carb / 30g protein / 10g fat",
+   "post_when": "within 45 min",
+   "tip": "Sprint quality day — carbs around the session, refill for squats."
+  },
+  "2026-06-18": {
+   "kcal": 1800,
+   "protein_g": 150,
+   "carb_g": 176,
+   "fat_g": 55,
+   "pre": "40g carb / 15g protein",
+   "pre_when": "~60 min before",
+   "post": "45g carb / 30g protein / 10g fat",
+   "post_when": "within 45 min",
+   "tip": "Whole-food carbs to recover legs after squats."
+  },
+  "2026-06-20": {
+   "kcal": 2150,
+   "protein_g": 150,
+   "carb_g": 252,
+   "fat_g": 60,
+   "pre": "70g carb / 20g protein",
+   "pre_when": "carb-load night before + AM",
+   "post": "80g carb / 35g protein / 14g fat",
+   "post_when": "within 60 min + rehydrate",
+   "tip": "Biggest fuel day — half marathon, near/over maintenance. During: 30-45g carbs/hr."
+  }
  }
 }
