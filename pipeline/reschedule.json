@@ -1,8 +1,14 @@
 {
- "_comment": "Overrides HubFit's default rowing dates to optimize placement around fixed CFNYC Mon/Fri and the Wed squat day. Keyed by original HubFit date -> new date.",
+ "_comment": "Re-place HubFit rowing off collision days onto optimal slots: Sprint(Mon)->Tue, VO2(Wed)->Thu. Threshold/long stays Sat (no lifting). Covers wks 3-6.",
  "moves": {
   "2026-06-15": "2026-06-16",
   "2026-06-17": "2026-06-18",
-  "2026-06-21": "2026-06-20"
+  "2026-06-21": "2026-06-20",
+  "2026-06-22": "2026-06-23",
+  "2026-06-24": "2026-06-25",
+  "2026-06-29": "2026-06-30",
+  "2026-07-01": "2026-07-02",
+  "2026-07-06": "2026-07-07",
+  "2026-07-08": "2026-07-09"
  }
 }
