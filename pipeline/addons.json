@@ -1,0 +1,20 @@
+{
+ "_comment": "Optional add-on work keyed by FINAL date. Placed only where it won't impair the day's main adaptation. Rendered as an 'Optional' block.",
+ "by_date": {
+  "_dow_rules": "Generic by weekday if a specific date isn't listed; see build logic.",
+
+  "2026-06-15": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if deadlifts felt maximal.",
+  "2026-06-16": "Zone 2 cooldown: 10 min very easy row (~2:20+/500m), nasal breathing. Keep it truly easy — protect tomorrow's squat.",
+  "2026-06-18": "Core + mobility (low-CNS day): hollow hold 3×30s, side plank 3×30s/side, 5 min hip/ankle mobility.",
+  "2026-06-19": "Optional zone 2: 15-20 min easy row OR light posterior accessory (hamstring curls 3×12, band pull-aparts 3×15). Legs are fresh today.",
+  "2026-06-20": "Mobility/stretch only after the long row: 10 min — hips, hamstrings, lats, thoracic. No added load.",
+  "2026-06-21": "Already optional: dead bug 3×10 + bird dog 3×10/side, easy walk."
+ },
+ "weekday_default": {
+  "Mon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if the lift felt maximal.",
+  "Tue": "Zone 2 cooldown: 10 min very easy row, nasal breathing. Keep it easy — protect the squat day.",
+  "Thu": "Core + mobility: hollow hold 3×30s, side plank 3×30s/side, 5 min hip/ankle mobility.",
+  "Fri": "Optional zone 2: 15-20 min easy row OR light posterior accessory (hamstring curls, band pull-aparts). Legs are fresh.",
+  "Sat": "Mobility/stretch only: 10 min hips, hamstrings, lats, thoracic. No added load."
+ }
+}

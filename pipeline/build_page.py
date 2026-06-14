@@ -21,6 +21,19 @@ try:
 except FileNotFoundError:
     NUTRITION = {}
 
+try:
+    _addons = json.load(open("addons.json"))
+    ADDON_BY_DATE = {k: v for k, v in _addons.get("by_date", {}).items() if not k.startswith("_")}
+    ADDON_BY_DOW = _addons.get("weekday_default", {})
+except FileNotFoundError:
+    ADDON_BY_DATE, ADDON_BY_DOW = {}, {}
+
+def addon_for(date_str):
+    if date_str in ADDON_BY_DATE:
+        return ADDON_BY_DATE[date_str]
+    dow = datetime.date.fromisoformat(date_str).strftime("%a")
+    return ADDON_BY_DOW.get(dow, "")
+
 for w in d:
     dt = datetime.date.fromisoformat(w["date"])
     iso = dt.isocalendar()
@@ -74,6 +87,7 @@ for w in d:
         "done": c if c else None,
         "kind": "row",
         "nutrition": NUTRITION.get(w["date"], ""),
+        "addon": addon_for(w["date"]),
     })
 
 # Merge in strength / squat days (CFNYC + programmed lower-body). These are
@@ -99,6 +113,7 @@ for s in strength:
         "blocks": s.get("blocks", []), "done": None,
         "nutrition": s.get("nutrition", ""),
         "phase": s.get("phase", ""), "template": s.get("template", False),
+        "addon": "" if s.get("kind") in ("squat", "rest") else addon_for(s["date"]),
     })
 
 records.sort(key=lambda r: r["date"])
@@ -196,6 +211,10 @@ h1{{font-size:26px;font-weight:700;letter-spacing:-.3px}}
 .phase{{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(168,85,247,.18);color:#d8b4fe;text-transform:uppercase;letter-spacing:.4px;margin-top:4px}}
 .card.tpl{{opacity:.78;border-style:dashed}}
 .card.tpl .strength-list li{{color:var(--muted)}}
+.addon{{margin:0 16px 12px;background:rgba(148,163,184,.10);border:1px dashed rgba(148,163,184,.4);
+  border-radius:10px;padding:9px 12px;font-size:12px;color:#cbd5e1;line-height:1.5}}
+.addon-tag{{display:inline-block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-right:6px}}
+.addon-txt{{color:#cbd5e1}}
 .fuel{{margin:0 16px 14px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.28);
   border-radius:11px;padding:11px 13px}}
 .fuel-total{{font-size:15px;font-weight:700;color:#fff;margin-bottom:9px;font-variant-numeric:tabular-nums}}
@@ -343,6 +362,11 @@ function renderAll(){{
     document.getElementById('upcoming').innerHTML='<div class="empty">No workouts match this filter.</div>';
 }}
 
+function addonHtml(a){{
+  if(!a) return '';
+  return `<div class="addon"><span class="addon-tag">+ Optional</span> <span class="addon-txt">${{a}}</span></div>`;
+}}
+
 function fuelHtml(n){{
   if(!n) return '';
   const pp = [];
@@ -369,6 +393,7 @@ function card(w){{
       </div>
       <div class="c-meta" style="padding-top:0"><span>${{w.summary||''}}</span></div>
       <div class="c-foot"><div class="c-foot-lbl">Session</div><ul class="strength-list">${{blocks}}</ul></div>
+      ${{addonHtml(w.addon)}}
       ${{fuelHtml(w.nutrition)}}`;
     return el;
   }}
@@ -414,6 +439,7 @@ function card(w){{
     <div class="c-meta">${{structure}}</div>
     ${{resultHtml}}
     <div class="c-foot"><div class="c-foot-lbl">Full workout</div><div class="c-desc">${{w.desc}}</div></div>
+    ${{addonHtml(w.addon)}}
     ${{fuelHtml(w.nutrition)}}`;
   return el;
 }}
