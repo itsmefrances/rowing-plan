@@ -32,6 +32,12 @@ h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
 .chip.active{background:var(--accent);color:#0f172a;border-color:var(--accent);font-weight:600}
 .chip .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
 
+.today-head{display:flex;align-items:center;gap:9px;margin-top:24px;font-size:19px;font-weight:700;color:#fff}
+.today-dot{width:11px;height:11px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px rgba(34,197,94,.18)}
+.today-grid{margin-top:12px}
+.today-grid .card{border-width:2px}
+.today-none{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;color:var(--muted);font-size:14px}
+.today-sep{margin-top:30px;border-top:1px solid var(--line);padding-top:4px}
 .week{margin-top:26px}
 .wk-head{display:flex;align-items:baseline;gap:12px;padding:0 0 10px;border-bottom:2px solid var(--line);margin-bottom:14px}
 .wk-num{font-size:18px;font-weight:700;color:var(--accent)}
@@ -142,6 +148,7 @@ table.zone th{color:var(--muted);font-size:12px;text-transform:uppercase}
 
 <div class="controls"><div class="wrap"><div class="filters" id="filters"></div></div></div>
 
+<div class="wrap" id="todayWrap"></div>
 <div class="wrap" id="current"></div>
 <div class="wrap" id="upcoming"></div>
 <div class="wrap" id="archiveWrap"></div>
@@ -162,6 +169,32 @@ const DATA = [{"date": "2026-06-08", "dow": "Mon", "nice": "Jun 8", "week": 2, "
 const TYPES = [...new Set(DATA.map(d=>d.type))];
 const TYPECOLOR = {}; DATA.forEach(d=>TYPECOLOR[d.type]=d.color);
 let active = new Set(TYPES);
+
+// ---- Live date logic: which week is "current" tracks the real date ----
+function isoDay(s){ return new Date(s+'T00:00'); }
+const ALL_DATES = DATA.map(d=>d.date).sort();
+const PLAN_START = isoDay(ALL_DATES[0]);
+const PLAN_END = isoDay(ALL_DATES[ALL_DATES.length-1]);
+function realToday(){
+  const n=new Date(); const t=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+  if(t<PLAN_START) return PLAN_START;       // before the block starts -> first week
+  if(t>PLAN_END) return PLAN_END;            // after it ends -> last week stays "current" until archived
+  return t;
+}
+const TODAY = realToday();
+const TODAY_STR = TODAY.toISOString().slice(0,10);
+// Monday-Sunday week containing a date
+function weekStart(dt){ const x=new Date(dt); const dow=(x.getDay()+6)%7; x.setDate(x.getDate()-dow); return x; }
+const CUR_WEEK_START = weekStart(TODAY).getTime();
+// The display week-number whose Mon-Sun span contains today (fallback: nearest)
+function weekOfDate(s){ return weekStart(isoDay(s)).getTime(); }
+const CURRENT_WEEK_TS = CUR_WEEK_START;
+function liveSection(d){
+  const ws = weekOfDate(d.date);
+  if(ws===CURRENT_WEEK_TS) return 'current';
+  return ws < CURRENT_WEEK_TS ? 'past' : 'future';
+}
+DATA.forEach(d=>{ d.section = liveSection(d); });
 
 function renderFilters(){
   const f=document.getElementById('filters'); f.innerHTML='';
@@ -227,7 +260,25 @@ function renderArchive(){
   host.appendChild(btn); host.appendChild(body);
 }
 
+function renderToday(){
+  const host=document.getElementById('todayWrap'); host.innerHTML='';
+  const todays=DATA.filter(d=>d.date===TODAY_STR);
+  const label=TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const head=document.createElement('div'); head.className='today-head';
+  head.innerHTML=`<span class="today-dot"></span>Today · ${label}`;
+  host.appendChild(head);
+  if(!todays.length){
+    const none=document.createElement('div'); none.className='today-none';
+    none.textContent='No session scheduled today — rest or optional easy work.';
+    host.appendChild(none); return;
+  }
+  const grid=document.createElement('div'); grid.className='grid today-grid';
+  todays.forEach(w=>grid.appendChild(card(w)));
+  host.appendChild(grid);
+}
+
 function renderAll(){
+  renderToday();
   const c=renderSection('current','current',true);
   const u=renderSection('upcoming','future',false);
   renderArchive();
