@@ -1,5 +1,5 @@
 {
- "last_synced": "2026-06-11",
+ "last_synced": "2026-06-16",
  "completed": {
   "2026-06-10": {
    "concept2_id": 117421691,
@@ -13,7 +13,20 @@
    "calories": 264,
    "intervals_done": 24,
    "in_zone": true
+  },
+  "2026-06-15": {
+   "concept2_id": 117622132,
+   "date_done": "2026-06-16",
+   "actual_split": "1:43.5",
+   "actual_split_note": "work intervals only",
+   "overall_pace": "1:44.6",
+   "distance_m": 3000,
+   "time": "38:57.9",
+   "avg_rate": 37,
+   "calories": 228,
+   "intervals_done": 20,
+   "in_zone": false
   }
  },
- "today": "2026-06-11"
+ "today": "2026-06-16"
 }
