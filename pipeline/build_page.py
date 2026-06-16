@@ -202,6 +202,7 @@ h1{{font-size:26px;font-weight:700;letter-spacing:-.3px}}
 .r-lbl{{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}}
 .r-val{{font-size:17px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}}
 .r-val.zone-in{{color:var(--good)}}
+.zone-note{{margin-top:7px;font-size:11.5px;color:#fbbf24;line-height:1.4}}
 .r-extra{{margin-top:8px;font-size:12px;color:var(--muted)}}
 .r-extra b{{color:var(--text)}}
 .logbook-link{{display:inline-flex;align-items:center;gap:5px;margin-top:9px;font-size:12px;
@@ -463,14 +464,16 @@ function card(w){{
   if(w.done){{
     const dn=w.done;
     const zoneCls = dn.in_zone?'zone-in':'';
+    const zoneText = dn.in_zone?'In ✓':(dn.zone_note?'± Note':'Off');
     const dateNice = new Date(dn.date_done+'T00:00').toLocaleDateString('en-US',{{month:'short',day:'numeric'}});
     resultHtml = `<div class="result">
       <div class="result-hd">✓ Completed · ${{dateNice}}</div>
       <div class="result-row">
         <div class="r-box"><div class="r-lbl">Actual split</div><div class="r-val ${{zoneCls}}">${{dn.actual_split}}</div></div>
         <div class="r-box"><div class="r-lbl">Target</div><div class="r-val">${{w.splitRange}}</div></div>
-        <div class="r-box"><div class="r-lbl">Zone</div><div class="r-val ${{zoneCls}}">${{dn.in_zone?'In ✓':'Off'}}</div></div>
+        <div class="r-box"><div class="r-lbl">Zone</div><div class="r-val ${{zoneCls}}">${{zoneText}}</div></div>
       </div>
+      ${{dn.zone_note?`<div class="zone-note">${{dn.zone_note}}</div>`:''}}
       <div class="r-extra"><b>${{(dn.distance_m||0).toLocaleString()}}m</b> · <b>${{dn.time}}</b> · rate <b>${{dn.avg_rate}}</b> · <b>${{dn.calories}}</b> cal${{dn.actual_split_note?(' · '+dn.actual_split_note):''}}</div>
       ${{dn.concept2_id?`<a class="logbook-link" href="https://log.concept2.com/profile/2198296/log/${{dn.concept2_id}}" target="_blank" rel="noopener">↗ View in Concept2 logbook</a>`:''}}
     </div>`;
