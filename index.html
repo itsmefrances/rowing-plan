@@ -1,384 +1,620 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rowing Plan · Pace Targets</title>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f4f7">
+<title>Recomp Block · Jun–Aug</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0f172a; --panel:#1e293b; --panel2:#273449; --text:#e2e8f0; --muted:#94a3b8;
-  --line:#334155; --accent:#38bdf8; --good:#22c55e;
+  --bg:#f3f4f7; --panel:#ffffff; --panel2:#eceef2; --line:#e1e4ea;
+  --ink:#1b1e25; --mut:#697080; --faint:#9aa1ad;
+  --screen:#0c100e; --phos:#7df0b4; --phosdim:rgba(125,240,180,.24);
+  --acc:#0e9d6c; --accdim:rgba(14,157,108,.24);
+  --lower:#bf7016; --upper:#2d77c7; --sprint:#d83a3a; --vo2:#7b46d4;
+  --endur:#0e8f63; --z2:#0c8c9c; --rest:#7b818c; --test:#a87c20;
+  --disp:'Space Grotesk',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  background:var(--bg);color:var(--text);line-height:1.5;padding:0 0 80px}
-header{background:linear-gradient(135deg,#1e3a8a,#0c4a6e);padding:28px 24px;border-bottom:1px solid var(--line)}
-.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
-.sub{color:#bae6fd;margin-top:6px;font-size:14px}
-.pbbar{display:flex;gap:24px;flex-wrap:wrap;margin-top:16px;font-size:13px;color:#e0f2fe}
-.pbbar b{color:#fff}
-.synced{margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.syncbtn{background:var(--accent);color:#06283d;border:none;border-radius:9px;padding:9px 16px;
-  font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
-.syncbtn:hover{filter:brightness(1.08)}
-.synced .stamp{font-size:12px;color:#bae6fd}
-.synchint{font-size:11px;color:#7dd3fc;max-width:360px;margin-top:6px}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--disp);
+  -webkit-font-smoothing:antialiased; line-height:1.45;
+  padding:env(safe-area-inset-top) 0 calc(64px + env(safe-area-inset-bottom));
+  max-width:560px; margin:0 auto;
+}
+@media (prefers-reduced-motion: no-preference){
+  .card,.dayitem{transition:opacity .35s ease, transform .35s ease, border-color .2s ease}
+}
+h1,h2,h3{margin:0; font-weight:600}
+button{font-family:inherit; cursor:pointer; color:inherit; border:none; background:none}
 
-.controls{position:sticky;top:0;z-index:20;background:rgba(15,23,42,.92);backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--line);padding:12px 0}
-.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.chip{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:6px 13px;
-  border-radius:999px;font-size:13px;cursor:pointer;transition:.15s;user-select:none}
-.chip:hover{border-color:var(--accent)}
-.chip.active{background:var(--accent);color:#0f172a;border-color:var(--accent);font-weight:600}
-.chip .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+/* ---- header ---- */
+header{
+  position:sticky; top:0; z-index:30; background:rgba(243,244,247,.82);
+  backdrop-filter:blur(12px); border-bottom:1px solid var(--line);
+  padding:14px 18px 12px;
+}
+.htop{display:flex; align-items:baseline; justify-content:space-between; gap:10px}
+.brand{font-weight:700; font-size:18px; letter-spacing:-.01em}
+.brand small{display:block; font-weight:400; font-size:11px; color:var(--mut);
+  letter-spacing:.14em; text-transform:uppercase; margin-top:2px}
+.gear{font-size:13px; color:var(--mut); font-family:var(--mono); padding:4px 6px}
+.gear:hover{color:var(--ink)}
+.prog{display:flex; align-items:center; gap:10px; margin-top:11px}
+.bar{flex:1; height:6px; border-radius:99px; background:var(--panel2); overflow:hidden}
+.bar > i{display:block; height:100%; border-radius:99px;
+  background:linear-gradient(90deg,var(--acc),#27c489); transition:width .5s ease}
+.pct{font-family:var(--mono); font-size:12px; color:var(--acc); min-width:34px; text-align:right}
 
-.today-head{display:flex;align-items:center;gap:9px;margin-top:24px;font-size:19px;font-weight:700;color:#fff}
-.today-dot{width:11px;height:11px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px rgba(34,197,94,.18)}
-.today-grid{margin-top:12px}
-.today-grid .card{border-width:2px}
-.today-none{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;color:var(--muted);font-size:14px}
-.today-sep{margin-top:30px;border-top:1px solid var(--line);padding-top:4px}
-.week{margin-top:26px}
-.wk-head{display:flex;align-items:baseline;gap:12px;padding:0 0 10px;border-bottom:2px solid var(--line);margin-bottom:14px}
-.wk-num{font-size:18px;font-weight:700;color:var(--accent)}
-.wk-dates{color:var(--muted);font-size:14px}
-.wk-count{margin-left:auto;color:var(--muted);font-size:13px}
-.now-pill{background:var(--accent);color:#06283d;font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:.4px}
+/* ---- phase rail ---- */
+.rail{display:flex; gap:3px; margin-top:11px}
+.seg{flex:1; position:relative; height:24px; border-radius:4px; overflow:hidden;
+  background:var(--panel2); border:1px solid var(--line); cursor:pointer}
+.seg > i{position:absolute; left:0; top:0; bottom:0; width:0%; opacity:.8}
+.seg b{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:10px; font-weight:500; color:var(--mut); z-index:1}
+.seg.on{border-color:var(--acc); box-shadow:0 0 0 1px var(--accdim)}
+.seg.on b{color:var(--ink)}
+.seg.ph-build>i{background:#5b94c8} .seg.ph-deload>i{background:#aab0bb}
+.seg.ph-peak>i{background:#d6925a} .seg.ph-taper>i{background:#a98fd6}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;
-  border-left:5px solid var(--c);transition:.15s}
-.card:hover{transform:translateY(-2px);border-color:var(--c)}
-.card.done{border-left-color:var(--good)}
-.c-top{padding:14px 16px 10px;position:relative}
-.c-day{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.c-name{font-size:17px;font-weight:650;margin:3px 0 2px}
-.badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;
-  background:var(--c);color:#fff;margin-top:4px}
-.check{position:absolute;top:14px;right:14px;width:26px;height:26px;border-radius:50%;
-  background:var(--good);color:#06281a;display:flex;align-items:center;justify-content:center;
-  font-weight:800;font-size:15px}
-.paces{display:flex;gap:10px;padding:0 16px 14px;flex-wrap:wrap}
-.pace-box{background:var(--panel2);border-radius:10px;padding:9px 12px;flex:1;min-width:120px}
-.pace-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
-.pace-val{font-size:19px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;margin-top:2px}
-.pace-sub{font-size:11px;color:var(--muted);margin-top:1px}
-.c-meta{display:flex;gap:14px;padding:0 16px 12px;font-size:12px;color:var(--muted);flex-wrap:wrap}
-.c-meta b{color:var(--text)}
+/* ---- sections ---- */
+.sec{padding:20px 16px 4px}
+.eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--faint); display:flex; align-items:center; gap:8px; margin:0 2px 12px}
+.eyebrow::after{content:''; flex:1; height:1px; background:var(--line)}
 
-.result{margin:0 16px 14px;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.35);
-  border-radius:11px;padding:11px 13px}
-.result-hd{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--good);
-  text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
-.result-row{display:flex;gap:10px;flex-wrap:wrap}
-.r-box{flex:1;min-width:92px}
-.r-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
-.r-val{font-size:17px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
-.r-val.zone-in{color:var(--good)}
-.zone-note{margin-top:7px;font-size:11.5px;color:#fbbf24;line-height:1.4}
-.r-extra{margin-top:8px;font-size:12px;color:var(--muted)}
-.r-extra b{color:var(--text)}
-.logbook-link{display:inline-flex;align-items:center;gap:5px;margin-top:9px;font-size:12px;
-  font-weight:600;color:var(--good);text-decoration:none}
-.logbook-link:hover{text-decoration:underline}
+/* ---- card ---- */
+.card{background:var(--panel); border:1px solid var(--line); border-radius:14px;
+  margin-bottom:12px; overflow:hidden; box-shadow:0 1px 2px rgba(20,24,34,.05),0 4px 14px rgba(20,24,34,.04)}
+.card.today{border-color:var(--acc); box-shadow:0 0 0 1px var(--accdim), 0 10px 30px -14px rgba(14,157,108,.30)}
+.chead{display:flex; align-items:center; gap:12px; padding:14px 15px; width:100%; text-align:left}
+.chead .ico{width:38px; height:38px; border-radius:10px; flex:none; display:grid; place-items:center;
+  font-family:var(--mono); font-weight:700; font-size:15px; color:#fff}
+.chead .meta{flex:1; min-width:0}
+.chead .day{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--mut); font-family:var(--mono)}
+.chead .ttl{font-size:16px; font-weight:600; letter-spacing:-.01em; margin-top:1px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.chead .rt{display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex:none}
+.tag{font-family:var(--mono); font-size:10px; font-weight:600; letter-spacing:.04em;
+  padding:2px 7px; border-radius:99px; text-transform:uppercase}
+.mini{font-family:var(--mono); font-size:11px; color:var(--mut)}
+.chev{color:var(--faint); font-size:13px; transition:transform .2s}
+.card.open .chev{transform:rotate(90deg)}
 
-.c-foot{border-top:1px solid var(--line);padding:11px 16px 14px}
-.c-foot-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
-.c-desc{font-size:13px;color:var(--muted);line-height:1.55}
-.strength-list{list-style:none;padding:0;margin:0}
-.strength-list li{font-size:13px;color:#cbd5e1;padding:3px 0 3px 14px;position:relative;line-height:1.5}
-.strength-list li:before{content:"–";position:absolute;left:0;color:var(--muted)}
-.phase{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(168,85,247,.18);color:#d8b4fe;text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
-.card.tpl{opacity:.78;border-style:dashed}
-.card.tpl .strength-list li{color:var(--muted)}
-.addon{margin:0 16px 12px;background:rgba(148,163,184,.10);border:1px dashed rgba(148,163,184,.4);
-  border-radius:10px;padding:9px 12px;font-size:12px;color:#cbd5e1;line-height:1.5}
-.addon-tag{display:inline-block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-right:6px}
-.addon-txt{color:#cbd5e1}
-.fuel{margin:0 16px 14px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.28);
-  border-radius:11px;padding:11px 13px}
-.fuel-total{font-size:15px;font-weight:700;color:#fff;margin-bottom:9px;font-variant-numeric:tabular-nums}
-.fuel-macroline{font-size:12px;font-weight:500;color:var(--muted)}
-.fuel-pp{display:flex;flex-direction:column;gap:6px}
-.pp-line{font-size:12.5px;color:#e2e8f0;font-variant-numeric:tabular-nums;line-height:1.45}
-.pp-line .lbl{display:inline-block;min-width:96px;color:var(--accent);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
-.pp-line .when{color:var(--muted);font-size:11px}
-.fuel-tip{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.45;font-style:italic}
+/* day type accent (left rail color via ico bg set inline) */
+.cbody{border-top:1px solid var(--line); padding:6px 15px 14px; display:none}
+.card.open .cbody{display:block}
 
-.archive-toggle{margin-top:34px;width:100%;background:var(--panel);border:1px solid var(--line);
-  color:var(--text);border-radius:12px;padding:14px 18px;font-size:15px;font-weight:600;cursor:pointer;
-  display:flex;align-items:center;justify-content:space-between}
-.archive-toggle:hover{border-color:var(--accent)}
-.archive-toggle .meta{font-size:13px;color:var(--muted);font-weight:400}
-.archive-body{display:none}
-.archive-body.open{display:block}
-.arrow{display:inline-block;transition:transform .2s}
-.arrow.up{transform:rotate(180deg)}
+/* ---- items ---- */
+.dayitem{display:flex; align-items:flex-start; gap:12px; padding:11px 2px; border-bottom:1px solid var(--line)}
+.dayitem:last-child{border-bottom:none}
+.dayitem.done{opacity:.5}
+.dayitem.done .iname{text-decoration:line-through; text-decoration-color:var(--faint)}
+.box{width:24px; height:24px; flex:none; border-radius:7px; border:1.5px solid var(--line);
+  background:var(--panel2); margin-top:1px; display:grid; place-items:center; color:transparent;
+  font-family:var(--mono); font-weight:700; font-size:13px}
+.dayitem.done .box{background:var(--acc); border-color:var(--acc); color:#fff}
+.itxt{flex:1; min-width:0}
+.iname{font-size:14.5px; font-weight:500}
+.isub{font-size:12.5px; color:var(--mut); font-family:var(--mono); margin-top:2px}
+.iright{flex:none; display:flex; flex-direction:column; align-items:flex-end; gap:4px}
 
-.aside{position:fixed;right:18px;bottom:18px;z-index:30}
-.zonebtn{background:var(--accent);color:#0f172a;border:none;border-radius:999px;padding:11px 18px;
-  font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.4)}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;align-items:center;justify-content:center;padding:20px}
-.modal.show{display:flex}
-.modal-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:380px;width:100%;padding:22px;max-height:85vh;overflow:auto}
-.modal-card h3{font-size:18px;margin-bottom:4px}
-.modal-card p{color:var(--muted);font-size:13px;margin-bottom:14px}
-table.zone{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-table.zone th,table.zone td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);font-size:14px}
-table.zone th{color:var(--muted);font-size:12px;text-transform:uppercase}
-.closex{float:right;color:var(--muted);cursor:pointer;font-size:20px;line-height:1}
-.empty{text-align:center;color:var(--muted);padding:40px;font-size:15px}
-@media(max-width:560px){ .grid{grid-template-columns:1fr} h1{font-size:22px} }
-</style></head>
+/* ---- readout (the erg-screen signature) ---- */
+.readout{font-family:var(--mono); font-weight:700; font-size:14px; color:var(--phos);
+  background:var(--screen); border:1px solid var(--phosdim); border-radius:7px;
+  padding:3px 9px; letter-spacing:.01em; box-shadow:inset 0 0 14px rgba(125,240,180,.07);
+  white-space:nowrap}
+.readlbl{font-family:var(--mono); font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint)}
+
+/* warm-up panel */
+.dayitem.warmup{align-items:flex-start; background:linear-gradient(180deg,rgba(79,182,196,.06),transparent);
+  border-radius:10px; padding:11px 10px; margin:4px 0}
+.warmup .iname{font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--z2)}
+.wucap{text-transform:none; letter-spacing:0; color:var(--faint); font-weight:400; font-size:11px}
+.wuline{font-family:var(--mono); font-size:12px; color:var(--mut); margin-top:4px; line-height:1.5}
+.wuramp{font-family:var(--mono); font-size:12.5px; color:#3f8a78; margin-top:5px; line-height:1.55}
+.wuramp b{color:var(--acc)}
+.dayitem.warmup.done .iname,.dayitem.warmup.done .wuline,.dayitem.warmup.done .wuramp{text-decoration:none}
+
+/* RIR tags */
+.rir{font-weight:600}
+.rir-main{color:var(--lower)}
+.rir-sec{color:var(--mut)}
+.rir-power{color:var(--vo2)}
+
+/* day footer */
+.dfoot{display:flex; align-items:center; gap:10px; margin-top:12px; flex-wrap:wrap}
+.fuel{font-family:var(--mono); font-size:11px; color:var(--mut)}
+.fuel b{color:var(--ink); font-weight:500}
+.allbtn{margin-left:auto; font-family:var(--mono); font-size:11px; letter-spacing:.04em;
+  color:var(--acc); border:1px solid var(--line); border-radius:8px; padding:5px 10px; background:var(--panel2)}
+.allbtn:hover{background:#e3f5ec; border-color:var(--accdim)}
+
+/* archive */
+details.arc{margin:18px 16px 0}
+details.arc > summary{list-style:none; cursor:pointer; font-family:var(--mono); font-size:11px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--faint); padding:8px 2px;
+  display:flex; align-items:center; gap:8px}
+details.arc > summary::-webkit-details-marker{display:none}
+details.arc > summary::before{content:'▸'; transition:transform .2s}
+details.arc[open] > summary::before{transform:rotate(90deg)}
+.arc .card{opacity:.74}
+.arc .card .ttl{color:var(--mut)}
+
+/* reference / pace zones */
+.refcard{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px;
+  box-shadow:0 1px 2px rgba(20,24,34,.05),0 4px 14px rgba(20,24,34,.04)}
+.zrow{display:flex; align-items:center; gap:12px; margin:14px 0 4px}
+.zrow input[type=range]{flex:1; accent-color:var(--acc)}
+.zout{font-family:var(--mono); font-weight:700; font-size:22px; color:var(--acc)}
+.ztab{width:100%; border-collapse:collapse; margin-top:10px; font-family:var(--mono); font-size:12px}
+.ztab td{padding:5px 4px; border-bottom:1px solid var(--line); color:var(--mut)}
+.ztab td:first-child{color:var(--ink)} .ztab td:last-child{color:var(--acc); text-align:right}
+.note{font-size:12.5px; color:var(--mut); margin-top:12px}
+.note b{color:var(--ink); font-weight:500}
+
+/* settings modal */
+.scrim{position:fixed; inset:0; background:rgba(5,6,9,.7); backdrop-filter:blur(3px);
+  z-index:50; display:none; align-items:flex-end; justify-content:center}
+.scrim.show{display:flex}
+.sheet{width:100%; max-width:560px; background:var(--panel); border-top:1px solid var(--line);
+  border-radius:18px 18px 0 0; padding:20px 18px calc(28px + env(safe-area-inset-bottom))}
+.sheet h3{font-size:16px; margin-bottom:4px}
+.sheet p{font-size:12.5px; color:var(--mut); margin:0 0 16px}
+.maxrow{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid var(--line)}
+.maxrow label{font-size:14px}
+.maxrow .u{font-family:var(--mono); font-size:11px; color:var(--faint); margin-left:6px}
+.maxrow input{width:84px; background:var(--screen); border:1px solid var(--line); color:var(--phos);
+  font-family:var(--mono); font-weight:700; font-size:16px; text-align:center; padding:8px; border-radius:8px}
+.maxrow input:focus{outline:none; border-color:var(--phosdim)}
+.sheet .done2{width:100%; margin-top:18px; background:var(--acc); color:#fff; font-weight:700;
+  border-radius:10px; padding:13px; font-size:15px; font-family:var(--disp)}
+.danger{width:100%; margin-top:10px; color:var(--sprint); font-family:var(--mono); font-size:11.5px;
+  letter-spacing:.06em; text-transform:uppercase; padding:8px}
+.foot{text-align:center; color:var(--faint); font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.06em; padding:26px 16px 4px}
+</style>
+</head>
 <body>
-<header><div class="wrap">
-  <h1>🚣 Rowing Plan — Pace Targets</h1>
-  <div class="sub">Non-strength sessions from HubFit, with target splits from your 500m PB, synced to your Concept2 logbook.</div>
-  <div class="pbbar">
-    <span>500m PB <b>1:39.9</b></span>
-    <span><b>37</b> workouts</span>
-    <span><b>12</b> weeks · Jun 8 – Aug 30</span>
-    <span>Pace model: <b>conkers rowcalc</b></span>
+<header>
+  <div class="htop">
+    <div class="brand">Recomp Block<small id="hdate">— —</small></div>
+    <button class="gear" id="gearBtn" aria-label="Settings">⚙ MAXES</button>
   </div>
-  <div class="synced">
-    <button class="syncbtn" id="syncBtn"><span>⟳</span> Sync Concept2</button>
-    <span class="stamp" id="syncStamp">Last synced Jun 16</span>
+  <div class="prog">
+    <div class="bar"><i id="progBar" style="width:0%"></i></div>
+    <div class="pct" id="progPct">0%</div>
   </div>
-  <div class="synchint" id="syncHint"></div>
-</div></header>
+  <div class="rail" id="rail"></div>
+</header>
 
-<div class="controls"><div class="wrap"><div class="filters" id="filters"></div></div></div>
+<div class="sec" id="todaySec">
+  <div class="eyebrow" id="todayEye">Today</div>
+  <div id="today"></div>
+</div>
 
-<div class="wrap" id="todayWrap"></div>
-<div class="wrap" id="current"></div>
-<div class="wrap" id="upcoming"></div>
-<div class="wrap" id="archiveWrap"></div>
+<div class="sec">
+  <div class="eyebrow">The block</div>
+  <div id="weeks"></div>
+</div>
 
-<div class="aside"><button class="zonebtn" onclick="document.getElementById('zoneModal').classList.add('show')">Pace zones ⚡</button></div>
-<div class="modal" id="zoneModal" onclick="if(event.target===this)this.classList.remove('show')">
-  <div class="modal-card">
-    <span class="closex" onclick="document.getElementById('zoneModal').classList.remove('show')">✕</span>
-    <h3>Pace Zone Reference</h3>
-    <p>Target 500m split at each % of your 1:39.9 PB. Higher % = harder/faster.</p>
-    <table class="zone"><thead><tr><th>% of PB</th><th>500m split</th></tr></thead>
-    <tbody><tr><td>50%</td><td>2:29.9</td></tr><tr><td>55%</td><td>2:24.9</td></tr><tr><td>60%</td><td>2:19.9</td></tr><tr><td>65%</td><td>2:14.9</td></tr><tr><td>70%</td><td>2:09.9</td></tr><tr><td>75%</td><td>2:04.9</td></tr><tr><td>80%</td><td>1:59.9</td></tr><tr><td>85%</td><td>1:54.9</td></tr><tr><td>90%</td><td>1:49.9</td></tr><tr><td>95%</td><td>1:44.9</td></tr><tr><td>100%</td><td>1:39.9</td></tr><tr><td>105%</td><td>1:34.9</td></tr><tr><td>110%</td><td>1:29.9</td></tr><tr><td>115%</td><td>1:24.9</td></tr><tr><td>120%</td><td>1:19.9</td></tr></tbody></table>
+<div class="sec" style="padding-bottom:0">
+  <div class="eyebrow">Pace zones &amp; fuel</div>
+  <div class="refcard">
+    <div class="readlbl">500m split at effort %</div>
+    <div class="zrow">
+      <span class="zout" id="zout">2:00</span>
+      <input type="range" id="zslide" min="60" max="100" value="80" step="1">
+      <span class="readout" id="zpct">80%</span>
+    </div>
+    <table class="ztab">
+      <tr><td>Sprint &middot; 150m reps</td><td>1:30–1:34</td></tr>
+      <tr><td>Sprint &middot; 250m reps</td><td>1:33–1:37</td></tr>
+      <tr><td>VO₂ &middot; 500m / 4min</td><td>1:44–1:50</td></tr>
+      <tr><td>Endurance / Z2 · 55–65%</td><td>2:15–2:25</td></tr>
+      <tr><td>1-min test</td><td>max · &gt;330m</td></tr>
+    </table>
+    <div class="note"><b>Why sprints sit under 1:40:</b> 150–250m is far shorter than 500m, so you ride above PB pace. The slider uses your table — 100% ≈ your 1:39.9 PB, every point below adds ~1s.</div>
+    <div class="note" style="margin-top:14px"><b>Fuel:</b> training days 2,350–2,550 kcal · 145g protein · 270–320g carb. Rest days (Thu/Sun) 2,000–2,150 kcal · 145g protein · lower carb.</div>
+  </div>
+</div>
+
+<div class="sec" style="padding-bottom:0">
+  <div class="eyebrow">Lifting · effort &amp; progression</div>
+  <div class="refcard">
+    <div class="readlbl">Working-set effort · reps in reserve</div>
+    <table class="ztab">
+      <tr><td>Main · squat, bench, pull-ups, front squat</td><td>RIR 1–2</td></tr>
+      <tr><td>Secondary · RDL, rows, OHP</td><td>RIR 2–3</td></tr>
+      <tr><td>Power · box jumps</td><td>RIR 3–4</td></tr>
+    </table>
+    <div class="note"><b>Main sets are the stimulus:</b> fast, consistent bar speed, last rep hard but clean — never grinding. Secondary lifts may drift to RIR 2–3 on later sets; power work stays well clear of failure.</div>
+    <div class="note" style="margin-top:14px"><b>Adjusting load, week to week</b></div>
+    <table class="ztab">
+      <tr><td>All sets RIR ≥2 + fast bar</td><td>+5 lo · +2.5–5 up</td></tr>
+      <tr><td>Last sets drop to RIR 0–1</td><td>hold</td></tr>
+      <tr><td>Consistently above RIR 2–3</td><td>add now</td></tr>
+    </table>
+    <div class="note"><b>Warm-up</b> on every lifting day ramps as a % of that day's working weight — under the time cap, no fatigue. If a ramp set feels slow, you went too heavy.</div>
+  </div>
+</div>
+
+<details class="arc" id="arcWrap">
+  <summary id="arcSum">Archive</summary>
+  <div id="archive"></div>
+</details>
+
+<div class="foot" id="foot">saves to this device · jun 19 – aug 30</div>
+
+<!-- settings -->
+<div class="scrim" id="scrim">
+  <div class="sheet">
+    <h3>Working maxes</h3>
+    <p>Every strength load is a % of these. Update a max and the whole block recomputes.</p>
+    <div class="maxrow"><label>Back squat <span class="u">1RM</span></label><input type="number" id="mx-bs" inputmode="numeric"></div>
+    <div class="maxrow"><label>Front squat <span class="u">1RM</span></label><input type="number" id="mx-fs" inputmode="numeric"></div>
+    <div class="maxrow"><label>Bench press <span class="u">1RM</span></label><input type="number" id="mx-bench" inputmode="numeric"></div>
+    <button class="done2" id="saveMax">Save</button>
+    <button class="danger" id="resetAll">Reset all progress</button>
   </div>
 </div>
 
 <script>
-const DATA = [{"date": "2026-06-08", "dow": "Mon", "nice": "Jun 8", "week": 2, "section": "past", "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "repRange": "0:42–0:44", "dist": 200, "dur": "", "reps": 12, "rate": "36-38", "rest": "2 min", "desc": "Warm-up: 12 minutes of light rowing. After 7 minutes, perform some intense 10-stroke bursts. Power Intervals: 200m x 12 rolling starts. Rest 2 minutes between each interval, 36-38 strokes/minute Intensity: 90%-95% of 500m PB Cool-down: 10 minutes of easy rowing.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if the lift felt maximal."}, {"date": "2026-06-10", "dow": "Wed", "nice": "Jun 10", "week": 2, "section": "past", "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [75, 85], "splitRange": "1:55–2:05", "repRange": "", "dist": null, "dur": "40s", "reps": 24, "rate": "28-30", "rest": "20s / 4 min sets", "desc": "Warm-up: 12 min light. Interval Training: (40s hard/ 20s rest x 12) x 2 sets. Rest 4 min between sets. 28-30 s/m. Intensity: 75-85% of 500m PB.", "test": false, "done": {"concept2_id": 117421691, "date_done": "2026-06-10", "actual_split": "1:58.1", "actual_split_note": "work intervals only", "overall_pace": "1:58.2", "distance_m": 4062, "time": "27:20", "avg_rate": 30, "calories": 264, "intervals_done": 24, "in_zone": true}, "kind": "row", "nutrition": "", "addon": ""}, {"date": "2026-06-13", "dow": "Sat", "nice": "Jun 13", "week": 2, "section": "past", "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 77], "splitRange": "2:03–2:15", "repRange": "3:17–3:36", "dist": 800, "dur": "", "reps": 8, "rate": "26", "rest": "2:30", "desc": "Warm-up: 10 min light. Single Interval: 8 x 800m, 26 s/m. Rest 2:30. Intensity: 65-77% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Mobility/stretch only: 10 min hips, hamstrings, lats, thoracic. No added load."}, {"date": "2026-06-15", "dow": "Mon", "nice": "Jun 15", "week": 3, "section": "current", "name": "CFNYC — Deadlift", "type": "CFNYC", "color": "#3b82f6", "kind": "cfnyc", "summary": "Deadlift 5-5-5 building, 5-5 across + metcon", "blocks": ["Strength: Deadlift 5-5-5 building, then 5-5 across (1-2 reps in reserve)", "Conditioning: 3 RFT — 10 strict pull-ups, 10 power cleans (75/105), 20/16 cal row", "Note: heavy posterior-chain + grip; pace the metcon"], "done": null, "nutrition": {"kcal": 1950, "protein_g": 150, "carb_g": 207, "fat_g": 58, "pre": "55g carb / 25g protein", "pre_when": "~90 min before", "post": "55g carb / 35g protein / 12g fat", "post_when": "within 45 min", "tip": "Heavy pull + grippy metcon. Electrolytes intra."}, "phase": "", "template": false, "addon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if deadlifts felt maximal."}, {"date": "2026-06-16", "dow": "Tue", "nice": "Jun 16", "week": 3, "section": "current", "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "repRange": "0:31–0:33", "dist": 150, "dur": "", "reps": 20, "rate": "36-38", "rest": "1:30", "desc": "Warm-up: 10 min easy. Power Intervals: 150m x 20, 1:30 rest. 36-38 s/m. Intensity: 90-95% of 500m PB.", "test": false, "done": {"concept2_id": 117622132, "date_done": "2026-06-16", "actual_split": "1:44.6", "actual_split_note": "work intervals only", "overall_pace": "1:44.6", "distance_m": 3000, "time": "38:58", "avg_rate": 38, "calories": 228, "intervals_done": 20, "in_zone": false, "zone_note": "just above target (rowed ~95%+, slightly faster than prescribed)"}, "kind": "row", "nutrition": {"kcal": 1850, "protein_g": 150, "carb_g": 189, "fat_g": 55, "pre": "45g carb / 20g protein", "pre_when": "1-2h before (light for a sprint)", "post": "45g carb / 30g protein / 10g fat", "post_when": "within 45 min", "tip": "Sprint quality day — carbs around the session, refill for squats."}, "addon": "Zone 2 cooldown: 10 min very easy row (~2:20+/500m), nasal breathing. Keep it truly easy — protect tomorrow's squat."}, {"date": "2026-06-17", "dow": "Wed", "nice": "Jun 17", "week": 3, "section": "current", "name": "Back Squat + Power", "type": "Squat + Power", "color": "#a855f7", "kind": "squat", "summary": "Box jumps → Back Squat 4×5 @ 185 → jump squats → posterior accessory + core", "blocks": ["Warm-up: 5 min bike/row + leg swings, walking lunges, 10 air squats; squat ramp bar→95→135→155→170", "A. POWER — Box Jumps 5×3, step down, tallest box you land solid. Rest 90s. (RFD focus)", "B. STRENGTH — Back Squat 4×5 @ 185 lb (80%), drive up FAST, 1-2 reps in reserve. Rest 2:30-3:00", "C. SPEED — Jump Squats 4×4, empty bar or 2×15-25 lb DBs, explosive, full reset. Rest 90s", "D. ACCESSORY — DB Walking Lunge 3×10/leg · DB RDL 3×10 (light, ~35 lb) · Calf Raise 3×15", "CORE — Hollow hold 3×30s + Pallof press 3×10/side", "ZONE 2 COOLDOWN — 8-10 min easy row, conversational (~2:20+/500m), nasal breathing", "Power test (log it): best box jump height + a single max broad jump at the end — track weekly"], "done": null, "nutrition": {"kcal": 2000, "protein_g": 150, "carb_g": 215, "fat_g": 60, "pre": "55g carb / 25g protein", "pre_when": "~90 min before (+5g creatine)", "post": "60g carb / 35g protein / 12g fat", "post_when": "within 45 min", "tip": "Highest-cal day — near maintenance to fuel power work."}, "phase": "Accumulate", "template": false, "addon": ""}, {"date": "2026-06-18", "dow": "Thu", "nice": "Jun 18", "week": 3, "section": "current", "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [75, 85], "splitRange": "1:55–2:05", "repRange": "", "dist": null, "dur": "1:20", "reps": 10, "rate": "28-30", "rest": "60s", "desc": "Warm-up: 12 min light. Interval Training: 1:20 hard, 60s rest x 10. 28-30 s/m. Intensity: 75-85% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": {"kcal": 1800, "protein_g": 150, "carb_g": 176, "fat_g": 55, "pre": "40g carb / 15g protein", "pre_when": "~60 min before", "post": "45g carb / 30g protein / 10g fat", "post_when": "within 45 min", "tip": "Whole-food carbs to recover legs after squats."}, "addon": "Core + mobility (low-CNS day): hollow hold 3×30s, side plank 3×30s/side, 5 min hip/ankle mobility."}, {"date": "2026-06-19", "dow": "Fri", "nice": "Jun 19", "week": 3, "section": "current", "name": "CFNYC — Bench Press", "type": "CFNYC", "color": "#3b82f6", "kind": "cfnyc", "summary": "Bench 5-4-3 + back-off, DB row + metcon", "blocks": ["Strength: A1 Bench Press 5-4-3 building + back-off (-20%); A2 3-pt DB Row 4×8-10/side", "Conditioning: 12-min AMRAP, 6-9-12 ring dips / toes-to-bar / cal row", "Note: upper body — no leg conflict; row the AMRAP smooth"], "done": null, "nutrition": {"kcal": 1800, "protein_g": 150, "carb_g": 176, "fat_g": 55, "pre": "45g carb / 25g protein", "pre_when": "~90 min before", "post": "50g carb / 35g protein / 10g fat", "post_when": "within 45 min", "tip": "Upper-body day. Veggies/fiber + hydration."}, "phase": "", "template": false, "addon": "Optional zone 2: 15-20 min easy row OR light posterior accessory (hamstring curls 3×12, band pull-aparts 3×15). Legs are fresh today."}, {"date": "2026-06-20", "dow": "Sat", "nice": "Jun 20", "week": 3, "section": "current", "name": "Summer Solstice Challenge", "type": "Endurance", "color": "#8b5cf6", "intensity": [55, 65], "splitRange": "2:15–2:25", "repRange": "94:52–101:54", "dist": 21097, "dur": "", "reps": 1, "rate": "22-26", "rest": "—", "desc": "Warm-up: 5 min light. Single Distance: 21,097m (half marathon). 22-26 s/m. Intensity: 55-65% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": {"kcal": 2150, "protein_g": 150, "carb_g": 252, "fat_g": 60, "pre": "70g carb / 20g protein", "pre_when": "carb-load night before + AM", "post": "80g carb / 35g protein / 14g fat", "post_when": "within 60 min + rehydrate", "tip": "Biggest fuel day — half marathon, near/over maintenance. During: 30-45g carbs/hr."}, "addon": "Mobility/stretch only after the long row: 10 min — hips, hamstrings, lats, thoracic. No added load."}, {"date": "2026-06-21", "dow": "Sun", "nice": "Jun 21", "week": 3, "section": "current", "name": "Rest / Mobility", "type": "Rest", "color": "#64748b", "kind": "rest", "summary": "Full recovery + light mobility", "blocks": ["Full rest, or 20-30 min easy walk + mobility (hips, ankles, T-spine, lats)", "Optional: 10-15 min rowing technique drills (legs-only, arms-only), no intensity", "CORE (optional): dead bug 3×10 + bird dog 3×10/side"], "done": null, "nutrition": {"kcal": 1650, "protein_g": 150, "carb_g": 139, "fat_g": 55, "pre": "—", "pre_when": "", "post": "—", "post_when": "", "tip": "Rest day. Protein 150g spread across meals; anti-inflammatory foods, hydration."}, "phase": "", "template": false, "addon": ""}, {"date": "2026-06-22", "dow": "Mon", "nice": "Jun 22", "week": 4, "section": "future", "name": "CFNYC — Deadlift", "type": "CFNYC", "color": "#3b82f6", "kind": "cfnyc", "summary": "Awaiting CrossFit NYC newsletter (auto-fills Sunday)", "blocks": ["⏳ Deadlift day — the Sunday job will pull this week's programming from the CFNYC newsletter and fill it in here.", "Fixed slot: this day stays put; rowing + squat work are scheduled around it."], "done": null, "nutrition": {"kcal": 1900, "protein_g": 150, "carb_g": 189, "fat_g": 57, "pre": "50g carb / 25g protein", "pre_when": "~90 min before", "post": "55g carb / 35g protein / 12g fat", "post_when": "within 45 min", "tip": "Strength day — final macros set when the workout is known."}, "phase": "", "template": true, "addon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if the lift felt maximal."}, {"date": "2026-06-23", "dow": "Tue", "nice": "Jun 23", "week": 4, "section": "future", "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "repRange": "0:52–0:55", "dist": 250, "dur": "", "reps": 8, "rate": "36-38", "rest": "3 min", "desc": "Warm-up: 12 min light. Power Intervals: 250m x 8. Rest 3 min. 36-38 s/m. Intensity: 90-95% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Zone 2 cooldown: 10 min very easy row, nasal breathing. Keep it easy — protect the squat day."}, {"date": "2026-06-24", "dow": "Wed", "nice": "Jun 24", "week": 4, "section": "future", "name": "Back Squat + Power", "type": "Squat + Power", "color": "#a855f7", "kind": "squat", "summary": "Box jumps → Back Squat 5×4 @ 190 → loaded jump squats → accessory + core", "blocks": ["Warm-up: same flow; squat ramp bar→95→135→160→175", "A. POWER — Box Jumps 5×3, aim 1-2\" higher than last week. Rest 90s", "B. STRENGTH — Back Squat 5×4 @ 190 lb (83%), fast concentric, 1-2 RIR. Rest 2:30-3:00", "C. SPEED — Jump Squats 4×4 @ 2×20-30 lb DBs, explosive. Rest 90s", "D. ACCESSORY — Bulgarian Split Squat 3×8/leg · DB RDL 3×10 · Calf Raise 3×15", "CORE — Hollow rock 3×12 + Side plank 3×30s/side", "ZONE 2 COOLDOWN — 10 min easy row", "Power test: log box jump height + broad jump (expect equal or better than wk3)"], "done": null, "nutrition": {"kcal": 2000, "protein_g": 150, "carb_g": 215, "fat_g": 60, "pre": "55g carb / 25g protein", "pre_when": "~90 min before (+5g creatine)", "post": "60g carb / 35g protein / 12g fat", "post_when": "within 45 min", "tip": "Highest-cal day — near maintenance to fuel power work."}, "phase": "Accumulate +", "template": false, "addon": ""}, {"date": "2026-06-25", "dow": "Thu", "nice": "Jun 25", "week": 4, "section": "future", "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [75, 80], "splitRange": "2:00–2:05", "repRange": "2:00–2:05", "dist": 500, "dur": "", "reps": 8, "rate": "28-30", "rest": "2:00", "desc": "Warm-up: 10 min light. Interval Training: 8 x 500m. Rest 2:00. 28-30 s/m. Intensity: 75-80% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Core + mobility: hollow hold 3×30s, side plank 3×30s/side, 5 min hip/ankle mobility."}, {"date": "2026-06-26", "dow": "Fri", "nice": "Jun 26", "week": 4, "section": "future", "name": "CFNYC — Bench Press", "type": "CFNYC", "color": "#3b82f6", "kind": "cfnyc", "summary": "Awaiting CrossFit NYC newsletter (auto-fills Sunday)", "blocks": ["⏳ Bench Press day — the Sunday job will pull this week's programming from the CFNYC newsletter and fill it in here.", "Fixed slot: this day stays put; rowing + squat work are scheduled around it."], "done": null, "nutrition": {"kcal": 1900, "protein_g": 150, "carb_g": 189, "fat_g": 57, "pre": "50g carb / 25g protein", "pre_when": "~90 min before", "post": "55g carb / 35g protein / 12g fat", "post_when": "within 45 min", "tip": "Strength day — final macros set when the workout is known."}, "phase": "", "template": true, "addon": "Optional zone 2: 15-20 min easy row OR light posterior accessory (hamstring curls, band pull-aparts). Legs are fresh."}, {"date": "2026-06-27", "dow": "Sat", "nice": "Jun 27", "week": 4, "section": "future", "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 75], "splitRange": "2:05–2:15", "repRange": "", "dist": null, "dur": "7:00", "reps": 4, "rate": "26", "rest": "3 min", "desc": "Warm-up: 10 min light. Interval training: 4 x 7 minutes. Rest 3 min. 26 s/m. Intensity: 65-75% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Mobility/stretch only: 10 min hips, hamstrings, lats, thoracic. No added load."}, {"date": "2026-06-28", "dow": "Sun", "nice": "Jun 28", "week": 4, "section": "future", "name": "Rest / Mobility", "type": "Rest", "color": "#64748b", "kind": "rest", "summary": "Full recovery + light mobility", "blocks": ["Full rest, or 20-30 min easy walk + mobility (hips, ankles, T-spine, lats)", "Optional: 10-15 min rowing technique drills (legs-only, arms-only), no intensity", "CORE (optional): dead bug 3×10 + bird dog 3×10/side"], "done": null, "nutrition": {"kcal": 1650, "protein_g": 150, "carb_g": 139, "fat_g": 55, "pre": "—", "pre_when": "", "post": "—", "post_when": "", "tip": "Rest day. Protein 150g spread across meals; anti-inflammatory foods, hydration."}, "phase": "", "template": false, "addon": ""}, {"date": "2026-06-29", "dow": "Mon", "nice": "Jun 29", "week": 5, "section": "future", "name": "CFNYC — Deadlift", "type": "CFNYC", "color": "#3b82f6", "kind": "cfnyc", "summary": "Awaiting CrossFit NYC newsletter (auto-fills Sunday)", "blocks": ["⏳ Deadlift day — the Sunday job will pull this week's programming from the CFNYC newsletter and fill it in here.", "Fixed slot: this day stays put; rowing + squat work are scheduled around it."], "done": null, "nutrition": {"kcal": 1900, "protein_g": 150, "carb_g": 189, "fat_g": 57, "pre": "50g carb / 25g protein", "pre_when": "~90 min before", "post": "55g carb / 35g protein / 12g fat", "post_when": "within 45 min", "tip": "Strength day — final macros set when the workout is known."}, "phase": "", "template": true, "addon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if the lift felt maximal."}, {"date": "2026-06-30", "dow": "Tue", "nice": "Jun 30", "week": 5, "section": "future", "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "repRange": "1:03–1:06", "dist": 300, "dur": "", "reps": 5, "rate": "36-38", "rest": "5 min", "desc": "Warm-up: 15 min light. Interval Training: 5 x 300m at 90-95% with 5 min rest. 36-38 s/m.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Zone 2 cooldown: 10 min very easy row, nasal breathing. Keep it easy — protect the squat day."}, {"date": "2026-07-01", "dow": "Wed", "nice": "Jul 1", "week": 5, "section": "future", "name": "Back Squat + Power", "type": "Squat + Power", "color": "#a855f7", "kind": "squat", "summary": "Depth jumps → Back Squat 4×3 @ 200 → speed squats 5×3 @ 115 → accessory + core", "blocks": ["Warm-up: thorough; squat ramp bar→95→135→170→180", "A. POWER — Depth Jumps 4×3 from a 12-18\" box: step off, land + rebound instantly (reactive RFD). Rest 2 min. Skip if joints cranky → sub box jumps", "B. STRENGTH — Back Squat 4×3 @ 200 lb (87%), max-intent up, 1 RIR. Rest 3:00", "C. CONTRAST SPEED — Speed Squats 5×3 @ 115 lb (50%), as fast as possible. Rest 90s", "D. ACCESSORY — Walking Lunge 3×10/leg · DB RDL 3×8 · Calf Raise 3×15", "CORE — Weighted hollow hold 3×30s + Pallof press 3×10/side", "ZONE 2 COOLDOWN — 10 min easy row", "Power test: box/broad jump — this is the week explosiveness should pop"], "done": null, "nutrition": {"kcal": 2000, "protein_g": 150, "carb_g": 215, "fat_g": 60, "pre": "55g carb / 25g protein", "pre_when": "~90 min before (+5g creatine)", "post": "60g carb / 35g protein / 12g fat", "post_when": "within 45 min", "tip": "Highest-cal day — near maintenance to fuel power work."}, "phase": "Intensify", "template": false, "addon": ""}, {"date": "2026-07-02", "dow": "Thu", "nice": "Jul 2", "week": 5, "section": "future", "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [70, 80], "splitRange": "2:00–2:10", "repRange": "", "dist": null, "dur": "4:00", "reps": 4, "rate": "28-30", "rest": "4:00", "desc": "Warm-up: 10 min light. Interval training: 4 x 4 min. Rest 4:00. 28-30 s/m. Intensity: 70-80% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Core + mobility: hollow hold 3×30s, side plank 3×30s/side, 5 min hip/ankle mobility."}, {"date": "2026-07-03", "dow": "Fri", "nice": "Jul 3", "week": 5, "section": "future", "name": "CFNYC — Bench Press", "type": "CFNYC", "color": "#3b82f6", "kind": "cfnyc", "summary": "Awaiting CrossFit NYC newsletter (auto-fills Sunday)", "blocks": ["⏳ Bench Press day — the Sunday job will pull this week's programming from the CFNYC newsletter and fill it in here.", "Fixed slot: this day stays put; rowing + squat work are scheduled around it."], "done": null, "nutrition": {"kcal": 1900, "protein_g": 150, "carb_g": 189, "fat_g": 57, "pre": "50g carb / 25g protein", "pre_when": "~90 min before", "post": "55g carb / 35g protein / 12g fat", "post_when": "within 45 min", "tip": "Strength day — final macros set when the workout is known."}, "phase": "", "template": true, "addon": "Optional zone 2: 15-20 min easy row OR light posterior accessory (hamstring curls, band pull-aparts). Legs are fresh."}, {"date": "2026-07-04", "dow": "Sat", "nice": "Jul 4", "week": 5, "section": "future", "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [62, 75], "splitRange": "2:05–2:18", "repRange": "", "dist": null, "dur": "30:00", "reps": 1, "rate": "26-28", "rest": "—", "desc": "Warm-up: 10 min light. Interval Training: 30 min continuous. 26-28 s/m. Intensity: 62-75% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Mobility/stretch only: 10 min hips, hamstrings, lats, thoracic. No added load."}, {"date": "2026-07-05", "dow": "Sun", "nice": "Jul 5", "week": 5, "section": "future", "name": "Rest / Mobility", "type": "Rest", "color": "#64748b", "kind": "rest", "summary": "Full recovery + light mobility", "blocks": ["Full rest, or 20-30 min easy walk + mobility (hips, ankles, T-spine, lats)", "Optional: 10-15 min rowing technique drills (legs-only, arms-only), no intensity", "CORE (optional): dead bug 3×10 + bird dog 3×10/side"], "done": null, "nutrition": {"kcal": 1650, "protein_g": 150, "carb_g": 139, "fat_g": 55, "pre": "—", "pre_when": "", "post": "—", "post_when": "", "tip": "Rest day. Protein 150g spread across meals; anti-inflammatory foods, hydration."}, "phase": "", "template": false, "addon": ""}, {"date": "2026-07-06", "dow": "Mon", "nice": "Jul 6", "week": 6, "section": "future", "name": "CFNYC — Deadlift", "type": "CFNYC", "color": "#3b82f6", "kind": "cfnyc", "summary": "Awaiting CrossFit NYC newsletter (auto-fills Sunday)", "blocks": ["⏳ Deadlift day — the Sunday job will pull this week's programming from the CFNYC newsletter and fill it in here.", "Fixed slot: this day stays put; rowing + squat work are scheduled around it."], "done": null, "nutrition": {"kcal": 1900, "protein_g": 150, "carb_g": 189, "fat_g": 57, "pre": "50g carb / 25g protein", "pre_when": "~90 min before", "post": "55g carb / 35g protein / 12g fat", "post_when": "within 45 min", "tip": "Strength day — final macros set when the workout is known."}, "phase": "", "template": true, "addon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if the lift felt maximal."}, {"date": "2026-07-07", "dow": "Tue", "nice": "Jul 7", "week": 6, "section": "future", "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "repRange": "0:52–0:55", "dist": 250, "dur": "", "reps": 8, "rate": "36-38", "rest": "4 min", "desc": "Warm-up: 10 min light. Interval Training: 8 x 250m with 4 min rest. 36-38 s/m. Intensity: 90-95% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Zone 2 cooldown: 10 min very easy row, nasal breathing. Keep it easy — protect the squat day."}, {"date": "2026-07-08", "dow": "Wed", "nice": "Jul 8", "week": 6, "section": "future", "name": "Back Squat + Power", "type": "Squat + Power", "color": "#a855f7", "kind": "squat", "summary": "Max-intent jumps → Back Squat 3×2 @ 205 (fast) → broad jumps → light core", "blocks": ["Warm-up: extra thorough, low volume; squat ramp bar→95→135→175→185", "A. POWER — Max-intent Jump Squats 5×3 (bodyweight or light), every rep maximal height. Rest 2 min", "B. STRENGTH — Back Squat 3×2 @ 205 lb (90%), move FAST, leave 2 RIR (this is speed-strength, not a grind). Rest 3:00", "C. EXPRESS — Standing Broad Jumps 5×2, max distance, full recovery. Rest 90s", "D. ACCESSORY (light) — DB RDL 2×10 · Calf Raise 2×15 (low volume — you're peaking)", "CORE — Hollow hold 2×30s", "ZONE 2 COOLDOWN — 8 min very easy row", "Peak week: volume is low on purpose so power is fresh and expressed. Log your best jumps — compare to wk3."], "done": null, "nutrition": {"kcal": 2000, "protein_g": 150, "carb_g": 215, "fat_g": 60, "pre": "55g carb / 25g protein", "pre_when": "~90 min before (+5g creatine)", "post": "60g carb / 35g protein / 12g fat", "post_when": "within 45 min", "tip": "Highest-cal day — near maintenance to fuel power work."}, "phase": "Peak / express power", "template": false, "addon": ""}, {"date": "2026-07-09", "dow": "Thu", "nice": "Jul 9", "week": 6, "section": "future", "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [70, 80], "splitRange": "2:00–2:10", "repRange": "", "dist": null, "dur": "pyramid", "reps": 7, "rate": "28-30", "rest": "3 min", "desc": "Warm-up: 10 min easy. Interval Training: 1,2,3,4,3,2,1 min pyramid. Rest 3 min. 28-30 s/m. Powerful strokes on the 1 min. Intensity: 70-80% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Core + mobility: hollow hold 3×30s, side plank 3×30s/side, 5 min hip/ankle mobility."}, {"date": "2026-07-10", "dow": "Fri", "nice": "Jul 10", "week": 6, "section": "future", "name": "CFNYC — Bench Press", "type": "CFNYC", "color": "#3b82f6", "kind": "cfnyc", "summary": "Awaiting CrossFit NYC newsletter (auto-fills Sunday)", "blocks": ["⏳ Bench Press day — the Sunday job will pull this week's programming from the CFNYC newsletter and fill it in here.", "Fixed slot: this day stays put; rowing + squat work are scheduled around it."], "done": null, "nutrition": {"kcal": 1900, "protein_g": 150, "carb_g": 189, "fat_g": 57, "pre": "50g carb / 25g protein", "pre_when": "~90 min before", "post": "55g carb / 35g protein / 12g fat", "post_when": "within 45 min", "tip": "Strength day — final macros set when the workout is known."}, "phase": "", "template": true, "addon": "Optional zone 2: 15-20 min easy row OR light posterior accessory (hamstring curls, band pull-aparts). Legs are fresh."}, {"date": "2026-07-11", "dow": "Sat", "nice": "Jul 11", "week": 6, "section": "future", "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 75], "splitRange": "2:05–2:15", "repRange": "", "dist": null, "dur": "12:00", "reps": 2, "rate": "26", "rest": "3 min", "desc": "Warm-up: 10 min light. Interval Training: 2 x 12 min with 3 min rest. 26 s/m. Intensity: 65-75% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Mobility/stretch only: 10 min hips, hamstrings, lats, thoracic. No added load."}, {"date": "2026-07-12", "dow": "Sun", "nice": "Jul 12", "week": 6, "section": "future", "name": "Rest / Mobility", "type": "Rest", "color": "#64748b", "kind": "rest", "summary": "Full recovery + light mobility", "blocks": ["Full rest, or 20-30 min easy walk + mobility (hips, ankles, T-spine, lats)", "Optional: 10-15 min rowing technique drills (legs-only, arms-only), no intensity", "CORE (optional): dead bug 3×10 + bird dog 3×10/side"], "done": null, "nutrition": {"kcal": 1650, "protein_g": 150, "carb_g": 139, "fat_g": 55, "pre": "—", "pre_when": "", "post": "—", "post_when": "", "tip": "Rest day. Protein 150g spread across meals; anti-inflammatory foods, hydration."}, "phase": "", "template": false, "addon": ""}, {"date": "2026-07-13", "dow": "Mon", "nice": "Jul 13", "week": 7, "section": "future", "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "repRange": "1:03–1:06", "dist": 300, "dur": "", "reps": 8, "rate": "36-38", "rest": "4 / 2 min", "desc": "Warm-up: 10 min light. Interval training: 300m x 4 at 90% (36-38 s/m, 4 min rest) + 150m x 4 at 95% (36-38 s/m, 2 min rest). 90-95% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if the lift felt maximal."}, {"date": "2026-07-15", "dow": "Wed", "nice": "Jul 15", "week": 7, "section": "future", "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [73, 80], "splitRange": "2:00–2:07", "repRange": "", "dist": null, "dur": "1:00", "reps": 12, "rate": "28-30", "rest": "1:00", "desc": "Warm-up: 10 min light. Interval Training: 12 x 1:00 with 1:00 rest. 28-30 s/m. Intensity: 73-80% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": ""}, {"date": "2026-07-18", "dow": "Sat", "nice": "Jul 18", "week": 7, "section": "future", "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 75], "splitRange": "2:05–2:15", "repRange": "6:15–6:45", "dist": 1500, "dur": "", "reps": 5, "rate": "26-28", "rest": "3 min", "desc": "Warm-up: 10 min light. 5 x 1500m. Rest 3 min. 26-28 s/m. Intensity: 65-75% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Mobility/stretch only: 10 min hips, hamstrings, lats, thoracic. No added load."}, {"date": "2026-07-20", "dow": "Mon", "nice": "Jul 20", "week": 8, "section": "future", "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "repRange": "0:42–0:44", "dist": 200, "dur": "", "reps": 12, "rate": "36-40", "rest": "2 min", "desc": "Warm-up: 10 min light. Interval training: 200m x 6 (36 s/m), 100m x 6 (40 s/m). Rest 2 min. Intensity: 90-95% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if the lift felt maximal."}, {"date": "2026-07-22", "dow": "Wed", "nice": "Jul 22", "week": 8, "section": "future", "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [70, 80], "splitRange": "2:00–2:10", "repRange": "1:36–1:44", "dist": 400, "dur": "", "reps": 10, "rate": "28-30", "rest": "1:30", "desc": "Warm-up: 10 min light. Interval Training: 400m x 10. Rest 1:30. 28-30 s/m. Intensity: 70-80% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": ""}, {"date": "2026-07-25", "dow": "Sat", "nice": "Jul 25", "week": 8, "section": "future", "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 75], "splitRange": "2:05–2:15", "repRange": "", "dist": null, "dur": "4:00", "reps": 8, "rate": "26-28", "rest": "3 min", "desc": "Warm-up: 10 min light. Interval Training: 8 x 4 minutes. Rest 3 min. 26-28 s/m. Intensity: 65-75% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Mobility/stretch only: 10 min hips, hamstrings, lats, thoracic. No added load."}, {"date": "2026-07-27", "dow": "Mon", "nice": "Jul 27", "week": 9, "section": "future", "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [92, 96], "splitRange": "1:44–1:48", "repRange": "", "dist": null, "dur": "30s", "reps": 15, "rate": "36-38", "rest": "2:00", "desc": "Warm-up: 12 min light. Interval training: 15 x 30 sec. Rest 2:00. 36-38 s/m. Intensity: 92-96% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if the lift felt maximal."}, {"date": "2026-07-29", "dow": "Wed", "nice": "Jul 29", "week": 9, "section": "future", "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [72, 80], "splitRange": "2:00–2:08", "repRange": "3:30–3:44", "dist": 875, "dur": "", "reps": 4, "rate": "30-34", "rest": "4 min", "desc": "Warm-up: 10 min light. Interval training: 1250m, 1000m, 750m, 500m descending. Rest 4 min. 30-34 s/m. Intensity: 72-80% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": ""}, {"date": "2026-08-01", "dow": "Sat", "nice": "Aug 1", "week": 9, "section": "future", "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [62, 75], "splitRange": "2:05–2:18", "repRange": "", "dist": null, "dur": "30:00", "reps": 1, "rate": "26-28", "rest": "—", "desc": "Warm-up: 10 min light. Interval Training: 30 min continuous. 26-28 s/m. Intensity: 62-75% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Mobility/stretch only: 10 min hips, hamstrings, lats, thoracic. No added load."}, {"date": "2026-08-03", "dow": "Mon", "nice": "Aug 3", "week": 10, "section": "future", "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 98], "splitRange": "1:42–1:50", "repRange": "", "dist": null, "dur": "20s", "reps": 12, "rate": "38-40", "rest": "2 min", "desc": "Warm-up: 10 min light. Interval training: 20 sec x 12. Rest 2 min. 38-40 s/m. Intensity: 90-98% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if the lift felt maximal."}, {"date": "2026-08-05", "dow": "Wed", "nice": "Aug 5", "week": 10, "section": "future", "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [75, 80], "splitRange": "2:00–2:05", "repRange": "2:00–2:05", "dist": 500, "dur": "", "reps": 8, "rate": "30-32", "rest": "2 min", "desc": "Warm-up: 10 min light. Interval training: 8 x 500m. Rest 2 min. 30-32 s/m. Intensity: 75-80% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": ""}, {"date": "2026-08-08", "dow": "Sat", "nice": "Aug 8", "week": 10, "section": "future", "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 75], "splitRange": "2:05–2:15", "repRange": "4:10–4:30", "dist": 1000, "dur": "", "reps": 6, "rate": "26-28", "rest": "3:00", "desc": "Warm-up: 10 min light. Interval Training: 6 x 1000m. Rest 3:00. 26-28 s/m. Intensity: 65-75% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Mobility/stretch only: 10 min hips, hamstrings, lats, thoracic. No added load."}, {"date": "2026-08-10", "dow": "Mon", "nice": "Aug 10", "week": 11, "section": "future", "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "repRange": "0:52–0:55", "dist": 250, "dur": "", "reps": 8, "rate": "38-40", "rest": "3 min", "desc": "Warm-up: 12 min light. Power Intervals: 250m x 8. Rest 3 min. 38-40 s/m. Intensity: 90-95% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if the lift felt maximal."}, {"date": "2026-08-12", "dow": "Wed", "nice": "Aug 12", "week": 11, "section": "future", "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [70, 80], "splitRange": "2:00–2:10", "repRange": "", "dist": null, "dur": "4:00", "reps": 4, "rate": "28-30", "rest": "4:00", "desc": "Warm-up: 10 min light. Interval training: 4 x 4 min. Rest 4:00. 28-30 s/m. Intensity: 70-80% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": ""}, {"date": "2026-08-15", "dow": "Sat", "nice": "Aug 15", "week": 11, "section": "future", "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [62, 75], "splitRange": "2:05–2:18", "repRange": "", "dist": null, "dur": "30:00", "reps": 1, "rate": "26-28", "rest": "—", "desc": "Warm-up: 10 min light. 30 min continuous. 26-28 s/m. Intensity: 62-75% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Mobility/stretch only: 10 min hips, hamstrings, lats, thoracic. No added load."}, {"date": "2026-08-17", "dow": "Mon", "nice": "Aug 17", "week": 12, "section": "future", "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [85, 90], "splitRange": "1:50–1:55", "repRange": "1:28–1:32", "dist": 400, "dur": "", "reps": 2, "rate": "38+", "rest": "7 min", "desc": "Warm-up: 10 min light. Interval Training: 400m x 2 with 7 min rest. 38+ s/m. Intensity: 85-90% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if the lift felt maximal."}, {"date": "2026-08-19", "dow": "Wed", "nice": "Aug 19", "week": 12, "section": "future", "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [73, 80], "splitRange": "2:00–2:07", "repRange": "", "dist": null, "dur": "pyramid", "reps": 7, "rate": "28-30", "rest": "3 min", "desc": "Warm-up: 10 min easy. Interval Training: 1,2,3,4,3,2,1 min pyramid. Rest 3 min. 28-30 s/m. Powerful strokes on the 1 min. Intensity: 73-80% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": ""}, {"date": "2026-08-22", "dow": "Sat", "nice": "Aug 22", "week": 12, "section": "future", "name": "Threshold Training", "type": "Threshold", "color": "#3b82f6", "intensity": [65, 75], "splitRange": "2:05–2:15", "repRange": "6:15–6:45", "dist": 1500, "dur": "", "reps": 4, "rate": "26-28", "rest": "—", "desc": "Warm-up: 10 min light. Interval Training: 4 x 1500m at 26-28 s/m. Intensity: 65-75% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Mobility/stretch only: 10 min hips, hamstrings, lats, thoracic. No added load."}, {"date": "2026-08-24", "dow": "Mon", "nice": "Aug 24", "week": 13, "section": "future", "name": "Sprint Training", "type": "Sprint", "color": "#ef4444", "intensity": [90, 95], "splitRange": "1:45–1:50", "repRange": "0:52–0:55", "dist": 250, "dur": "", "reps": 4, "rate": "40+", "rest": "4:00", "desc": "Warm-up: 12 min light. Interval Training: 4 x 250m. Rest 4:00. 40+ s/m. Intensity: 90-95% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": "Light core only (heavy day): Pallof press 3×10/side + dead bug 3×10. Skip if the lift felt maximal."}, {"date": "2026-08-26", "dow": "Wed", "nice": "Aug 26", "week": 13, "section": "future", "name": "VO₂ Max Training", "type": "VO₂ Max", "color": "#f59e0b", "intensity": [75, 80], "splitRange": "2:00–2:05", "repRange": "2:00–2:05", "dist": 500, "dur": "", "reps": 4, "rate": "32-34", "rest": "2 min", "desc": "Warm-up: 10 min light. Interval Training: 4 x 500m. Rest 2 min. 32-34 s/m. Intensity: 75-80% of 500m PB.", "test": false, "done": null, "kind": "row", "nutrition": "", "addon": ""}, {"date": "2026-08-29", "dow": "Sat", "nice": "Aug 29", "week": 13, "section": "future", "name": "Rowfit Games – Virtual Race: 1-Minute Test", "type": "Test", "color": "#10b981", "intensity": [100, 120], "splitRange": "1:20–1:40", "repRange": "", "dist": null, "dur": "1:00", "reps": 1, "rate": "max", "rest": "—", "desc": "Warm-up: 15 min light. 1-Minute Test: row for maximum distance in 1 minute. Maximal effort. Record distance, watts, pace, stroke rate.", "test": true, "done": null, "kind": "row", "nutrition": "", "addon": "Mobility/stretch only: 10 min hips, hamstrings, lats, thoracic. No added load."}, {"date": "2026-08-30", "dow": "Sun", "nice": "Aug 30", "week": 13, "section": "future", "name": "Rowfit Games – Virtual Race: 2000m Test", "type": "Test", "color": "#10b981", "intensity": [95, 110], "splitRange": "1:30–1:45", "repRange": "6:00–7:00", "dist": 2000, "dur": "", "reps": 1, "rate": "28-32", "rest": "—", "desc": "Warm-up: 15 min light. 2000m Test: maximal effort time trial. Even pacing, strong finish. Record time, splits, watts.", "test": true, "done": null, "kind": "row", "nutrition": "", "addon": ""}];
-const TYPES = [...new Set(DATA.map(d=>d.type))];
-const TYPECOLOR = {}; DATA.forEach(d=>TYPECOLOR[d.type]=d.color);
-let active = new Set(TYPES);
+"use strict";
+/* ============ MAXES (editable) ============ */
+const DEFAULT_MAX = {bs:230, fs:180, bench:130};
+const LIFT_NAME = {bs:"Back Squat", fs:"Front Squat", bench:"Bench Press"};
 
-// ---- Live date logic: which week is "current" tracks the real date ----
-function isoDay(s){ return new Date(s+'T00:00'); }
-const ALL_DATES = DATA.map(d=>d.date).sort();
-const PLAN_START = isoDay(ALL_DATES[0]);
-const PLAN_END = isoDay(ALL_DATES[ALL_DATES.length-1]);
-function realToday(){
-  const n=new Date(); const t=new Date(n.getFullYear(),n.getMonth(),n.getDate());
-  if(t<PLAN_START) return PLAN_START;       // before the block starts -> first week
-  if(t>PLAN_END) return PLAN_END;            // after it ends -> last week stays "current" until archived
-  return t;
+/* ============ STATE ============ */
+const KEY="recomp-tracker-2026";
+let S = load();
+function load(){
+  try{const r=JSON.parse(localStorage.getItem(KEY)); if(r&&r.checks) return {checks:r.checks||{}, max:Object.assign({},DEFAULT_MAX,r.max||{}), open:r.open||{}};}catch(e){}
+  return {checks:{}, max:Object.assign({},DEFAULT_MAX), open:{}};
 }
-const TODAY = realToday();
-const TODAY_STR = TODAY.toISOString().slice(0,10);
-// Monday-Sunday week containing a date
-function weekStart(dt){ const x=new Date(dt); const dow=(x.getDay()+6)%7; x.setDate(x.getDate()-dow); return x; }
-const CUR_WEEK_START = weekStart(TODAY).getTime();
-// The display week-number whose Mon-Sun span contains today (fallback: nearest)
-function weekOfDate(s){ return weekStart(isoDay(s)).getTime(); }
-const CURRENT_WEEK_TS = CUR_WEEK_START;
-function liveSection(d){
-  const ws = weekOfDate(d.date);
-  if(ws===CURRENT_WEEK_TS) return 'current';
-  return ws < CURRENT_WEEK_TS ? 'past' : 'future';
-}
-DATA.forEach(d=>{ d.section = liveSection(d); });
+function save(){ try{localStorage.setItem(KEY, JSON.stringify(S));}catch(e){} }
 
-function renderFilters(){
-  const f=document.getElementById('filters'); f.innerHTML='';
-  const all=document.createElement('div');
-  all.className='chip'+(active.size===TYPES.length?' active':'');
-  all.textContent='All';
-  all.onclick=()=>{active=new Set(TYPES);renderFilters();renderAll();};
-  f.appendChild(all);
-  TYPES.forEach(t=>{
-    const c=document.createElement('div');
-    c.className='chip'+(active.has(t)?' active':'');
-    c.innerHTML=`<span class="dot" style="background:${TYPECOLOR[t]}"></span>${t}`;
-    c.onclick=()=>{ if(active.has(t)&&active.size===TYPES.length){active=new Set([t]);}
-      else if(active.has(t)){active.delete(t);} else {active.add(t);}
-      if(active.size===0)active=new Set(TYPES);
-      renderFilters();renderAll();};
-    f.appendChild(c);
-  });
-}
+/* ============ HELPERS ============ */
+const round5 = x => Math.round(x/5)*5;
+function wt(pct, lift){ return round5(S.max[lift]*pct/100); }
+function fmtSplit(sec){ const m=Math.floor(sec/60), s=Math.round(sec-m*60); return m+":"+String(s).padStart(2,"0"); }
+// Frances's table (Rowfit calc): 100% = 1:39.9 PB, each point below adds 1.0s
+function zonePace(pct){ const s=99.9+(100-pct); const m=Math.floor(s/60), x=s-m*60; return m+":"+(x<10?"0":"")+x.toFixed(1); }
+function todayISO(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+const TODAY = todayISO();
+const PHASE_COLOR = {lower:"var(--lower)",upper:"var(--upper)",sprint:"var(--sprint)",vo2:"var(--vo2)",endurance:"var(--endur)",z2:"var(--z2)",rest:"var(--rest)",test:"var(--test)"};
+const TYPE_LABEL = {lower:"LOWER",upper:"UPPER",sprint:"SPRINT",vo2:"VO₂",endurance:"ENDUR",z2:"Z2",rest:"REST",test:"TEST"};
+const TYPE_ICO = {lower:"L",upper:"U",sprint:"S",vo2:"V",endurance:"E",z2:"Z",rest:"·",test:"T"};
 
-function weekBlock(wk, items, isCurrent){
-  const sec=document.createElement('div'); sec.className='week';
-  const all=DATA.filter(d=>d.week===wk);
-  const nowPill = isCurrent?'<span class="now-pill">This week</span>':'';
-  sec.innerHTML=`<div class="wk-head"><span class="wk-num">Week ${wk}</span> ${nowPill}
-    <span class="wk-dates">${all[0].nice} – ${all[all.length-1].nice}</span>
-    <span class="wk-count">${items.length} session${items.length>1?'s':''}</span></div>`;
-  const grid=document.createElement('div'); grid.className='grid';
-  items.forEach(w=>grid.appendChild(card(w)));
-  sec.appendChild(grid);
-  return sec;
-}
+/* ============ PLAN ============ */
+// item: {t:'lift'|'row'|'note', n, ...}
+//   lift: pct+lift(read max) | w(abs lb) | add(weighted pullup) | bw  ; s='5×3'
+//   row:  detail, pace, rest
+const PLAN = [
+ {wk:1, phase:"build", label:"Week 1 · intro", range:"Jun 19 – 21", start:"2026-06-19", end:"2026-06-21", days:[
+   {date:"2026-06-19", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"1:20 on / 60s off × 10",rest:"28–30 s/m · 75–85%",pace:"1:55–2:05"}]},
+   {date:"2026-06-20", dow:"Sat", type:"rest", title:"Rest", items:[{t:"note",n:"Easy day before the Solstice row"}]},
+   {date:"2026-06-21", dow:"Sun", type:"endurance", title:"Endurance · Solstice", items:[{t:"row",n:"Solstice Challenge · 21.1 km",rest:"steady half-marathon · 55–65%",pace:"2:15–2:25"}]},
+ ]},
+ {wk:2, phase:"build", label:"Week 2", range:"Jun 22 – 28", start:"2026-06-22", end:"2026-06-28", days:[
+   {date:"2026-06-22", dow:"Mon", type:"lower", title:"Lower Strength", items:[{t:"lift",n:"Back Squat",s:"5×3",pct:80,lift:"bs"},{t:"lift",n:"Front Squat",s:"4×3",pct:75,lift:"fs"},{t:"lift",n:"RDL",s:"3×5",w:145},{t:"lift",n:"Box Jump",s:"3×3",bw:1,note:"max explosive"}]},
+   {date:"2026-06-23", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"250m × 8",rest:"3:00 rest · 36–38 s/m · 90–95%",pace:"1:45–1:50"}]},
+   {date:"2026-06-24", dow:"Wed", type:"upper", title:"Upper Strength", items:[{t:"lift",n:"Weighted Pull-up",s:"5×4",add:35},{t:"lift",n:"Bench Press",s:"5×3",pct:81,lift:"bench"},{t:"lift",n:"Chest-supported Row",s:"3×6",w:null,note:"heavy"},{t:"lift",n:"Overhead Press",s:"3×4",w:80,note:"75–85"}]},
+   {date:"2026-06-25", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
+   {date:"2026-06-26", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"8 × 500m",rest:"2:00 rest · 28–30 s/m · 75–80%",pace:"2:00–2:05"}]},
+   {date:"2026-06-27", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"4 × 7 min",rest:"3:00 rest · 26 s/m · 65–75%",pace:"2:05–2:15"}]},
+   {date:"2026-06-28", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
+ ]},
+ {wk:3, phase:"build", label:"Week 3", range:"Jun 29 – Jul 5", start:"2026-06-29", end:"2026-07-05", days:[
+   {date:"2026-06-29", dow:"Mon", type:"lower", title:"Lower Strength", items:[{t:"lift",n:"Back Squat",s:"5×3",pct:83,lift:"bs"},{t:"lift",n:"Front Squat",s:"3×3",pct:77,lift:"fs"},{t:"lift",n:"RDL",s:"3×5",w:150},{t:"lift",n:"Box Jump",s:"3×3",bw:1,note:"max explosive"}]},
+   {date:"2026-06-30", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"5 × 300m",rest:"5:00 rest · 36–38 s/m · 90–95%",pace:"1:45–1:50"}]},
+   {date:"2026-07-01", dow:"Wed", type:"upper", title:"Upper Strength", items:[{t:"lift",n:"Weighted Pull-up",s:"5×4",add:37.5},{t:"lift",n:"Bench Press",s:"5×3",pct:85,lift:"bench"},{t:"lift",n:"Chest-supported Row",s:"3×6",w:null,note:"heavy"},{t:"lift",n:"Overhead Press",s:"3×4",w:82,note:"80–85"}]},
+   {date:"2026-07-02", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
+   {date:"2026-07-03", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"4 × 4 min",rest:"4:00 rest · 28–30 s/m · 70–80%",pace:"2:00–2:10"}]},
+   {date:"2026-07-04", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"30 min continuous",rest:"26–28 s/m · 62–75%",pace:"2:05–2:18"}]},
+   {date:"2026-07-05", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
+ ]},
+ {wk:4, phase:"deload", label:"Week 4 · deload", range:"Jul 6 – 12", start:"2026-07-06", end:"2026-07-12", days:[
+   {date:"2026-07-06", dow:"Mon", type:"lower", title:"Lower Strength · deload", items:[{t:"lift",n:"Back Squat",s:"3×3",pct:74,lift:"bs"},{t:"lift",n:"Front Squat",s:"3×3",pct:68,lift:"fs"}]},
+   {date:"2026-07-07", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"8 × 250m",rest:"4:00 rest · 36–38 s/m · 90–95%",pace:"1:45–1:50"}]},
+   {date:"2026-07-08", dow:"Wed", type:"upper", title:"Upper Strength · deload", items:[{t:"lift",n:"Weighted Pull-up",s:"4×4",add:20},{t:"lift",n:"Bench Press",s:"4×3",pct:68,lift:"bench"}]},
+   {date:"2026-07-09", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
+   {date:"2026-07-10", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"1-2-3-4-3-2-1 min pyramid",rest:"3:00 rest · 28–30 s/m · 70–80%",pace:"2:00–2:10"}]},
+   {date:"2026-07-11", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"2 × 12 min",rest:"3:00 rest · 26 s/m · 65–75%",pace:"2:05–2:15"}]},
+   {date:"2026-07-12", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
+ ]},
+ {wk:5, phase:"build", label:"Week 5", range:"Jul 13 – 19", start:"2026-07-13", end:"2026-07-19", days:[
+   {date:"2026-07-13", dow:"Mon", type:"lower", title:"Lower Strength", items:[{t:"lift",n:"Back Squat",s:"5×3",pct:87,lift:"bs"},{t:"lift",n:"Front Squat",s:"4×3",pct:80,lift:"fs"},{t:"lift",n:"RDL",s:"3×5",w:153},{t:"lift",n:"Box Jump",s:"3×3",bw:1,note:"max explosive"}]},
+   {date:"2026-07-14", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"300m × 4 + 150m × 4",rest:"300m@90% 4:00r · 150m@95% 2:00r · 36–38 s/m",pace:"1:45–1:50"}]},
+   {date:"2026-07-15", dow:"Wed", type:"upper", title:"Upper Strength", items:[{t:"lift",n:"Weighted Pull-up",s:"5×4",add:40},{t:"lift",n:"Bench Press",s:"5×3",pct:87,lift:"bench"},{t:"lift",n:"Overhead Press",s:"3×4",w:83,note:"80–85"}]},
+   {date:"2026-07-16", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
+   {date:"2026-07-17", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"12 × 1:00",rest:"1:00 rest · 28–30 s/m · 73–80%",pace:"2:00–2:07"}]},
+   {date:"2026-07-18", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"5 × 1500m",rest:"3:00 rest · 26–28 s/m · 65–75%",pace:"2:05–2:15"}]},
+   {date:"2026-07-19", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
+ ]},
+ {wk:6, phase:"build", label:"Week 6", range:"Jul 20 – 26", start:"2026-07-20", end:"2026-07-26", days:[
+   {date:"2026-07-20", dow:"Mon", type:"lower", title:"Lower Strength", items:[{t:"lift",n:"Back Squat",s:"5×3",pct:89,lift:"bs"},{t:"lift",n:"Front Squat",s:"4×3",pct:83,lift:"fs"},{t:"lift",n:"RDL",s:"3×5",w:155},{t:"lift",n:"Box Jump",s:"3×3",bw:1,note:"max explosive"}]},
+   {date:"2026-07-21", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"200m × 6 + 100m × 6",rest:"2:00 rest · 36→40 s/m · 90–95%",pace:"1:45–1:50"}]},
+   {date:"2026-07-22", dow:"Wed", type:"upper", title:"Upper Strength", items:[{t:"lift",n:"Weighted Pull-up",s:"5×4",add:42.5},{t:"lift",n:"Bench Press",s:"5×3",pct:88,lift:"bench"},{t:"lift",n:"Overhead Press",s:"3×4",w:85,note:""}]},
+   {date:"2026-07-23", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
+   {date:"2026-07-24", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"400m × 10",rest:"1:30 rest · 28–30 s/m · 70–80%",pace:"2:00–2:10"}]},
+   {date:"2026-07-25", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"8 × 4 min",rest:"3:00 rest · 26–28 s/m · 65–75%",pace:"2:05–2:15"}]},
+   {date:"2026-07-26", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
+ ]},
+ {wk:7, phase:"peak", label:"Week 7 · heavy neural", range:"Jul 27 – Aug 2", start:"2026-07-27", end:"2026-08-02", days:[
+   {date:"2026-07-27", dow:"Mon", type:"lower", title:"Lower Strength · peak", items:[{t:"lift",n:"Back Squat",s:"6×2",pct:91,lift:"bs"},{t:"lift",n:"Front Squat",s:"3×2",pct:84,lift:"fs"}]},
+   {date:"2026-07-28", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"15 × 30 sec",rest:"2:00 rest · 36–38 s/m · 92–96%",pace:"1:44–1:48"}]},
+   {date:"2026-07-29", dow:"Wed", type:"upper", title:"Upper Strength · peak", items:[{t:"lift",n:"Weighted Pull-up",s:"5×3",add:45},{t:"lift",n:"Bench Press",s:"5×3",pct:92,lift:"bench"}]},
+   {date:"2026-07-30", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
+   {date:"2026-07-31", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"1250-1000-750-500 m",rest:"4:00 rest · 30–34 s/m · 72–80%",pace:"2:00–2:08"}]},
+   {date:"2026-08-01", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"30 min continuous",rest:"26–28 s/m · 62–75%",pace:"2:05–2:18"}]},
+   {date:"2026-08-02", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
+ ]},
+ {wk:8, phase:"deload", label:"Week 8 · deload", range:"Aug 3 – 9", start:"2026-08-03", end:"2026-08-09", days:[
+   {date:"2026-08-03", dow:"Mon", type:"lower", title:"Lower Strength · deload", items:[{t:"lift",n:"Back Squat",s:"3×3",pct:62,lift:"bs"},{t:"lift",n:"Front Squat",s:"3×3",pct:58,lift:"fs"}]},
+   {date:"2026-08-04", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"20 sec × 12",rest:"2:00 rest · 38–40 s/m · 90–98%",pace:"1:42–1:50"}]},
+   {date:"2026-08-05", dow:"Wed", type:"upper", title:"Upper Strength · deload", items:[{t:"lift",n:"Weighted Pull-up",s:"3×4",add:20},{t:"lift",n:"Bench Press",s:"3×3",pct:62,lift:"bench"}]},
+   {date:"2026-08-06", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
+   {date:"2026-08-07", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"8 × 500m",rest:"2:00 rest · 30–32 s/m · 75–80%",pace:"2:00–2:05"}]},
+   {date:"2026-08-08", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"6 × 1000m",rest:"3:00 rest · 26–28 s/m · 65–75%",pace:"2:05–2:15"}]},
+   {date:"2026-08-09", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
+ ]},
+ {wk:9, phase:"peak", label:"Week 9 · re-build", range:"Aug 10 – 16", start:"2026-08-10", end:"2026-08-16", days:[
+   {date:"2026-08-10", dow:"Mon", type:"lower", title:"Lower Strength", items:[{t:"lift",n:"Back Squat",s:"5×2",pct:93,lift:"bs"},{t:"lift",n:"Front Squat",s:"3×2",pct:86,lift:"fs"}]},
+   {date:"2026-08-11", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"250m × 8",rest:"3:00 rest · 38–40 s/m · 90–95%",pace:"1:45–1:50"}]},
+   {date:"2026-08-12", dow:"Wed", type:"upper", title:"Upper Strength", items:[{t:"lift",n:"Weighted Pull-up",s:"5×3",add:47.5},{t:"lift",n:"Bench Press",s:"5×2",pct:90,lift:"bench"}]},
+   {date:"2026-08-13", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
+   {date:"2026-08-14", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"4 × 4 min",rest:"4:00 rest · 28–30 s/m · 70–80%",pace:"2:00–2:10"}]},
+   {date:"2026-08-15", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"30 min continuous",rest:"26–28 s/m · 62–75%",pace:"2:05–2:18"}]},
+   {date:"2026-08-16", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
+ ]},
+ {wk:10, phase:"taper", label:"Week 10 · taper", range:"Aug 17 – 23", start:"2026-08-17", end:"2026-08-23", days:[
+   {date:"2026-08-17", dow:"Mon", type:"lower", title:"Lower · taper volume", items:[{t:"lift",n:"Back Squat",s:"3×2",pct:80,lift:"bs"},{t:"lift",n:"Front Squat",s:"2×2",pct:72,lift:"fs"}]},
+   {date:"2026-08-18", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"400m × 2",rest:"7:00 rest · 38+ s/m · 85–90%",pace:"1:50–1:55"}]},
+   {date:"2026-08-19", dow:"Wed", type:"upper", title:"Upper · taper volume", items:[{t:"lift",n:"Weighted Pull-up",s:"3×2",add:35},{t:"lift",n:"Bench Press",s:"3×2",pct:78,lift:"bench"}]},
+   {date:"2026-08-20", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
+   {date:"2026-08-21", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"1-2-3-4-3-2-1 min pyramid",rest:"3:00 rest · 28–30 s/m · 73–80%",pace:"2:00–2:07"}]},
+   {date:"2026-08-22", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"4 × 1500m",rest:"26–28 s/m · 65–75%",pace:"2:05–2:15"}]},
+   {date:"2026-08-23", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
+ ]},
+ {wk:11, phase:"taper", label:"Week 11 · test week", range:"Aug 24 – 30", start:"2026-08-24", end:"2026-08-30", days:[
+   {date:"2026-08-24", dow:"Mon", type:"lower", title:"Primer · openers", items:[{t:"lift",n:"Back Squat",s:"2×2",pct:70,lift:"bs"}]},
+   {date:"2026-08-25", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"4 × 250m",rest:"4:00 rest · 40+ s/m · 90–95%",pace:"1:45–1:50"}]},
+   {date:"2026-08-26", dow:"Wed", type:"upper", title:"Upper · openers", items:[{t:"lift",n:"Weighted Pull-up",s:"2×2",add:25},{t:"lift",n:"Bench Press",s:"2×2",pct:70,lift:"bench"}]},
+   {date:"2026-08-27", dow:"Thu", type:"rest", title:"Rest", items:[{t:"note",n:"Full rest before tests"}]},
+   {date:"2026-08-28", dow:"Fri", type:"vo2", title:"VO₂ · primer", items:[{t:"row",n:"4 × 500m",rest:"2:00 rest · 32–34 s/m · 75–80%",pace:"2:00–2:05"}]},
+   {date:"2026-08-29", dow:"Sat", type:"test", title:"TEST · 1-Minute", items:[{t:"row",n:"Max distance, 1 min",rest:"15 min WU · record m / W / pace / rate",pace:"max · >330m"}]},
+   {date:"2026-08-30", dow:"Sun", type:"test", title:"TEST · 2000m", items:[{t:"row",n:"2000m time trial",rest:"even pacing, strong finish · 28–32 s/m",pace:"≈1:50 · neg split"}]},
+ ]},
+];
 
-function renderSection(hostId, sectionName, currentFlag){
-  const host=document.getElementById(hostId); host.innerHTML='';
-  const weeks=[...new Set(DATA.filter(d=>d.section===sectionName).map(d=>d.week))].sort((a,b)=>a-b);
-  let shown=0;
-  weeks.forEach(wk=>{
-    const items=DATA.filter(d=>d.week===wk && active.has(d.type));
-    if(!items.length) return;
-    shown+=items.length;
-    host.appendChild(weekBlock(wk, items, currentFlag));
-  });
-  return shown;
-}
-
-function renderArchive(){
-  const host=document.getElementById('archiveWrap'); host.innerHTML='';
-  const pastWeeks=[...new Set(DATA.filter(d=>d.section==='past').map(d=>d.week))].sort((a,b)=>b-a);
-  const pastItems=DATA.filter(d=>d.section==='past');
-  if(!pastItems.length) return;
-  const doneCount=pastItems.filter(d=>d.done).length;
-  const btn=document.createElement('button'); btn.className='archive-toggle';
-  btn.innerHTML=`<span>📁 Archive · ${pastWeeks.length} past week${pastWeeks.length>1?'s':''}
-    <span class="meta">(${doneCount}/${pastItems.length} completed)</span></span>
-    <span class="arrow" id="archArrow">▾</span>`;
-  const body=document.createElement('div'); body.className='archive-body'; body.id='archBody';
-  pastWeeks.forEach(wk=>{
-    const items=DATA.filter(d=>d.week===wk && active.has(d.type));
-    if(items.length) body.appendChild(weekBlock(wk, items, false));
-  });
-  btn.onclick=()=>{ body.classList.toggle('open'); document.getElementById('archArrow').classList.toggle('up'); };
-  host.appendChild(btn); host.appendChild(body);
-}
-
-function renderToday(){
-  const host=document.getElementById('todayWrap'); host.innerHTML='';
-  const todays=DATA.filter(d=>d.date===TODAY_STR);
-  const label=TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  const head=document.createElement('div'); head.className='today-head';
-  head.innerHTML=`<span class="today-dot"></span>Today · ${label}`;
-  host.appendChild(head);
-  if(!todays.length){
-    const none=document.createElement('div'); none.className='today-none';
-    none.textContent='No session scheduled today — rest or optional easy work.';
-    host.appendChild(none); return;
+/* ---- inject auto warm-up on lifting days (ramps to the day's main lift) ---- */
+PLAN.forEach(w=>w.days.forEach(d=>{
+  if(d.type==="lower"||d.type==="upper"){
+    const main=d.items.find(it=>it.t==="lift" && /Back Squat|Bench Press/i.test(it.n));
+    const pull=d.items.find(it=>it.t==="lift" && /Pull-?up/i.test(it.n));
+    if(main && main.pct!=null){
+      const wu={t:"warmup", mode:d.type, pct:main.pct, lift:main.lift};
+      if(pull && pull.add!=null) wu.pull=pull.add;
+      d.items.unshift(wu);
+    }
   }
-  const grid=document.createElement('div'); grid.className='grid today-grid';
-  todays.forEach(w=>grid.appendChild(card(w)));
-  host.appendChild(grid);
-}
+}));
 
-function renderAll(){
-  renderToday();
-  const c=renderSection('current','current',true);
-  const u=renderSection('upcoming','future',false);
-  renderArchive();
-  if(c+u===0 && !DATA.some(d=>d.section==='past'&&active.has(d.type)))
-    document.getElementById('upcoming').innerHTML='<div class="empty">No workouts match this filter.</div>';
-}
+/* ---- build flat index + ids ---- */
+PLAN.forEach(w=>w.days.forEach(d=>{ d.wk=w.wk; d.phase=w.phase;
+  d.items.forEach((it,i)=> it.id = d.date+"#"+i );
+}));
+const ALL_ITEMS = []; PLAN.forEach(w=>w.days.forEach(d=>d.items.forEach(it=>ALL_ITEMS.push(it.id))));
 
-function addonHtml(a){
-  if(!a) return '';
-  return `<div class="addon"><span class="addon-tag">+ Optional</span> <span class="addon-txt">${a}</span></div>`;
-}
+/* ============ STATUS ============ */
+const isDone = id => !!S.checks[id];
+const dayDone = d => d.items.every(it=>isDone(it.id));
+const weekItemIds = w => w.days.flatMap(d=>d.items.map(it=>it.id));
+const weekAllDone = w => weekItemIds(w).every(isDone);
+const weekArchived = w => (TODAY > w.end) || weekAllDone(w);
+function weekProgress(w){ const ids=weekItemIds(w); const dn=ids.filter(isDone).length; return ids.length? dn/ids.length : 0; }
 
-function fuelHtml(n){
-  if(!n) return '';
-  const pp = [];
-  if(n.pre && n.pre!=='—') pp.push(`<div class="pp-line"><span class="lbl">Pre-workout</span> ${n.pre}${n.pre_when?` <span class="when">· ${n.pre_when}</span>`:''}</div>`);
-  if(n.post && n.post!=='—') pp.push(`<div class="pp-line"><span class="lbl">Post-workout</span> ${n.post}${n.post_when?` <span class="when">· ${n.post_when}</span>`:''}</div>`);
-  const tip = n.tip?`<div class="fuel-tip">${n.tip}</div>`:'';
-  return `<div class="fuel">
-    <div class="fuel-total">${n.kcal.toLocaleString()} cals <span class="fuel-macroline">(${n.protein_g}g protein / ${n.carb_g}g carbs / ${n.fat_g}g fat)</span></div>
-    <div class="fuel-pp">${pp.join('')}</div>
-    ${tip}
-  </div>`;
+/* ============ RENDER ============ */
+function rirFor(name){
+  const n=name.toLowerCase();
+  if(/jump|clean|snatch|plyo/.test(n)) return {t:"power", txt:"RIR 3–4"};
+  if(/squat|bench|pull-?up/.test(n)) return {t:"main", txt:"RIR 1–2"};
+  return {t:"sec", txt:"RIR 2–3"};
 }
-
-function card(w){
-  if(w.kind==='cfnyc' || w.kind==='squat' || w.kind==='rest'){
-    const el=document.createElement('div'); el.className='card strength-card'+(w.template?' tpl':''); el.style.setProperty('--c',w.color);
-    const blocks = (w.blocks||[]).map(b=>`<li>${b}</li>`).join('');
-    const phaseBadge = w.phase?`<span class="phase">${w.phase}</span>`:'';
-    el.innerHTML=`
-      <div class="c-top">
-        <div class="c-day">${w.dow} · ${w.nice}</div>
-        <div class="c-name">${w.name}</div>
-        <span class="badge">${w.type}</span> ${phaseBadge}
-      </div>
-      <div class="c-meta" style="padding-top:0"><span>${w.summary||''}</span></div>
-      <div class="c-foot"><div class="c-foot-lbl">Session</div><ul class="strength-list">${blocks}</ul></div>
-      ${addonHtml(w.addon)}
-      ${fuelHtml(w.nutrition)}`;
-    return el;
+function warmupHTML(it){
+  const done=isDone(it.id);
+  const W=wt(it.pct,it.lift);
+  const reps = it.mode==="lower"?[5,3,2,2,1]:[8,5,3,2,1];
+  const pcts=[0.20,0.40,0.60,0.75,0.85];
+  const ladder=pcts.map((p,i)=>{ const l=round5(W*p); return (l<45?"Bar":l)+"×"+reps[i]; }).join(" → ");
+  const joint = it.mode==="lower" ? "5 bodyweight squats + 5 hinges" : "5 scap push-ups";
+  const cap = it.mode==="lower" ? "≤ 10–12 min" : "≤ 8–10 min";
+  let pull="";
+  if(it.pull!=null){ pull='<div class="wuline">Pull-ups · BW×3–5 → +'+round5(it.pull*0.5)+'×1–2 → work</div>'; }
+  return '<div class="dayitem warmup'+(done?" done":"")+'" data-id="'+it.id+'">'
+    + '<div class="box">✓</div>'
+    + '<div class="itxt">'
+      + '<div class="iname">Warm-up <span class="wucap">'+cap+' · prime, don\'t fatigue</span></div>'
+      + '<div class="wuline">Raise 3–5 min easy row · '+joint+'</div>'
+      + '<div class="wuramp">'+ladder+' → <b>'+W+'</b> work</div>'
+      + pull
+    + '</div></div>';
+}
+function loadReadout(it){
+  if(it.t==="row") return {val:it.pace, lbl:"split /500m"};
+  if(it.t==="lift"){
+    if(it.pct!=null) return {val:wt(it.pct,it.lift)+" lb", lbl:it.pct+"% "+it.lift};
+    if(it.w!=null) return {val:it.w+" lb", lbl:it.note||""};
+    if(it.add!=null) return {val:"+"+it.add+" lb", lbl:"added"};
+    if(it.bw) return {val:"bodyweight", lbl:it.note||""};
+    if(it.w===null) return {val:it.note||"heavy", lbl:""}; // chest row etc, no number
   }
-  const el=document.createElement('div'); el.className='card'+(w.done?' done':''); el.style.setProperty('--c',w.color);
-  const check = w.done?'<div class="check">✓</div>':'';
-  const repBox = w.repRange ? `<div class="pace-box"><div class="pace-lbl">Per rep ${w.dist?('· '+w.dist+'m'):''}</div>
-      <div class="pace-val">${w.repRange}</div><div class="pace-sub">target / interval</div></div>` : '';
-  const structure = [
-    w.reps?`<span><b>${w.reps}</b> ${w.dist?('× '+w.dist+'m'):(w.dur?('× '+w.dur):'reps')}</span>`:'',
-    w.rate?`<span>Rate <b>${w.rate}</b> s/m</span>`:'',
-    (w.rest && w.rest!=='—')?`<span>Rest <b>${w.rest}</b></span>`:'',
-    `<span>Intensity <b>${w.intensity[0]}–${w.intensity[1]}%</b></span>`
-  ].filter(Boolean).join('');
-
-  let resultHtml='';
-  if(w.done){
-    const dn=w.done;
-    const zoneCls = dn.in_zone?'zone-in':'';
-    const zoneText = dn.in_zone?'In ✓':(dn.zone_note?'± Note':'Off');
-    const dateNice = new Date(dn.date_done+'T00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
-    resultHtml = `<div class="result">
-      <div class="result-hd">✓ Completed · ${dateNice}</div>
-      <div class="result-row">
-        <div class="r-box"><div class="r-lbl">Actual split</div><div class="r-val ${zoneCls}">${dn.actual_split}</div></div>
-        <div class="r-box"><div class="r-lbl">Target</div><div class="r-val">${w.splitRange}</div></div>
-        <div class="r-box"><div class="r-lbl">Zone</div><div class="r-val ${zoneCls}">${zoneText}</div></div>
-      </div>
-      ${dn.zone_note?`<div class="zone-note">${dn.zone_note}</div>`:''}
-      <div class="r-extra"><b>${(dn.distance_m||0).toLocaleString()}m</b> · <b>${dn.time}</b> · rate <b>${dn.avg_rate}</b> · <b>${dn.calories}</b> cal${dn.actual_split_note?(' · '+dn.actual_split_note):''}</div>
-      ${dn.concept2_id?`<a class="logbook-link" href="https://log.concept2.com/profile/2198296/log/${dn.concept2_id}" target="_blank" rel="noopener">↗ View in Concept2 logbook</a>`:''}
-    </div>`;
+  return null;
+}
+function itemHTML(it){
+  if(it.t==="warmup") return warmupHTML(it);
+  const done=isDone(it.id);
+  const ro=loadReadout(it);
+  let sub="";
+  if(it.t==="lift"){
+    const r=rirFor(it.n);
+    sub = it.s + ' · <span class="rir rir-'+r.t+'">'+r.txt+'</span>';
+    if(it.note && it.w!==null) sub += " · "+it.note;
   }
+  else if(it.t==="row"){ sub = it.rest||""; }
+  let right="";
+  if(ro && ro.val){
+    right = '<div class="iright"><span class="readout">'+ro.val+'</span>'+(ro.lbl?'<span class="readlbl">'+ro.lbl+'</span>':'')+'</div>';
+  }
+  return '<div class="dayitem'+(done?" done":"")+'" data-id="'+it.id+'">'
+    + '<div class="box">✓</div>'
+    + '<div class="itxt"><div class="iname">'+it.n+'</div>'+(sub?'<div class="isub">'+sub+'</div>':'')+'</div>'
+    + right + '</div>';
+}
+function fuelLine(type){
+  if(type==="rest") return '<span class="fuel"><b>Rest fuel</b> · 2,000–2,150 kcal · 145g P · low carb</span>';
+  if(type==="z2") return '<span class="fuel"><b>Z2 fuel</b> · ~2,200–2,350 kcal · 145g P · moderate carb</span>';
+  return '<span class="fuel"><b>Train fuel</b> · 2,350–2,550 kcal · 145g P · 270–320g C</span>';
+}
+function dayCard(d, opts){
+  opts=opts||{};
+  const done=dayDone(d);
+  const col=PHASE_COLOR[d.type];
+  const open = opts.forceOpen!==undefined ? opts.forceOpen : !!S.open[d.date];
+  const tag=TYPE_LABEL[d.type];
+  const items = d.items.map(itemHTML).join("");
+  const allBtn = (d.type==="rest"||d.items.length<=1)
+    ? '<button class="allbtn" data-day="'+d.date+'">'+(done?"Undo":"Mark done")+'</button>'
+    : '<button class="allbtn" data-day="'+d.date+'">'+(done?"Undo all":"Mark all done")+'</button>';
+  return '<div class="card'+(open?" open":"")+(opts.today?" today":"")+'" data-card="'+d.date+'">'
+   + '<button class="chead" data-toggle="'+d.date+'">'
+     + '<span class="ico" style="background:'+col+'">'+TYPE_ICO[d.type]+'</span>'
+     + '<span class="meta"><span class="day">'+d.dow+' · '+fmtDate(d.date)+'</span><span class="ttl">'+d.title+'</span></span>'
+     + '<span class="rt"><span class="tag" style="color:'+col+';background:'+col+'1a">'+tag+'</span>'
+        + '<span class="mini">'+(done?"done":d.items.filter(i=>isDone(i.id)).length+"/"+d.items.length)+'</span></span>'
+     + '<span class="chev">▶</span>'
+   + '</button>'
+   + '<div class="cbody">'+items
+     + '<div class="dfoot">'+fuelLine(d.type)+allBtn+'</div>'
+   + '</div></div>';
+}
+function fmtDate(iso){ const [y,m,da]=iso.split("-").map(Number); const mo=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m-1]; return mo+" "+da; }
 
-  el.innerHTML=`
-    <div class="c-top">${check}
-      <div class="c-day">${w.dow} · ${w.nice}</div>
-      <div class="c-name">${w.name}</div>
-      <span class="badge">${w.type}</span>
-    </div>
-    <div class="paces">
-      <div class="pace-box"><div class="pace-lbl">500m split</div>
-        <div class="pace-val">${w.splitRange}</div><div class="pace-sub">${w.intensity[1]}% → ${w.intensity[0]}%</div></div>
-      ${repBox}
-    </div>
-    <div class="c-meta">${structure}</div>
-    ${resultHtml}
-    <div class="c-foot"><div class="c-foot-lbl">Full workout</div><div class="c-desc">${w.desc}</div></div>
-    ${addonHtml(w.addon)}
-    ${fuelHtml(w.nutrition)}`;
-  return el;
+function findToday(){
+  for(const w of PLAN) for(const d of w.days) if(d.date===TODAY) return d;
+  return null;
+}
+function findNext(){
+  for(const w of PLAN) for(const d of w.days) if(d.date>TODAY) return d;
+  return null;
 }
 
-document.getElementById('syncBtn').onclick=function(){
-  if(typeof sendPrompt==='function'){
-    sendPrompt('Sync my rowing plan with my Concept2 logbook for this week, update the page, and re-push to GitHub.');
-  } else {
-    document.getElementById('syncHint').textContent='To sync: open this page inside Claude and say "sync my rowing plan". Your Concept2 results get matched, baked into the page, and re-published here.';
+function render(){
+  // header date
+  const wd=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][new Date().getDay()];
+  document.getElementById("hdate").textContent = " — "+wd+", "+fmtDate(TODAY);
+
+  // overall progress
+  const dn=ALL_ITEMS.filter(isDone).length, tot=ALL_ITEMS.length, pc=Math.round(dn/tot*100);
+  document.getElementById("progBar").style.width=pc+"%";
+  document.getElementById("progPct").textContent=pc+"%";
+
+  // rail
+  document.getElementById("rail").innerHTML = PLAN.map(w=>{
+    const p=Math.round(weekProgress(w)*100);
+    const cur = TODAY>=w.start && TODAY<=w.end;
+    return '<button class="seg ph-'+w.phase+(cur?" on":"")+'" data-wk="'+w.wk+'" title="'+w.label+'">'
+      +'<i style="width:'+p+'%"></i><b>'+w.wk+'</b></button>';
+  }).join("");
+
+  // today hero
+  const t=findToday();
+  const eye=document.getElementById("todayEye");
+  const todayEl=document.getElementById("today");
+  if(t){ eye.textContent="Today"; todayEl.innerHTML=dayCard(t,{today:true, forceOpen: (S.open[t.date]!==false)}); }
+  else {
+    const nx=findNext();
+    if(nx){ eye.textContent="Next up"; todayEl.innerHTML=dayCard(nx,{today:true, forceOpen:true}); }
+    else if(TODAY>PLAN[PLAN.length-1].end){ eye.textContent="Block complete"; todayEl.innerHTML='<div class="refcard"><div class="iname">Block done — Jun 19 → Aug 30 🏁</div><div class="note">Log your 1-min and 2k test numbers, then build the next block.</div></div>'; }
+    else { eye.textContent="Starts soon"; todayEl.innerHTML='<div class="refcard"><div class="iname">Block starts Jun 19</div></div>'; }
   }
+
+  // active weeks (not archived). skip the day already shown as today inside its week? keep full week for context.
+  const active = PLAN.filter(w=>!weekArchived(w));
+  document.getElementById("weeks").innerHTML = active.map(w=>{
+    const head='<div class="eyebrow" style="margin-top:6px">'+w.label+' · '+w.range+'</div>';
+    const cur = TODAY>=w.start && TODAY<=w.end;
+    const days=w.days.map(d=>{
+      // collapse non-today days by default; if user toggled, respect S.open
+      const def = (d.date===TODAY);
+      const open = (d.date in S.open)? S.open[d.date] : def;
+      return dayCard(d,{forceOpen:open});
+    }).join("");
+    return head+days;
+  }).join("");
+
+  // archive
+  const arch = PLAN.filter(weekArchived);
+  const arcWrap=document.getElementById("arcWrap");
+  if(arch.length){
+    arcWrap.style.display="block";
+    document.getElementById("arcSum").textContent="Archive · "+arch.length+" week"+(arch.length>1?"s":"");
+    document.getElementById("archive").innerHTML = arch.map(w=>{
+      const head='<div class="eyebrow" style="margin-top:6px">'+w.label+' · '+w.range+' · '+Math.round(weekProgress(w)*100)+'% done</div>';
+      const days=w.days.map(d=>dayCard(d,{forceOpen:(d.date in S.open)?S.open[d.date]:false})).join("");
+      return head+days;
+    }).join("");
+  } else { arcWrap.style.display="none"; }
+}
+
+/* ============ EVENTS ============ */
+document.body.addEventListener("click",e=>{
+  const item=e.target.closest(".dayitem");
+  const toggle=e.target.closest("[data-toggle]");
+  const allb=e.target.closest("[data-day]");
+  const seg=e.target.closest("[data-wk]");
+
+  if(item){ const id=item.dataset.id; S.checks[id]=!S.checks[id]; save(); render(); return; }
+  if(allb){ const date=allb.dataset.day; const day=PLAN.flatMap(w=>w.days).find(d=>d.date===date);
+    const done=dayDone(day); day.items.forEach(it=>S.checks[it.id]=!done); save(); render(); return; }
+  if(toggle){ const date=toggle.dataset.toggle; const card=toggle.closest(".card");
+    const nowOpen=!card.classList.contains("open"); S.open[date]=nowOpen; card.classList.toggle("open"); save(); return; }
+  if(seg){ const wk=+seg.dataset.wk; const w=PLAN.find(x=>x.wk===wk);
+    // expand week's middle day & scroll
+    const el=document.querySelector('[data-card="'+w.days[Math.min(2,w.days.length-1)].date+'"]')||document.querySelector('[data-card="'+w.start+'"]');
+    if(el) el.scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+});
+
+/* pace slider */
+const zs=document.getElementById("zslide"), zo=document.getElementById("zout"), zp=document.getElementById("zpct");
+function zupd(){ zo.textContent=zonePace(+zs.value); zp.textContent=zs.value+"%"; }
+zs.addEventListener("input",zupd); zupd();
+
+/* settings */
+const scrim=document.getElementById("scrim");
+function openMax(){ document.getElementById("mx-bs").value=S.max.bs; document.getElementById("mx-fs").value=S.max.fs; document.getElementById("mx-bench").value=S.max.bench; scrim.classList.add("show"); }
+document.getElementById("gearBtn").onclick=openMax;
+scrim.addEventListener("click",e=>{ if(e.target===scrim) scrim.classList.remove("show"); });
+document.getElementById("saveMax").onclick=()=>{
+  const bs=+document.getElementById("mx-bs").value||S.max.bs;
+  const fs=+document.getElementById("mx-fs").value||S.max.fs;
+  const bench=+document.getElementById("mx-bench").value||S.max.bench;
+  S.max={bs,fs,bench}; save(); scrim.classList.remove("show"); render();
+};
+document.getElementById("resetAll").onclick=()=>{
+  if(confirm("Clear all check-offs for the whole block? Your maxes stay.")){ S.checks={}; S.open={}; save(); scrim.classList.remove("show"); render(); }
 };
 
-renderFilters(); renderAll();
+render();
 </script>
-</body></html>
+</body>
+</html>
