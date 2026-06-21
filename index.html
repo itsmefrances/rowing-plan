@@ -200,6 +200,26 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
 .effsheet .msec{padding:0; margin-top:18px}
 .effsheet .msec:first-of-type{margin-top:8px}
 .effsheet .eyebrow{margin:0 2px 10px}
+
+/* logbook result panel on completed row days */
+.result{margin:10px 2px 2px; border:1px solid var(--accdim); border-radius:11px; overflow:hidden;
+  background:linear-gradient(180deg,rgba(14,157,108,.05),transparent)}
+.rhead{display:flex; align-items:center; gap:8px; padding:9px 11px; flex-wrap:wrap}
+.rhead .rttl{font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--acc); font-weight:600}
+.verdict{font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+  padding:2px 8px; border-radius:99px}
+.verdict.in{color:var(--acc); background:rgba(14,157,108,.13)}
+.verdict.above{color:var(--vo2); background:rgba(123,70,212,.13)}
+.verdict.below{color:var(--sprint); background:rgba(216,58,58,.12)}
+.verdict.na{color:var(--mut); background:var(--panel2)}
+.rlink{margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--acc); text-decoration:none;
+  border:1px solid var(--accdim); border-radius:8px; padding:3px 9px; background:var(--panel)}
+.rlink:hover{background:#e3f5ec}
+.rbody{padding:2px 11px 11px; display:flex; flex-wrap:wrap; gap:6px 16px}
+.rstat{font-family:var(--mono); font-size:11.5px; color:var(--mut)}
+.rstat b{color:var(--ink); font-weight:600}
+.rcompare{font-family:var(--mono); font-size:11.5px; color:var(--mut); padding:0 11px 11px; line-height:1.5}
+.rcompare b{color:var(--ink); font-weight:500}
 </style>
 </head>
 <body>
@@ -299,6 +319,16 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
 /* ============ MAXES (editable) ============ */
 const DEFAULT_MAX = {bs:230, fs:180, bench:130};
 const LIFT_NAME = {bs:"Back Squat", fs:"Front Squat", bench:"Bench Press"};
+
+/* ============ LOGBOOK RESULTS (auto-updated daily from Concept2) ============ */
+/* date -> {id, link, dist (m), time, pace (avg /500m), rate, verdict:'in'|'above'|'below'|'na', workPace (intervals), note} */
+/* Updated: 2026-06-21 */
+const RESULTS = {
+  "2026-06-21": {id:117775804, link:"https://log.concept2.com/profile/2198296/log/117775804",
+    dist:21097, time:"1:35:58.0", pace:"2:16.5", rate:24,
+    band:"2:15–2:25", verdict:"in", note:"Solstice 21.1\u202fkm \u2014 avg 2:16.5 sits right inside the 2:15\u20132:25 endurance band."}
+};
+const LOGBOOK_BASE = "https://log.concept2.com/profile/2198296/log/";
 
 /* ============ STATE ============ */
 const KEY="recomp-tracker-2026";
@@ -442,6 +472,13 @@ PLAN.forEach(w=>w.days.forEach(d=>{ d.wk=w.wk; d.phase=w.phase;
 }));
 const ALL_ITEMS = []; PLAN.forEach(w=>w.days.forEach(d=>d.items.forEach(it=>ALL_ITEMS.push(it.id))));
 
+/* ---- auto-complete row days that have a matched logbook result ---- */
+PLAN.forEach(w=>w.days.forEach(d=>{
+  if(RESULTS[d.date] && d.items.some(it=>it.t==="row")){
+    d.items.forEach(it=>{ if(it.t==="row") S.checks[it.id]=true; });
+  }
+}));
+
 /* ============ STATUS ============ */
 const isDone = id => !!S.checks[id];
 const dayDone = d => d.items.every(it=>isDone(it.id));
@@ -542,11 +579,39 @@ function dayCard(d, opts){
         + '<span class="mini">'+(done?"done":d.items.filter(i=>isDone(i.id)).length+"/"+d.items.length)+'</span></span>'
      + '<span class="chev">▶</span>'
    + '</button>'
-   + '<div class="cbody">'+items
+   + '<div class="cbody">'+items + resultHTML(d)
      + '<div class="dfoot">'+fuelLine(d.type)+allBtn+'</div>'
    + '</div></div>';
 }
 function fmtDate(iso){ const [y,m,da]=iso.split("-").map(Number); const mo=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m-1]; return mo+" "+da; }
+
+function dayResult(d){ return RESULTS[d.date] || null; }
+function dayHasRow(d){ return d.items.some(it=>it.t==="row"); }
+function verdictLabel(v){
+  if(v==="in") return {cls:"in", txt:"In zone"};
+  if(v==="above") return {cls:"above", txt:"Above \u00b7 faster"};
+  if(v==="below") return {cls:"below", txt:"Below \u00b7 slower"};
+  return {cls:"na", txt:"Logged"};
+}
+function resultHTML(d){
+  const r=dayResult(d); if(!r) return "";
+  const vl=verdictLabel(r.verdict);
+  const km=(r.dist/1000);
+  const distTxt = km>=1 ? (km.toFixed(km>=10?1:2)+" km") : (r.dist+" m");
+  let stats='<span class="rstat"><b>'+distTxt+'</b> dist</span>'
+    + '<span class="rstat"><b>'+r.time+'</b> time</span>'
+    + '<span class="rstat"><b>'+r.pace+'</b> avg /500m</span>'
+    + (r.rate?'<span class="rstat"><b>'+r.rate+'</b> s/m</span>':'');
+  return '<div class="result">'
+    + '<div class="rhead">'
+      + '<span class="rttl">Logbook \u00b7 completed</span>'
+      + '<span class="verdict '+vl.cls+'">'+vl.txt+'</span>'
+      + '<a class="rlink" href="'+r.link+'" target="_blank" rel="noopener">View \u2197</a>'
+    + '</div>'
+    + '<div class="rbody">'+stats+'</div>'
+    + (r.note?'<div class="rcompare">'+r.note+'</div>':'')
+  + '</div>';
+}
 
 function findToday(){
   for(const w of PLAN) for(const d of w.days) if(d.date===TODAY) return d;
