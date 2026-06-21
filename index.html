@@ -194,13 +194,19 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
   letter-spacing:.06em; text-transform:uppercase; padding:8px}
 .foot{text-align:center; color:var(--faint); font-family:var(--mono); font-size:10.5px;
   letter-spacing:.06em; padding:26px 16px 4px}
+
+/* effort sheet — scrollable, embeds the reference sections */
+.effsheet{max-height:86vh; overflow-y:auto; -webkit-overflow-scrolling:touch}
+.effsheet .msec{padding:0; margin-top:18px}
+.effsheet .msec:first-of-type{margin-top:8px}
+.effsheet .eyebrow{margin:0 2px 10px}
 </style>
 </head>
 <body>
 <header>
   <div class="htop">
     <div class="brand">Recomp Block<small id="hdate">— —</small></div>
-    <button class="gear" id="gearBtn" aria-label="Settings">⚙ MAXES</button>
+    <div style="display:flex; gap:4px"><button class="gear" id="effortBtn" aria-label="Effort, pace zones &amp; fuel">⚙ EFFORT</button><button class="gear" id="gearBtn" aria-label="Settings">⚙ MAXES</button></div>
   </div>
   <div class="prog">
     <div class="bar"><i id="progBar" style="width:0%"></i></div>
@@ -219,7 +225,32 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
   <div id="weeks"></div>
 </div>
 
-<div class="sec" style="padding-bottom:0">
+<details class="arc" id="arcWrap">
+  <summary id="arcSum">Archive</summary>
+  <div id="archive"></div>
+</details>
+
+<div class="foot" id="foot">saves to this device · jun 19 – aug 30</div>
+
+<!-- settings -->
+<div class="scrim" id="scrim">
+  <div class="sheet">
+    <h3>Working maxes</h3>
+    <p>Every strength load is a % of these. Update a max and the whole block recomputes.</p>
+    <div class="maxrow"><label>Back squat <span class="u">1RM</span></label><input type="number" id="mx-bs" inputmode="numeric"></div>
+    <div class="maxrow"><label>Front squat <span class="u">1RM</span></label><input type="number" id="mx-fs" inputmode="numeric"></div>
+    <div class="maxrow"><label>Bench press <span class="u">1RM</span></label><input type="number" id="mx-bench" inputmode="numeric"></div>
+    <button class="done2" id="saveMax">Save</button>
+    <button class="danger" id="resetAll">Reset all progress</button>
+  </div>
+</div>
+
+<!-- effort / reference -->
+<div class="scrim" id="effScrim">
+  <div class="sheet effsheet">
+    <h3>Effort · pace zones &amp; progression</h3>
+    <p>Reference for rowing pace, fuel, and lifting effort — no scrolling needed.</p>
+<div class="msec">
   <div class="eyebrow">Pace zones &amp; fuel</div>
   <div class="refcard">
     <div class="readlbl">500m split at effort %</div>
@@ -240,7 +271,7 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
   </div>
 </div>
 
-<div class="sec" style="padding-bottom:0">
+<div class="msec">
   <div class="eyebrow">Lifting · effort &amp; progression</div>
   <div class="refcard">
     <div class="readlbl">Working-set effort · reps in reserve</div>
@@ -259,24 +290,7 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
     <div class="note"><b>Warm-up</b> on every lifting day ramps as a % of that day's working weight — under the time cap, no fatigue. If a ramp set feels slow, you went too heavy.</div>
   </div>
 </div>
-
-<details class="arc" id="arcWrap">
-  <summary id="arcSum">Archive</summary>
-  <div id="archive"></div>
-</details>
-
-<div class="foot" id="foot">saves to this device · jun 19 – aug 30</div>
-
-<!-- settings -->
-<div class="scrim" id="scrim">
-  <div class="sheet">
-    <h3>Working maxes</h3>
-    <p>Every strength load is a % of these. Update a max and the whole block recomputes.</p>
-    <div class="maxrow"><label>Back squat <span class="u">1RM</span></label><input type="number" id="mx-bs" inputmode="numeric"></div>
-    <div class="maxrow"><label>Front squat <span class="u">1RM</span></label><input type="number" id="mx-fs" inputmode="numeric"></div>
-    <div class="maxrow"><label>Bench press <span class="u">1RM</span></label><input type="number" id="mx-bench" inputmode="numeric"></div>
-    <button class="done2" id="saveMax">Save</button>
-    <button class="danger" id="resetAll">Reset all progress</button>
+    <button class="done2" id="effDone">Done</button>
   </div>
 </div>
 
@@ -640,6 +654,12 @@ document.getElementById("saveMax").onclick=()=>{
 document.getElementById("resetAll").onclick=()=>{
   if(confirm("Clear all check-offs for the whole block? Your maxes stay.")){ S.checks={}; S.open={}; save(); scrim.classList.remove("show"); render(); }
 };
+
+/* effort modal */
+const effScrim=document.getElementById("effScrim");
+document.getElementById("effortBtn").onclick=()=>{ effScrim.classList.add("show"); };
+document.getElementById("effDone").onclick=()=>{ effScrim.classList.remove("show"); };
+effScrim.addEventListener("click",e=>{ if(e.target===effScrim) effScrim.classList.remove("show"); });
 
 render();
 </script>
