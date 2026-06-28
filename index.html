@@ -417,31 +417,26 @@ function loadEntries(){ try{ return JSON.parse(localStorage.getItem(LOGKEY)) || 
 function saveEntries(a){ try{ localStorage.setItem(LOGKEY, JSON.stringify(a)); }catch(e){} }
 let ENTRIES = loadEntries();
 
-/* ---- robust cross-browser write: sendBeacon (primary) + hidden-iframe form POST (fallback) ---- */
-let __pfN = 0;
+/* ---- write via hidden-iframe GET navigation ----
+   Page-JS background requests (fetch/beacon/script/img) do NOT follow Apps Script's
+   cross-origin 302 redirect, so they silently fail in normal browsers. A direct URL
+   navigation DOES follow it. A hidden iframe navigation behaves identically to opening
+   the URL, so it follows the redirect and the write completes. ---- */
+let __ifN = 0;
 function pushToSheet(rec, cb){
-  const params = new URLSearchParams(Object.assign({write:"1"}, Object.keys(rec).reduce((a,k)=>{a[k]=(rec[k]==null?"":rec[k]);return a;},{})));
-  // 1) sendBeacon — purpose-built, no CORS, works in Safari/iOS/Chrome
-  try {
-    if (navigator && navigator.sendBeacon) {
-      const blob = new Blob([params.toString()], {type:"application/x-www-form-urlencoded"});
-      const queued = navigator.sendBeacon(GAS_URL, blob);
-      if (queued) { cb && cb(true); return; }
-    }
-  } catch(e){}
-  // 2) fallback: hidden-iframe form POST
   let done=false;
-  const ifname="__pf"+(++__pfN)+"_"+Date.now();
-  const iframe=document.createElement("iframe"); iframe.name=ifname; iframe.style.display="none";
+  const data = Object.assign({write:"1"}, Object.keys(rec).reduce((a,k)=>{a[k]=(rec[k]==null?"":rec[k]);return a;},{}));
+  const qs = new URLSearchParams(data).toString();
+  const iframe = document.createElement("iframe");
+  iframe.style.display="none";
+  iframe.setAttribute("aria-hidden","true");
+  function cleanup(){ setTimeout(()=>{ try{iframe.remove();}catch(e){} }, 500); }
+  iframe.onload = function(){ if(!done){ done=true; cleanup(); cb && cb(true); } };
+  iframe.onerror = function(){ if(!done){ done=true; cleanup(); cb && cb(false); } };
   document.body.appendChild(iframe);
-  const form=document.createElement("form");
-  form.method="POST"; form.action=GAS_URL; form.target=ifname; form.style.display="none";
-  for (const [k,v] of params.entries()){ const i=document.createElement("input"); i.type="hidden"; i.name=k; i.value=v; form.appendChild(i); }
-  document.body.appendChild(form);
-  function cleanup(){ setTimeout(()=>{ try{form.remove();iframe.remove();}catch(e){} }, 200); }
-  iframe.onload=function(){ if(!done){ done=true; cleanup(); cb && cb(true); } };
-  try{ form.submit(); }catch(e){ if(!done){ done=true; cleanup(); cb && cb(false); } }
-  setTimeout(()=>{ if(!done){ done=true; cleanup(); cb && cb(true); } }, 7000);
+  iframe.src = GAS_URL + "?" + qs + "&_=" + (++__ifN) + "_" + Date.now();
+  // iframe onload fires after redirect completes; timeout as success fallback
+  setTimeout(()=>{ if(!done){ done=true; cleanup(); cb && cb(true); } }, 8000);
 }
 
 // Save a whole exercise: one row per filled set. Each entry tagged synced:false until pushed.
