@@ -222,6 +222,27 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
   border-radius:8px; padding:8px 16px; margin-top:6px}
 .logsave:hover{background:#0c8a5e}
 .loghint{font-family:var(--mono); font-size:10px; color:var(--faint); margin-top:6px}
+.sethead{display:grid; grid-template-columns:34px 1fr 1fr 1fr; gap:6px; margin-bottom:5px;
+  font-family:var(--mono); font-size:9px; letter-spacing:.08em; text-transform:uppercase; color:var(--faint)}
+.sethead .setn{text-align:center}
+.setrow{display:grid; grid-template-columns:34px 1fr 1fr 1fr; gap:6px; margin-bottom:6px; align-items:center}
+.setrow .setn{display:grid; place-items:center; font-family:var(--mono); font-size:12px; font-weight:700; color:var(--mut);
+  background:var(--panel); border:1px solid var(--line); border-radius:7px; height:34px}
+.setrow .si{width:100%; background:var(--panel); border:1px solid var(--line); border-radius:7px; padding:7px 8px;
+  font-family:var(--mono); font-size:13px; color:var(--ink); text-align:center}
+.setrow .si:focus{outline:none; border-color:var(--acc)}
+.saverow{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:4px}
+.savestat{font-family:var(--mono); font-size:11px}
+.savestat.saving{color:var(--mut)} .savestat.ok{color:var(--acc)} .savestat.warn{color:var(--sprint)}
+.logtext{width:100%; background:var(--panel); border:1px solid var(--line); border-radius:9px; padding:9px;
+  font-family:var(--disp); font-size:13.5px; color:var(--ink); resize:vertical; min-height:46px}
+.logtext:focus{outline:none; border-color:var(--acc)}
+.parsehint{margin-top:6px}
+.pspreview{font-family:var(--mono); font-size:11px; color:var(--mut); background:var(--panel2);
+  border:1px solid var(--line); border-radius:8px; padding:7px 9px; line-height:1.7}
+.psrow{display:inline-block; margin-right:10px; color:var(--ink)}
+.psnote{margin-top:3px; color:var(--mut)}
+.psflag{margin-top:3px; color:var(--lower)}
 .loghist{margin:5px 0 2px 36px; font-family:var(--mono); font-size:11px; color:var(--mut); line-height:1.5}
 .loghist b{color:var(--ink); font-weight:600}
 .loghist .hh{color:var(--acc); text-transform:uppercase; letter-spacing:.1em; font-size:9px}
@@ -386,32 +407,110 @@ const RESULTS = {
 };
 const LOGBOOK_BASE = "https://log.concept2.com/profile/2198296/log/";
 
-/* ============ ENTRY LOGGING (weights/notes -> Google Sheet + localStorage) ============ */
+/* ============ ENTRY LOGGING (per-set -> Google Sheet via JSONP + localStorage) ============ */
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyq0ZEWv8ZfkL8XhESm5gU7APsIVvm86VRGt8HFbTVepVQJEixQ4Lk_P9GGdEvodsw/exec";
 const LOGKEY = "recomp-entries-2026";
 function loadEntries(){ try{ return JSON.parse(localStorage.getItem(LOGKEY)) || []; }catch(e){ return []; } }
 function saveEntries(a){ try{ localStorage.setItem(LOGKEY, JSON.stringify(a)); }catch(e){} }
 let ENTRIES = loadEntries();
-// fire-and-forget write via image GET (no CORS preflight, works cross-origin)
-function pushToSheet(rec){
-  const q = new URLSearchParams(Object.assign({write:"1"}, rec)).toString();
-  const img = new Image();
-  img.src = GAS_URL + "?" + q + "&_=" + Date.now();
+
+// Reliable cross-origin write via JSONP <script> tag (follows redirect, executes, real callback)
+let __cbN = 0;
+function pushToSheet(rec, cb){
+  const name = "__recompW" + (++__cbN) + "_" + Date.now();
+  let done = false;
+  window[name] = function(resp){ done = true; cleanup(); cb && cb(true, resp); };
+  function cleanup(){ try{ delete window[name]; }catch(e){} if(s && s.parentNode) s.parentNode.removeChild(s); }
+  const q = new URLSearchParams(Object.assign({write:"1", callback:name}, rec)).toString();
+  const s = document.createElement("script");
+  s.src = GAS_URL + "?" + q + "&_=" + Date.now();
+  s.onerror = function(){ if(!done){ cleanup(); cb && cb(false); } };
+  document.body.appendChild(s);
+  setTimeout(()=>{ if(!done){ cleanup(); cb && cb(false); } }, 9000);
 }
-function logEntry(rec){
-  rec.ts = new Date().toISOString();
-  rec.source = rec.source || "app";
-  ENTRIES.push(rec); saveEntries(ENTRIES);
-  pushToSheet(rec);
+
+// Save a whole exercise: writes one row per filled set, then resolves with success count
+function logSets(meta, sets, notes, statusCb){
+  // meta: {date, day_type, exercise, prescribed}; sets: [{set_num, reps, weight, rir_rpe}]
+  const rows = sets.filter(s=> s.reps!=="" || s.weight!=="" || s.rir_rpe!=="");
+  if(notes && !rows.length){ rows.push({set_num:"", reps:"", weight:"", rir_rpe:""}); } // notes-only
+  if(!rows.length){ statusCb && statusCb("empty"); return; }
+  const ts = new Date().toISOString();
+  let ok=0, fail=0, left=rows.length;
+  rows.forEach((s, i)=>{
+    const rec = Object.assign({}, meta, {
+      set_num: s.set_num||"", reps: s.reps||"", weight: s.weight||"", rir_rpe: s.rir_rpe||"",
+      notes: (i===0? (notes||"") : ""), source:"app", ts:ts
+    });
+    ENTRIES.push(rec); // local copy (instant, never lost)
+    pushToSheet(rec, function(success){
+      success?ok++:fail++; left--;
+      if(left===0){ saveEntries(ENTRIES); statusCb && statusCb(fail? "partial":"ok", {ok:ok,fail:fail}); }
+    });
+  });
 }
-// history for a given exercise+date key (most recent first), from local store
+
+// history helpers (most recent first)
 function entriesFor(date, exercise){
   return ENTRIES.filter(e=>e.date===date && e.exercise===exercise).sort((a,b)=> (b.ts||"").localeCompare(a.ts||""));
 }
-// most recent prior entry for an exercise name (any date) — for "last time" hints
 function lastEntryFor(exercise, beforeDate){
   return ENTRIES.filter(e=>e.exercise===exercise && (!beforeDate || e.date < beforeDate))
     .sort((a,b)=> (b.date||"").localeCompare(a.date||""))[0] || null;
+}
+
+/* ============ PLAIN-TEXT PARSER ============ */
+// parse "5x3 185 for each, RIR 2,2,3,3,1, felt good" -> {sets:[{set_num,reps,weight,rir_rpe}], notes, flags}
+function parseEntry(text){
+  const flags=[]; const rawTxt=String(text||"").trim(); let t=" "+rawTxt+" ";
+  let sets=null, reps=null;
+  let m=t.match(/(\d+)\s*[x×]\s*(\d+)/i);
+  if(m){ sets=+m[1]; reps=+m[2]; }
+  else { let ms=t.match(/(\d+)\s*sets?\s*(?:of\s*)?(\d+)?/i); if(ms){ sets=+ms[1]; if(ms[2])reps=+ms[2]; } }
+  // RIR/RPE
+  let rirList=null, rirAll=null, rirType="RIR";
+  let rmAll=t.match(/\b(rir|rpe)\b\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*(?:for\s+)?all/i);
+  let rm=t.match(/\b(rir|rpe)\b\s*[:\-]?\s*((?:\d+(?:\.\d+)?\s*,\s*)+\d+(?:\.\d+)?)/i);
+  let rm1=t.match(/\b(rir|rpe)\b\s*[:\-]?\s*(\d+(?:\.\d+)?)/i);
+  if(rmAll){ rirType=rmAll[1].toUpperCase(); rirAll=rmAll[2]; }
+  else if(rm){ rirType=rm[1].toUpperCase(); rirList=rm[2].split(/\s*,\s*/).map(s=>s.trim()); }
+  else if(rm1){ rirType=rm1[1].toUpperCase(); rirAll=rm1[2]; }
+  let body=t.replace(/\b(rir|rpe)\b\s*[:\-]?\s*(?:\d+(?:\.\d+)?\s*,?\s*)+(?:for\s+)?(?:all)?/ig," ");
+  // weight forms
+  let weightEach=null, weightList=null;
+  if(/body\s*weight|bodyweight|\bbw\b/i.test(body)) weightEach="BW";
+  let plus=body.match(/\+\s*(\d+(?:\.\d+)?)/); if(plus) weightEach="+"+plus[1];
+  let stack=body.match(/stack\s*(\d+)/i); if(stack) weightEach="stack "+stack[1];
+  let wl=body.match(/\b(\d{2,3}(?:\.\d+)?(?:\s*,\s*\d{2,3}(?:\.\d+)?){1,})/);
+  if(!weightEach && wl){ weightList=wl[1].split(/\s*,\s*/).map(Number); }
+  if(weightEach==null && !weightList){
+    let we=body.match(/(?:@|at\s+)\s*(\d{2,3}(?:\.\d+)?)/i) || body.match(/(\d{2,3}(?:\.\d+)?)\s*(?:lbs?\b|#|for\s+each|each|all|throughout)/i);
+    if(we) weightEach=+we[1];
+    else { let rest=body.replace(/\d+\s*[x×]\s*\d+/ig," "); let lone=rest.match(/(?:^|\s)(\d{2,3}(?:\.\d+)?)(?=\s|$)/); if(lone) weightEach=+lone[1]; }
+  }
+  if(!sets){ sets=rirList?rirList.length:(weightList?weightList.length:1); if(sets===1 && !m) flags.push("sets unclear, assumed 1"); }
+  if(reps==null){ reps=""; flags.push("reps not found"); }
+  const out=[];
+  for(let i=0;i<sets;i++){
+    let w=weightList?(weightList[i]!=null?weightList[i]:weightList[weightList.length-1]):(weightEach!=null?weightEach:"");
+    let r=rirAll!=null?rirAll:(rirList?(rirList[i]!=null?rirList[i]:""):"");
+    out.push({set_num:i+1, reps:reps, weight:w, rir_rpe:r});
+  }
+  if(rirList && rirList.length!==sets) flags.push("RIR count ("+rirList.length+")≠sets ("+sets+")");
+  if(weightEach==null && !weightList) flags.push("weight not found");
+  // notes
+  let notes=rawTxt;
+  notes=notes.replace(/\b(rir|rpe)\b\s*[:\-]?\s*(?:\d+(?:\.\d+)?\s*,?\s*)+(?:for\s+)?(?:all)?/ig," ");
+  notes=notes.replace(/\d+\s*[x×]\s*\d+/ig," ");
+  notes=notes.replace(/\d+\s*sets?\s*(?:of\s*)?\d*/ig," ");
+  if(weightList) weightList.forEach(w=>{ notes=notes.replace(new RegExp("\\b"+w+"\\b"),""); });
+  notes=notes.replace(/(?:@|at\s+)\s*\d{2,3}(?:\.\d+)?/ig," ");
+  notes=notes.replace(/\b\d{2,3}(?:\.\d+)?\s*(?:lbs?\b|#|for\s+each|each|all|throughout)/ig," ");
+  notes=notes.replace(/\bstack\s*\d+/ig," ").replace(/\+\s*\d+(?:\.\d+)?/g," ").replace(/\b(body\s*weight|bodyweight|bw)\b/ig," ");
+  if(weightEach!=null && typeof weightEach==="number") notes=notes.replace(new RegExp("\\b"+weightEach+"\\b"),"");
+  notes=notes.replace(/\b(for each|each|of|sets?|reps?|weight|lbs?|all|at)\b/ig," ");
+  notes=notes.replace(/[,;.\-]+/g," ").replace(/\s+/g," ").trim();
+  return {sets:out, notes:notes, flags:flags, rirType:rirType};
 }
 
 /* ============ STATE ============ */
@@ -646,50 +745,47 @@ function fuelLine(type){
   return '<span class="fuel"><b>Train fuel</b> · 2,350–2,550 kcal · 145g P · 270–320g C</span>';
 }
 function exItems(d){
-  // returns array of {name, prescribed, dtype} for loggable exercises (lifts + machines) on day d
   const out=[];
   d.items.forEach(it=>{
-    if(it.t==="lift"){ let pres=it.s||""; if(it.pct!=null)pres+=" @ "+it.pct+"%"; else if(it.w!=null)pres+=" @ "+it.w+"lb"; else if(it.add!=null)pres+=" +"+it.add+"lb"; out.push({name:it.n,prescribed:pres.trim(),dtype:d.type}); }
-    else if(it.t==="mach"){ out.push({name:it.n,prescribed:it.sets||"",dtype:d.type}); }
+    if(it.t==="lift"){
+      let pres=it.s||""; if(it.pct!=null)pres+=" @ "+wt(it.pct,it.lift)+"lb ("+it.pct+"%)"; else if(it.w!=null)pres+=" @ "+it.w+"lb"; else if(it.add!=null)pres+=" +"+it.add+"lb";
+      out.push({name:it.n, prescribed:pres.trim(), dtype:d.type});
+    } else if(it.t==="mach"){
+      out.push({name:it.n, prescribed:it.sets||"", dtype:d.type});
+    }
   });
   return out;
 }
 function logUIHTML(d){
-  const ex = exItems(d);
-  if(!ex.length) return "";
+  const ex=exItems(d); if(!ex.length) return "";
   return ex.map(x=>{
-    const hist = entriesFor(d.date, x.name);
-    const last = lastEntryFor(x.name, d.date);
+    const hist=entriesFor(d.date, x.name);
+    const last=lastEntryFor(x.name, d.date);
     let histHTML="";
     if(hist.length){
-      const h=hist[0];
-      histHTML='<div class="loghist"><span class="hh">logged</span> '
-        + (h.weight?'<b>'+h.weight+'</b> ':'')
-        + (h.sets_reps?h.sets_reps+' ':'')
-        + (h.rir_rpe?'\u00b7 RIR/RPE '+h.rir_rpe+' ':'')
-        + (h.notes?'\u00b7 '+h.notes:'') + '</div>';
+      const byTs=hist[0].ts;
+      const sess=hist.filter(h=>h.ts===byTs).sort((a,b)=>(+a.set_num||0)-(+b.set_num||0));
+      const parts=sess.filter(h=>h.weight||h.reps).map(h=>(h.weight||"?")+(h.reps?"×"+h.reps:"")+(h.rir_rpe?" @"+h.rir_rpe:""));
+      const note=sess.find(h=>h.notes)?sess.find(h=>h.notes).notes:"";
+      histHTML='<div class="loghist"><span class="hh">logged</span> '+(parts.join("  ·  ")||"—")+(note?'<br>'+esc(note):'')+'</div>';
     } else if(last){
-      histHTML='<div class="loghist"><span class="hh">last '+fmtDate(last.date)+'</span> '
-        + (last.weight?'<b>'+last.weight+'</b> ':'')
-        + (last.sets_reps?last.sets_reps+' ':'')
-        + (last.notes?'\u00b7 '+last.notes:'') + '</div>';
+      histHTML='<div class="loghist"><span class="hh">last '+fmtDate(last.date)+'</span> '+(last.weight?'<b>'+esc(last.weight)+'</b> ':'')+(last.reps?'×'+last.reps+' ':'')+(last.notes?'· '+esc(last.notes):'')+'</div>';
     }
-    const has = hist.length ? " has" : "";
-    const eid = (d.date+"|"+x.name).replace(/[^a-zA-Z0-9]/g,"_");
+    const has=hist.length?" has":"";
+    const eid=(d.date+"|"+x.name).replace(/[^a-zA-Z0-9]/g,"_");
     return '<div class="logwrap" data-ex="'+encodeURIComponent(x.name)+'" data-date="'+d.date+'" data-dtype="'+x.dtype+'" data-pres="'+encodeURIComponent(x.prescribed)+'">'
-      + '<div style="margin:8px 0 0 36px"><button class="logbtn'+has+'" data-logtoggle="'+eid+'">'+(hist.length?"\u2713 Logged \u00b7 edit":"+ Log ")+'</button></div>'
+      + '<div style="margin:8px 0 0 36px"><button class="logbtn'+has+'" data-logtoggle="'+eid+'">'+(hist.length?"✓ Logged · edit":"+ Log")+'</button></div>'
       + histHTML
       + '<div class="logform" id="lf_'+eid+'">'
-        + '<div class="lfrow">'
-          + '<div class="lffield"><label>Weight / setting</label><input type="text" data-f="weight" placeholder="185 / stack 7"></div>'
-          + '<div class="lffield"><label>Sets \u00d7 reps</label><input type="text" data-f="sets_reps" placeholder="3x5"></div>'
-          + '<div class="lffield"><label>RIR / RPE</label><input type="text" data-f="rir_rpe" placeholder="2"></div>'
-        + '</div>'
-        + '<textarea data-f="notes" placeholder="Notes to reference later\u2026"></textarea>'
-        + '<div><button class="logsave" data-logsave="'+eid+'">Save</button><span class="loghint"> prescribed: '+(x.prescribed||"\u2014")+'</span></div>'
+        + '<textarea class="logtext" data-logarea="'+eid+'" placeholder="Plain English — e.g. 5x3 @185, RIR 2,2,3,3,1, felt strong"></textarea>'
+        + '<div class="parsehint" id="ph_'+eid+'"></div>'
+        + '<div class="saverow"><button class="logsave" data-logsave="'+eid+'">Save</button>'
+        + '<span class="savestat" id="st_'+eid+'"></span>'
+        + '<span class="loghint">prescribed: '+(esc(x.prescribed)||"—")+'</span></div>'
       + '</div></div>';
   }).join("");
 }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function dayCard(d, opts){
   opts=opts||{};
   const done=dayDone(d);
@@ -828,15 +924,26 @@ document.body.addEventListener("click",e=>{
   }
   const lt=e.target.closest("[data-logtoggle]");
   if(lt){ const f=document.getElementById("lf_"+lt.dataset.logtoggle); if(f) f.classList.toggle("show"); return; }
+  const lta=e.target.closest("[data-logarea]");
+  // live parse preview as you type is wired separately; here handle save
   const ls=e.target.closest("[data-logsave]");
   if(ls){
     const wrap=ls.closest(".logwrap"); const form=ls.closest(".logform");
-    const get=f=>{ const el=form.querySelector('[data-f="'+f+'"]'); return el?el.value.trim():""; };
-    const rec={ date:wrap.dataset.date, day_type:wrap.dataset.dtype,
-      exercise:decodeURIComponent(wrap.dataset.ex), prescribed:decodeURIComponent(wrap.dataset.pres),
-      weight:get("weight"), sets_reps:get("sets_reps"), rir_rpe:get("rir_rpe"), notes:get("notes") };
-    if(!rec.weight && !rec.sets_reps && !rec.notes && !rec.rir_rpe){ return; }
-    logEntry(rec); render();
+    const meta={ date:wrap.dataset.date, day_type:wrap.dataset.dtype,
+      exercise:decodeURIComponent(wrap.dataset.ex), prescribed:decodeURIComponent(wrap.dataset.pres) };
+    const area=form.querySelector("[data-logarea]"); const txt=area?area.value.trim():"";
+    const stat=document.getElementById("st_"+ls.dataset.logsave);
+    if(!txt){ if(stat){stat.textContent="type something first"; stat.className="savestat warn";} return; }
+    const p=parseEntry(txt);
+    if(stat){ stat.textContent="saving…"; stat.className="savestat saving"; }
+    logSets(meta, p.sets, p.notes, function(state, info){
+      if(!stat) return;
+      let flag = p.flags.length? " · ⚠ "+p.flags.join("; ") : "";
+      if(state==="ok"){ stat.textContent="✓ saved "+p.sets.length+" set"+(p.sets.length>1?"s":"")+flag; stat.className="savestat "+(p.flags.length?"warn":"ok"); setTimeout(()=>render(),900); }
+      else if(state==="partial"){ stat.textContent="⚠ saved "+info.ok+", "+info.fail+" failed — retry"; stat.className="savestat warn"; }
+      else if(state==="empty"){ stat.textContent="nothing parsed — add reps/weight"; stat.className="savestat warn"; }
+      else { stat.textContent="⚠ not saved — check connection, retry"; stat.className="savestat warn"; }
+    });
     return;
   }
 });
@@ -876,10 +983,23 @@ effScrim.addEventListener("click",e=>{ if(e.target===effScrim) effScrim.classLis
     const date=(qd&&qd.value)||TODAY;
     // find day_type for that date if it's a plan day
     let dtype=""; for(const w of PLAN) for(const dd of w.days) if(dd.date===date) dtype=dd.type;
-    logEntry({date:date, day_type:dtype, exercise:"(free note)", prescribed:"", weight:"", sets_reps:"", rir_rpe:"", notes:txt, source:"app-quick"});
+    logSets({date:date, day_type:dtype, exercise:"(free note)", prescribed:""}, [], txt, function(state){ /* status via toast below */ });
     qt.value=""; toast.textContent="\u2713 logged"; setTimeout(()=>toast.textContent="",2500);
   };
 })();
+
+/* live parse preview under each log box */
+document.body.addEventListener("input", function(e){
+  const a=e.target.closest("[data-logarea]");
+  if(!a) return;
+  const eid=a.dataset.logarea; const ph=document.getElementById("ph_"+eid);
+  if(!ph) return;
+  const txt=a.value.trim();
+  if(!txt){ ph.innerHTML=""; return; }
+  const p=parseEntry(txt);
+  const rows=p.sets.map(s=>'<span class="psrow">set '+s.set_num+': '+(s.reps!==""?s.reps+'r':'?r')+' '+(s.weight!==""?s.weight:'—')+(s.rir_rpe!==""?' '+p.rirType+' '+s.rir_rpe:'')+'</span>').join("");
+  ph.innerHTML='<div class="pspreview">'+rows+(p.notes?'<div class="psnote">notes: '+esc(p.notes)+'</div>':'')+(p.flags.length?'<div class="psflag">⚠ '+p.flags.join("; ")+'</div>':'')+'</div>';
+});
 
 render();
 </script>
