@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f4f7">
+<title>Progress · Recomp Block</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#f3f4f7; --panel:#ffffff; --panel2:#eceef2; --line:#e1e4ea;
+  --ink:#1b1e25; --mut:#697080; --faint:#9aa1ad;
+  --acc:#0e9d6c; --accdim:rgba(14,157,108,.24);
+  --lower:#bf7016; --upper:#2d77c7; --sprint:#d83a3a; --vo2:#7b46d4; --endur:#0e8f63; --z2:#0c8c9c;
+  --disp:'Space Grotesk',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg); color:var(--ink); font-family:var(--disp); -webkit-font-smoothing:antialiased;
+  line-height:1.45; padding:env(safe-area-inset-top) 0 calc(40px + env(safe-area-inset-bottom)); max-width:760px; margin:0 auto;}
+h1,h2,h3{margin:0; font-weight:600}
+a{color:var(--acc)}
+header{position:sticky; top:0; z-index:30; background:rgba(243,244,247,.86); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line); padding:14px 18px 12px;}
+.htop{display:flex; align-items:baseline; justify-content:space-between; gap:10px}
+.brand{font-weight:700; font-size:18px; letter-spacing:-.01em}
+.brand small{display:block; font-weight:400; font-size:11px; color:var(--mut); letter-spacing:.14em; text-transform:uppercase; margin-top:2px}
+.back{font-family:var(--mono); font-size:12px; color:var(--mut); text-decoration:none; border:1px solid var(--line);
+  border-radius:8px; padding:5px 10px; background:var(--panel2)}
+.back:hover{color:var(--ink)}
+.sec{padding:20px 16px 4px}
+.eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint);
+  display:flex; align-items:center; gap:8px; margin:0 2px 12px}
+.eyebrow::after{content:''; flex:1; height:1px; background:var(--line)}
+.card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:14px;
+  box-shadow:0 1px 2px rgba(20,24,34,.05),0 4px 14px rgba(20,24,34,.04)}
+.card h3{font-size:14px; margin-bottom:4px}
+.card .sub{font-family:var(--mono); font-size:11px; color:var(--mut); margin-bottom:10px}
+.chartwrap{position:relative; height:240px}
+.stat{display:flex; gap:18px; flex-wrap:wrap; margin:2px 0 6px}
+.stat .s{font-family:var(--mono); font-size:12px; color:var(--mut)}
+.stat .s b{color:var(--ink); font-weight:600; font-size:15px; display:block}
+.empty{font-family:var(--mono); font-size:12px; color:var(--faint); padding:18px 4px; text-align:center}
+.note{font-size:12.5px; color:var(--mut); margin-top:10px}
+.note b{color:var(--ink)}
+.pill{display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+  padding:2px 8px; border-radius:99px; background:var(--panel2); color:var(--mut); margin:2px 4px 2px 0}
+.tbl{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:11.5px; margin-top:6px}
+.tbl td,.tbl th{padding:5px 6px; border-bottom:1px solid var(--line); text-align:left; color:var(--mut)}
+.tbl th{color:var(--faint); text-transform:uppercase; letter-spacing:.08em; font-size:9px; font-weight:500}
+.tbl td.ex{color:var(--ink); font-weight:500}
+.foot{text-align:center; color:var(--faint); font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; padding:22px 16px 4px}
+.loading{font-family:var(--mono); font-size:12px; color:var(--mut); padding:30px; text-align:center}
+select{font-family:var(--mono); font-size:12px; padding:5px 8px; border:1px solid var(--line); border-radius:8px;
+  background:var(--panel2); color:var(--ink)}
+</style>
+</head>
+<body>
+<header>
+  <div class="htop">
+    <div class="brand">Progress<small>Recomp Block · Jun–Aug</small></div>
+    <a class="back" href="index.html">← Tracker</a>
+  </div>
+</header>
+
+<div id="status" class="loading">Loading your log…</div>
+
+<div class="sec" id="strengthSec" style="display:none">
+  <div class="eyebrow">Strength · load over time</div>
+  <div class="card">
+    <div class="sub">Pick an exercise to see your logged weight/load across sessions.</div>
+    <div style="margin-bottom:10px"><select id="exSel"></select></div>
+    <div class="chartwrap"><canvas id="strengthChart"></canvas></div>
+    <div id="strengthStat" class="stat"></div>
+  </div>
+</div>
+
+<div class="sec" id="rowingSec" style="display:none">
+  <div class="eyebrow">Rowing · pace vs zone</div>
+  <div class="card">
+    <div class="sub">Avg /500m work pace per logged row, colored by how it landed vs the prescribed band.</div>
+    <div class="chartwrap"><canvas id="rowChart"></canvas></div>
+    <div id="rowStat" class="stat"></div>
+  </div>
+</div>
+
+<div class="sec" id="logSec" style="display:none">
+  <div class="eyebrow">Recent entries</div>
+  <div class="card">
+    <table class="tbl" id="logTbl"><thead><tr><th>Date</th><th>Exercise</th><th>Load</th><th>Sets×reps</th><th>RIR/RPE</th><th>Notes</th></tr></thead><tbody></tbody></table>
+    <div id="logEmpty" class="empty" style="display:none">No strength/notes entries yet. Log some on the tracker and they'll appear here.</div>
+  </div>
+</div>
+
+<div class="foot" id="foot">reads your recomp-log Google Sheet + this device's entries</div>
+
+<script>
+"use strict";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyq0ZEWv8ZfkL8XhESm5gU7APsIVvm86VRGt8HFbTVepVQJEixQ4Lk_P9GGdEvodsw/exec";
+const LOGKEY = "recomp-entries-2026";
+
+/* ---- rowing RESULTS: mirrored from the tracker (kept small; refreshed on deploys) ---- */
+const ROW_RESULTS = {
+  "2026-06-21":{date:"2026-06-21",label:"Solstice 21.1km",pace:"2:16.5",band:"2:15–2:25",verdict:"in"},
+  "2026-06-23":{date:"2026-06-23",label:"8×250m sprint",pace:"1:46.5",band:"1:45–1:50",verdict:"in"},
+  "2026-06-26":{date:"2026-06-26",label:"8×500m VO₂",pace:"1:58.2",band:"2:00–2:05",verdict:"above"},
+  "2026-06-27":{date:"2026-06-27",label:"4×7min endurance",pace:"2:06.3",band:"2:05–2:15",verdict:"in"}
+};
+
+function paceToSec(p){ if(!p) return null; const m=String(p).match(/(\d+):(\d+(?:\.\d+)?)/); return m?(+m[1])*60+(+m[2]):null; }
+function localEntries(){ try{ return JSON.parse(localStorage.getItem(LOGKEY))||[]; }catch(e){ return []; } }
+
+/* ---- merge Sheet rows + local entries into one normalized list ---- */
+function normalizeSheet(rows){
+  // rows: array of arrays incl header
+  if(!rows||!rows.length) return [];
+  const head=rows[0].map(h=>String(h).trim());
+  const idx=n=>head.indexOf(n);
+  return rows.slice(1).map(r=>({
+    ts:r[idx("timestamp")]||"", date:String(r[idx("date")]||"").slice(0,10),
+    day_type:r[idx("day_type")]||"", exercise:r[idx("exercise")]||"", prescribed:r[idx("prescribed")]||"",
+    weight:r[idx("weight")]||"", sets_reps:r[idx("sets_reps")]||"", rir_rpe:r[idx("rir_rpe")]||"",
+    notes:r[idx("notes")]||"", source:r[idx("source")]||""
+  })).filter(e=>e.exercise && e.source!=="seed" && e.day_type!=="test");
+}
+function mergeEntries(sheetRows){
+  const a=normalizeSheet(sheetRows);
+  const local=localEntries().map(e=>Object.assign({date:String(e.date||"").slice(0,10)},e));
+  // de-dupe by date|exercise|weight|sets|notes
+  const seen=new Set(); const out=[];
+  [...a,...local].forEach(e=>{
+    const k=[e.date,e.exercise,e.weight,e.sets_reps,e.notes].join("|");
+    if(!seen.has(k)){ seen.add(k); out.push(e); }
+  });
+  return out.sort((x,y)=>(y.ts||y.date||"").localeCompare(x.ts||x.date||""));
+}
+
+let ENTRIES=[];
+function render(){
+  // ---- strength ----
+  const strength = ENTRIES.filter(e=> (e.weight||e.sets_reps||e.rir_rpe) && e.exercise!=="(free note)");
+  const exNames=[...new Set(strength.map(e=>e.exercise))].sort();
+  const sSec=document.getElementById("strengthSec");
+  if(exNames.length){
+    sSec.style.display="";
+    const sel=document.getElementById("exSel");
+    sel.innerHTML=exNames.map(n=>'<option>'+n+'</option>').join("");
+    sel.onchange=()=>drawStrength(sel.value, strength);
+    drawStrength(exNames[0], strength);
+  }
+  // ---- rowing ----
+  drawRowing();
+  document.getElementById("rowingSec").style.display="";
+  // ---- recent table ----
+  const lSec=document.getElementById("logSec"); lSec.style.display="";
+  const tb=document.querySelector("#logTbl tbody");
+  const rows=ENTRIES.slice(0,40);
+  if(!rows.length){ document.getElementById("logEmpty").style.display=""; document.getElementById("logTbl").style.display="none"; }
+  else {
+    tb.innerHTML=rows.map(e=>'<tr><td>'+(e.date||"")+'</td><td class="ex">'+esc(e.exercise)+'</td><td>'+esc(e.weight)+'</td><td>'+esc(e.sets_reps)+'</td><td>'+esc(e.rir_rpe)+'</td><td>'+esc(e.notes)+'</td></tr>').join("");
+  }
+  document.getElementById("status").style.display="none";
+}
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+
+let sChart=null;
+function parseLoad(w){ if(!w) return null; const m=String(w).match(/-?\d+(\.\d+)?/); return m?parseFloat(m[0]):null; }
+function drawStrength(name, strength){
+  const rows=strength.filter(e=>e.exercise===name).filter(e=>parseLoad(e.weight)!=null)
+    .sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+  const labels=rows.map(r=>r.date);
+  const data=rows.map(r=>parseLoad(r.weight));
+  const ctx=document.getElementById("strengthChart");
+  if(sChart) sChart.destroy();
+  if(!rows.length){ document.getElementById("strengthStat").innerHTML='<div class="s">No numeric load logged for this exercise yet.</div>'; return; }
+  sChart=new Chart(ctx,{type:"line",data:{labels,datasets:[{label:name,data,borderColor:"#0e9d6c",backgroundColor:"rgba(14,157,108,.12)",tension:.25,fill:true,pointRadius:4,pointBackgroundColor:"#0e9d6c"}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:"load"}}}}});
+  const first=data[0], last=data[data.length-1], delta=last-first;
+  document.getElementById("strengthStat").innerHTML=
+    '<div class="s">sessions<b>'+rows.length+'</b></div>'
+   +'<div class="s">latest<b>'+last+'</b></div>'
+   +'<div class="s">change<b>'+(delta>=0?"+":"")+delta+'</b></div>';
+}
+let rChart=null;
+function drawRowing(){
+  const rows=Object.values(ROW_RESULTS).sort((a,b)=>a.date.localeCompare(b.date));
+  const labels=rows.map(r=>r.date+"  "+r.label);
+  const data=rows.map(r=>paceToSec(r.pace));
+  const colors=rows.map(r=> r.verdict==="in"?"#0e9d6c": r.verdict==="above"?"#7b46d4":"#d83a3a");
+  const ctx=document.getElementById("rowChart");
+  if(rChart) rChart.destroy();
+  rChart=new Chart(ctx,{type:"bar",data:{labels,datasets:[{label:"avg /500m (sec)",data,backgroundColor:colors}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>{const r=rows[c.dataIndex]; return r.pace+" /500m · band "+r.band+" · "+r.verdict;}}}},
+      scales:{y:{reverse:true,title:{display:true,text:"pace /500m (faster = up)"},
+        ticks:{callback:v=>{const m=Math.floor(v/60),s=Math.round(v-m*60);return m+":"+String(s).padStart(2,"0");}}}}}});
+  document.getElementById("rowStat").innerHTML=
+    '<div class="s"><span class="pill" style="color:#0e9d6c">in zone</span></div>'
+   +'<div class="s"><span class="pill" style="color:#7b46d4">above (faster)</span></div>'
+   +'<div class="s"><span class="pill" style="color:#d83a3a">below (slower)</span></div>';
+}
+
+/* ---- JSONP read of the Sheet, with local-only fallback ---- */
+function loadSheet(){
+  let done=false;
+  window.__recompCb=function(rows){ done=true; try{ ENTRIES=mergeEntries(rows); }catch(e){ ENTRIES=mergeEntries(null); } render(); };
+  const s=document.createElement("script");
+  s.src=GAS_URL+"?callback=__recompCb&_="+Date.now();
+  s.onerror=function(){ if(!done){ ENTRIES=mergeEntries(null); document.getElementById("foot").textContent="couldn't reach Sheet — showing this device's entries only"; render(); } };
+  document.body.appendChild(s);
+  // safety timeout: if JSONP doesn't fire in 6s, fall back to local
+  setTimeout(()=>{ if(!done){ ENTRIES=mergeEntries(null); render(); } }, 6000);
+}
+loadSheet();
+</script>
+</body>
+</html>

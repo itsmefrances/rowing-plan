@@ -201,6 +201,43 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
 .effsheet .msec:first-of-type{margin-top:8px}
 .effsheet .eyebrow{margin:0 2px 10px}
 
+/* ===== logging: per-exercise entry ===== */
+.logbtn{font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--acc); border:1px solid var(--accdim); border-radius:7px; padding:3px 9px; background:var(--panel2)}
+.logbtn:hover{background:#e3f5ec}
+.logbtn.has{color:#fff; background:var(--acc); border-color:var(--acc)}
+.logform{margin:6px 0 2px 36px; padding:10px; border:1px solid var(--line); border-radius:10px;
+  background:var(--panel2); display:none}
+.logform.show{display:block}
+.lfrow{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px}
+.lffield{flex:1; min-width:84px}
+.lffield label{display:block; font-family:var(--mono); font-size:9px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--faint); margin-bottom:3px}
+.lffield input{width:100%; background:var(--panel); border:1px solid var(--line); border-radius:7px;
+  padding:7px 8px; font-family:var(--mono); font-size:13px; color:var(--ink)}
+.lffield input:focus{outline:none; border-color:var(--acc)}
+.logform textarea{width:100%; background:var(--panel); border:1px solid var(--line); border-radius:7px;
+  padding:7px 8px; font-family:var(--disp); font-size:13px; color:var(--ink); resize:vertical; min-height:38px}
+.logsave{font-family:var(--disp); font-weight:700; font-size:13px; color:#fff; background:var(--acc);
+  border-radius:8px; padding:8px 16px; margin-top:6px}
+.logsave:hover{background:#0c8a5e}
+.loghint{font-family:var(--mono); font-size:10px; color:var(--faint); margin-top:6px}
+.loghist{margin:5px 0 2px 36px; font-family:var(--mono); font-size:11px; color:var(--mut); line-height:1.5}
+.loghist b{color:var(--ink); font-weight:600}
+.loghist .hh{color:var(--acc); text-transform:uppercase; letter-spacing:.1em; font-size:9px}
+
+/* quick-log box */
+.qlog{margin:14px 16px 0; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px;
+  box-shadow:0 1px 2px rgba(20,24,34,.05),0 4px 14px rgba(20,24,34,.04)}
+.qlog .qlt{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); margin-bottom:8px}
+.qlog textarea{width:100%; background:var(--panel2); border:1px solid var(--line); border-radius:9px;
+  padding:9px; font-family:var(--disp); font-size:13.5px; color:var(--ink); resize:vertical; min-height:46px}
+.qlrow{display:flex; align-items:center; gap:10px; margin-top:8px}
+.qlrow input.qdate{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:7px;
+  font-family:var(--mono); font-size:12px; color:var(--ink)}
+.qlog .logsave{margin-top:0}
+.qtoast{font-family:var(--mono); font-size:11px; color:var(--acc); margin-left:auto}
+
 /* logbook result panel on completed row days */
 .result{margin:10px 2px 2px; border:1px solid var(--accdim); border-radius:11px; overflow:hidden;
   background:linear-gradient(180deg,rgba(14,157,108,.05),transparent)}
@@ -226,7 +263,7 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
 <header>
   <div class="htop">
     <div class="brand">Recomp Block<small id="hdate">— —</small></div>
-    <div style="display:flex; gap:4px"><button class="gear" id="effortBtn" aria-label="Effort, pace zones &amp; fuel">⚙ EFFORT</button><button class="gear" id="gearBtn" aria-label="Settings">⚙ MAXES</button></div>
+    <div style="display:flex; gap:4px"><a class="gear" id="progressBtn" href="progress.html" aria-label="Progress dashboard" style="text-decoration:none">⚙ PROGRESS</a><button class="gear" id="effortBtn" aria-label="Effort, pace zones &amp; fuel">⚙ EFFORT</button><button class="gear" id="gearBtn" aria-label="Settings">⚙ MAXES</button></div>
   </div>
   <div class="prog">
     <div class="bar"><i id="progBar" style="width:0%"></i></div>
@@ -238,6 +275,16 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
 <div class="sec" id="todaySec">
   <div class="eyebrow" id="todayEye">Today</div>
   <div id="today"></div>
+</div>
+
+<div class="qlog">
+  <div class="qlt">Quick log \u00b7 type anything you did</div>
+  <textarea id="qlogText" placeholder="e.g. Hack squat 3x12 @ 180, felt strong (RIR 2). Or: 20 min easy bike."></textarea>
+  <div class="qlrow">
+    <input type="date" class="qdate" id="qlogDate">
+    <button class="logsave" id="qlogSave">Log it</button>
+    <span class="qtoast" id="qlogToast"></span>
+  </div>
 </div>
 
 <div class="sec">
@@ -338,6 +385,34 @@ const RESULTS = {
     band:"2:05\u20132:15", verdict:"in", note:"4 \u00d7 7 min \u2014 work pace 2:06.3 /500m sits inside the 2:05\u20132:15 endurance band. Steady, even splits with a slight negative split. Rate 25\u201327 s/m."}
 };
 const LOGBOOK_BASE = "https://log.concept2.com/profile/2198296/log/";
+
+/* ============ ENTRY LOGGING (weights/notes -> Google Sheet + localStorage) ============ */
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyq0ZEWv8ZfkL8XhESm5gU7APsIVvm86VRGt8HFbTVepVQJEixQ4Lk_P9GGdEvodsw/exec";
+const LOGKEY = "recomp-entries-2026";
+function loadEntries(){ try{ return JSON.parse(localStorage.getItem(LOGKEY)) || []; }catch(e){ return []; } }
+function saveEntries(a){ try{ localStorage.setItem(LOGKEY, JSON.stringify(a)); }catch(e){} }
+let ENTRIES = loadEntries();
+// fire-and-forget write via image GET (no CORS preflight, works cross-origin)
+function pushToSheet(rec){
+  const q = new URLSearchParams(Object.assign({write:"1"}, rec)).toString();
+  const img = new Image();
+  img.src = GAS_URL + "?" + q + "&_=" + Date.now();
+}
+function logEntry(rec){
+  rec.ts = new Date().toISOString();
+  rec.source = rec.source || "app";
+  ENTRIES.push(rec); saveEntries(ENTRIES);
+  pushToSheet(rec);
+}
+// history for a given exercise+date key (most recent first), from local store
+function entriesFor(date, exercise){
+  return ENTRIES.filter(e=>e.date===date && e.exercise===exercise).sort((a,b)=> (b.ts||"").localeCompare(a.ts||""));
+}
+// most recent prior entry for an exercise name (any date) — for "last time" hints
+function lastEntryFor(exercise, beforeDate){
+  return ENTRIES.filter(e=>e.exercise===exercise && (!beforeDate || e.date < beforeDate))
+    .sort((a,b)=> (b.date||"").localeCompare(a.date||""))[0] || null;
+}
 
 /* ============ STATE ============ */
 const KEY="recomp-tracker-2026";
@@ -570,6 +645,51 @@ function fuelLine(type){
   if(type==="z2") return '<span class="fuel"><b>Z2 fuel</b> · ~2,200–2,350 kcal · 145g P · moderate carb</span>';
   return '<span class="fuel"><b>Train fuel</b> · 2,350–2,550 kcal · 145g P · 270–320g C</span>';
 }
+function exItems(d){
+  // returns array of {name, prescribed, dtype} for loggable exercises (lifts + machines) on day d
+  const out=[];
+  d.items.forEach(it=>{
+    if(it.t==="lift"){ let pres=it.s||""; if(it.pct!=null)pres+=" @ "+it.pct+"%"; else if(it.w!=null)pres+=" @ "+it.w+"lb"; else if(it.add!=null)pres+=" +"+it.add+"lb"; out.push({name:it.n,prescribed:pres.trim(),dtype:d.type}); }
+    else if(it.t==="mach"){ out.push({name:it.n,prescribed:it.sets||"",dtype:d.type}); }
+  });
+  return out;
+}
+function logUIHTML(d){
+  const ex = exItems(d);
+  if(!ex.length) return "";
+  return ex.map(x=>{
+    const hist = entriesFor(d.date, x.name);
+    const last = lastEntryFor(x.name, d.date);
+    let histHTML="";
+    if(hist.length){
+      const h=hist[0];
+      histHTML='<div class="loghist"><span class="hh">logged</span> '
+        + (h.weight?'<b>'+h.weight+'</b> ':'')
+        + (h.sets_reps?h.sets_reps+' ':'')
+        + (h.rir_rpe?'\u00b7 RIR/RPE '+h.rir_rpe+' ':'')
+        + (h.notes?'\u00b7 '+h.notes:'') + '</div>';
+    } else if(last){
+      histHTML='<div class="loghist"><span class="hh">last '+fmtDate(last.date)+'</span> '
+        + (last.weight?'<b>'+last.weight+'</b> ':'')
+        + (last.sets_reps?last.sets_reps+' ':'')
+        + (last.notes?'\u00b7 '+last.notes:'') + '</div>';
+    }
+    const has = hist.length ? " has" : "";
+    const eid = (d.date+"|"+x.name).replace(/[^a-zA-Z0-9]/g,"_");
+    return '<div class="logwrap" data-ex="'+encodeURIComponent(x.name)+'" data-date="'+d.date+'" data-dtype="'+x.dtype+'" data-pres="'+encodeURIComponent(x.prescribed)+'">'
+      + '<div style="margin:8px 0 0 36px"><button class="logbtn'+has+'" data-logtoggle="'+eid+'">'+(hist.length?"\u2713 Logged \u00b7 edit":"+ Log ")+'</button></div>'
+      + histHTML
+      + '<div class="logform" id="lf_'+eid+'">'
+        + '<div class="lfrow">'
+          + '<div class="lffield"><label>Weight / setting</label><input type="text" data-f="weight" placeholder="185 / stack 7"></div>'
+          + '<div class="lffield"><label>Sets \u00d7 reps</label><input type="text" data-f="sets_reps" placeholder="3x5"></div>'
+          + '<div class="lffield"><label>RIR / RPE</label><input type="text" data-f="rir_rpe" placeholder="2"></div>'
+        + '</div>'
+        + '<textarea data-f="notes" placeholder="Notes to reference later\u2026"></textarea>'
+        + '<div><button class="logsave" data-logsave="'+eid+'">Save</button><span class="loghint"> prescribed: '+(x.prescribed||"\u2014")+'</span></div>'
+      + '</div></div>';
+  }).join("");
+}
 function dayCard(d, opts){
   opts=opts||{};
   const done=dayDone(d);
@@ -588,7 +708,7 @@ function dayCard(d, opts){
         + '<span class="mini">'+(done?"done":d.items.filter(i=>isDone(i.id)).length+"/"+d.items.length)+'</span></span>'
      + '<span class="chev">▶</span>'
    + '</button>'
-   + '<div class="cbody">'+items + resultHTML(d)
+   + '<div class="cbody">'+items + resultHTML(d) + logUIHTML(d)
      + '<div class="dfoot">'+fuelLine(d.type)+allBtn+'</div>'
    + '</div></div>';
 }
@@ -702,9 +822,21 @@ document.body.addEventListener("click",e=>{
   if(toggle){ const date=toggle.dataset.toggle; const card=toggle.closest(".card");
     const nowOpen=!card.classList.contains("open"); S.open[date]=nowOpen; card.classList.toggle("open"); save(); return; }
   if(seg){ const wk=+seg.dataset.wk; const w=PLAN.find(x=>x.wk===wk);
-    // expand week's middle day & scroll
     const el=document.querySelector('[data-card="'+w.days[Math.min(2,w.days.length-1)].date+'"]')||document.querySelector('[data-card="'+w.start+'"]');
     if(el) el.scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  const lt=e.target.closest("[data-logtoggle]");
+  if(lt){ const f=document.getElementById("lf_"+lt.dataset.logtoggle); if(f) f.classList.toggle("show"); return; }
+  const ls=e.target.closest("[data-logsave]");
+  if(ls){
+    const wrap=ls.closest(".logwrap"); const form=ls.closest(".logform");
+    const get=f=>{ const el=form.querySelector('[data-f="'+f+'"]'); return el?el.value.trim():""; };
+    const rec={ date:wrap.dataset.date, day_type:wrap.dataset.dtype,
+      exercise:decodeURIComponent(wrap.dataset.ex), prescribed:decodeURIComponent(wrap.dataset.pres),
+      weight:get("weight"), sets_reps:get("sets_reps"), rir_rpe:get("rir_rpe"), notes:get("notes") };
+    if(!rec.weight && !rec.sets_reps && !rec.notes && !rec.rir_rpe){ return; }
+    logEntry(rec); render();
     return;
   }
 });
@@ -734,6 +866,20 @@ const effScrim=document.getElementById("effScrim");
 document.getElementById("effortBtn").onclick=()=>{ effScrim.classList.add("show"); };
 document.getElementById("effDone").onclick=()=>{ effScrim.classList.remove("show"); };
 effScrim.addEventListener("click",e=>{ if(e.target===effScrim) effScrim.classList.remove("show"); });
+
+/* quick-log box */
+(function(){
+  const qd=document.getElementById("qlogDate"); if(qd) qd.value=TODAY;
+  const qs=document.getElementById("qlogSave"), qt=document.getElementById("qlogText"), toast=document.getElementById("qlogToast");
+  if(qs) qs.onclick=()=>{
+    const txt=(qt.value||"").trim(); if(!txt){ return; }
+    const date=(qd&&qd.value)||TODAY;
+    // find day_type for that date if it's a plan day
+    let dtype=""; for(const w of PLAN) for(const dd of w.days) if(dd.date===date) dtype=dd.type;
+    logEntry({date:date, day_type:dtype, exercise:"(free note)", prescribed:"", weight:"", sets_reps:"", rir_rpe:"", notes:txt, source:"app-quick"});
+    qt.value=""; toast.textContent="\u2713 logged"; setTimeout(()=>toast.textContent="",2500);
+  };
+})();
 
 render();
 </script>
