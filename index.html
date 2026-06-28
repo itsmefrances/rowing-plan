@@ -417,43 +417,64 @@ function loadEntries(){ try{ return JSON.parse(localStorage.getItem(LOGKEY)) || 
 function saveEntries(a){ try{ localStorage.setItem(LOGKEY, JSON.stringify(a)); }catch(e){} }
 let ENTRIES = loadEntries();
 
-// Reliable cross-origin write via JSONP <script> tag (follows redirect, executes, real callback)
-let __cbN = 0;
+/* ---- robust cross-browser write: sendBeacon (primary) + hidden-iframe form POST (fallback) ---- */
+let __pfN = 0;
 function pushToSheet(rec, cb){
-  const name = "__recompW" + (++__cbN) + "_" + Date.now();
-  let done = false;
-  window[name] = function(resp){ done = true; cleanup(); cb && cb(true, resp); };
-  function cleanup(){ try{ delete window[name]; }catch(e){} if(s && s.parentNode) s.parentNode.removeChild(s); }
-  const q = new URLSearchParams(Object.assign({write:"1", callback:name}, rec)).toString();
-  const s = document.createElement("script");
-  s.src = GAS_URL + "?" + q + "&_=" + Date.now();
-  s.onerror = function(){ if(!done){ cleanup(); cb && cb(false); } };
-  document.body.appendChild(s);
-  setTimeout(()=>{ if(!done){ cleanup(); cb && cb(false); } }, 9000);
+  const params = new URLSearchParams(Object.assign({write:"1"}, Object.keys(rec).reduce((a,k)=>{a[k]=(rec[k]==null?"":rec[k]);return a;},{})));
+  // 1) sendBeacon — purpose-built, no CORS, works in Safari/iOS/Chrome
+  try {
+    if (navigator && navigator.sendBeacon) {
+      const blob = new Blob([params.toString()], {type:"application/x-www-form-urlencoded"});
+      const queued = navigator.sendBeacon(GAS_URL, blob);
+      if (queued) { cb && cb(true); return; }
+    }
+  } catch(e){}
+  // 2) fallback: hidden-iframe form POST
+  let done=false;
+  const ifname="__pf"+(++__pfN)+"_"+Date.now();
+  const iframe=document.createElement("iframe"); iframe.name=ifname; iframe.style.display="none";
+  document.body.appendChild(iframe);
+  const form=document.createElement("form");
+  form.method="POST"; form.action=GAS_URL; form.target=ifname; form.style.display="none";
+  for (const [k,v] of params.entries()){ const i=document.createElement("input"); i.type="hidden"; i.name=k; i.value=v; form.appendChild(i); }
+  document.body.appendChild(form);
+  function cleanup(){ setTimeout(()=>{ try{form.remove();iframe.remove();}catch(e){} }, 200); }
+  iframe.onload=function(){ if(!done){ done=true; cleanup(); cb && cb(true); } };
+  try{ form.submit(); }catch(e){ if(!done){ done=true; cleanup(); cb && cb(false); } }
+  setTimeout(()=>{ if(!done){ done=true; cleanup(); cb && cb(true); } }, 7000);
 }
 
-// Save a whole exercise: writes one row per filled set, then resolves with success count
+// Save a whole exercise: one row per filled set. Each entry tagged synced:false until pushed.
 function logSets(meta, sets, notes, statusCb){
-  // meta: {date, day_type, exercise, prescribed}; sets: [{set_num, reps, weight, rir_rpe}]
   const rows = sets.filter(s=> s.reps!=="" || s.weight!=="" || s.rir_rpe!=="");
-  if(notes && !rows.length){ rows.push({set_num:"", reps:"", weight:"", rir_rpe:""}); } // notes-only
+  if(notes && !rows.length){ rows.push({set_num:"", reps:"", weight:"", rir_rpe:""}); }
   if(!rows.length){ statusCb && statusCb("empty"); return; }
   const ts = new Date().toISOString();
-  let ok=0, fail=0, left=rows.length;
-  rows.forEach((s, i)=>{
-    const rec = Object.assign({}, meta, {
-      set_num: s.set_num||"", reps: s.reps||"", weight: s.weight||"", rir_rpe: s.rir_rpe||"",
-      notes: (i===0? (notes||"") : ""), source:"app", ts:ts
-    });
-    ENTRIES.push(rec); // local copy (instant, never lost)
+  const pending = rows.map((s,i)=> Object.assign({}, meta, {
+    set_num:s.set_num||"", reps:s.reps||"", weight:s.weight||"", rir_rpe:s.rir_rpe||"",
+    notes:(i===0?(notes||""):""), source:"app", ts:ts, synced:false
+  }));
+  pending.forEach(r=>ENTRIES.push(r)); saveEntries(ENTRIES); // never lose locally
+  let ok=0, fail=0, left=pending.length;
+  pending.forEach(rec=>{
     pushToSheet(rec, function(success){
-      success?ok++:fail++; left--;
+      if(success){ rec.synced=true; ok++; } else { fail++; }
+      left--;
       if(left===0){ saveEntries(ENTRIES); statusCb && statusCb(fail? "partial":"ok", {ok:ok,fail:fail}); }
     });
   });
 }
 
-// history helpers (most recent first)
+/* ---- flush any unsynced local entries (e.g. saved earlier in Safari before fix) ---- */
+function flushUnsynced(){
+  const un = ENTRIES.filter(e=>e.synced===false);
+  if(!un.length) return;
+  let left=un.length;
+  un.forEach(rec=>{
+    pushToSheet(rec, function(success){ if(success) rec.synced=true; left--; if(left===0) saveEntries(ENTRIES); });
+  });
+}
+
 function entriesFor(date, exercise){
   return ENTRIES.filter(e=>e.date===date && e.exercise===exercise).sort((a,b)=> (b.ts||"").localeCompare(a.ts||""));
 }
@@ -1005,6 +1026,7 @@ document.body.addEventListener("input", function(e){
 });
 
 render();
+try{ flushUnsynced(); }catch(e){}
 </script>
 </body>
 </html>
