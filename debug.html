@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Write Diagnostics</title>
+<style>
+  body{font-family:-apple-system,system-ui,sans-serif; margin:0; padding:16px; background:#f3f4f7; color:#1b1e25; line-height:1.5; max-width:640px; margin:0 auto}
+  h1{font-size:18px}
+  p{font-size:13px; color:#555}
+  button{display:block; width:100%; padding:14px; margin:8px 0; font-size:15px; font-weight:600; border:none; border-radius:10px; background:#0e9d6c; color:#fff}
+  button.alt{background:#2d77c7}
+  button.read{background:#697080}
+  #log{font-family:ui-monospace,Menlo,monospace; font-size:12px; background:#0c100e; color:#7df0b4; padding:12px; border-radius:10px; white-space:pre-wrap; word-break:break-word; min-height:120px; margin-top:12px}
+  .ok{color:#7df0b4} .fail{color:#ff7b7b} .info{color:#9fb3c8}
+</style>
+</head>
+<body>
+<h1>Write Diagnostics</h1>
+<p>This page tries different ways to write a test row to your Google Sheet and shows what happens on <b>this device</b>. Tap each button, then tap "Read sheet" to see which test rows actually landed. Tell me what the log says.</p>
+
+<button onclick="tryMethod('iframe-get')">Test 1 — iframe GET</button>
+<button class="alt" onclick="tryMethod('iframe-form-post')">Test 2 — iframe form POST</button>
+<button class="alt" onclick="tryMethod('img')">Test 3 — image GET</button>
+<button class="alt" onclick="tryMethod('fetch-nocors')">Test 4 — fetch no-cors</button>
+<button class="read" onclick="readSheet()">Read sheet (what landed?)</button>
+<button class="read" onclick="document.getElementById('log').textContent='';">Clear log</button>
+
+<div id="log">ready…</div>
+
+<script>
+var GAS = "https://script.google.com/macros/s/AKfycbyq0ZEWv8ZfkL8XhESm5gU7APsIVvm86VRGt8HFbTVepVQJEixQ4Lk_P9GGdEvodsw/exec";
+function log(msg, cls){ var d=document.getElementById("log"); var t=new Date().toLocaleTimeString(); d.innerHTML += '\n<span class="'+(cls||"info")+'">['+t+'] '+msg+'</span>'; d.scrollTop=d.scrollHeight; }
+
+function params(tag){
+  return new URLSearchParams({write:"1", date:"2026-06-29", day_type:"debug", exercise:tag, prescribed:"x", set_num:"1", reps:"1", weight:"1", rir_rpe:"1", notes:"diag "+tag, source:"debug"}).toString();
+}
+
+function tryMethod(m){
+  log("Trying "+m+" …","info");
+  if(m==="iframe-get"){
+    var f=document.createElement("iframe"); f.style.display="none";
+    var settled=false;
+    f.onload=function(){ if(!settled){settled=true; log("iframe-get: onload fired (loaded) ✓","ok"); setTimeout(function(){f.remove();},500);} };
+    f.onerror=function(){ if(!settled){settled=true; log("iframe-get: onerror ✗","fail");} };
+    document.body.appendChild(f);
+    f.src = GAS + "?" + params("D1-IFRAME-GET") + "&_=" + Date.now();
+    setTimeout(function(){ if(!settled){settled=true; log("iframe-get: timeout (no onload in 8s)","fail"); f.remove();} },8000);
+  }
+  else if(m==="iframe-form-post"){
+    var nm="dbgif"+Date.now();
+    var fr=document.createElement("iframe"); fr.name=nm; fr.style.display="none"; document.body.appendChild(fr);
+    var form=document.createElement("form"); form.method="POST"; form.action=GAS; form.target=nm; form.style.display="none";
+    new URLSearchParams(params("D2-FORM-POST")).forEach(function(v,k){ var i=document.createElement("input"); i.type="hidden"; i.name=k; i.value=v; form.appendChild(i); });
+    document.body.appendChild(form);
+    var settled=false;
+    fr.onload=function(){ if(!settled){settled=true; log("form-post: iframe onload fired ✓","ok"); setTimeout(function(){form.remove();fr.remove();},500);} };
+    fr.onerror=function(){ if(!settled){settled=true; log("form-post: onerror ✗","fail");} };
+    try{ form.submit(); log("form-post: submitted","info"); }catch(e){ log("form-post: submit threw "+e.message,"fail"); }
+    setTimeout(function(){ if(!settled){settled=true; log("form-post: timeout","fail"); try{form.remove();fr.remove();}catch(e){}} },8000);
+  }
+  else if(m==="img"){
+    var img=new Image(); var settled=false;
+    img.onload=function(){ if(!settled){settled=true; log("img: onload ✓","ok");} };
+    img.onerror=function(){ if(!settled){settled=true; log("img: onerror (expected — not an image, but request may have sent)","info");} };
+    img.src = GAS + "?" + params("D3-IMG") + "&_=" + Date.now();
+    setTimeout(function(){ if(!settled){settled=true; log("img: timeout","fail");} },8000);
+  }
+  else if(m==="fetch-nocors"){
+    fetch(GAS + "?" + params("D4-FETCH") + "&_=" + Date.now(), {mode:"no-cors"})
+      .then(function(){ log("fetch-nocors: resolved (opaque) ✓","ok"); })
+      .catch(function(e){ log("fetch-nocors: rejected ✗ "+e.message,"fail"); });
+  }
+}
+
+function readSheet(){
+  log("Reading sheet via JSONP …","info");
+  var name="dbgread"+Date.now(); var settled=false;
+  window[name]=function(rows){ settled=true;
+    var data=Array.isArray(rows)?rows.slice(1):[];
+    var diag=data.filter(function(r){ return String(r[3]).indexOf("D")===0 && String(r[3]).indexOf("-")>0; });
+    log("Sheet has "+data.length+" total rows.","info");
+    if(diag.length){ log("Diagnostic rows that LANDED:","ok"); diag.forEach(function(r){ log("  • "+r[3],"ok"); }); }
+    else { log("No diagnostic rows landed yet.","fail"); }
+    try{delete window[name];}catch(e){}
+  };
+  var s=document.createElement("script"); s.src=GAS+"?callback="+name+"&_="+Date.now();
+  s.onerror=function(){ if(!settled){ log("JSONP read: onerror ✗ (read blocked on this device too)","fail"); } };
+  document.body.appendChild(s);
+  setTimeout(function(){ if(!settled){ log("JSONP read: timeout (read may be blocked)","fail"); } },8000);
+}
+</script>
+</body>
+</html>
