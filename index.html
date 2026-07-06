@@ -287,7 +287,7 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
 <header>
   <div class="htop">
     <div class="brand">Recomp Block<small id="hdate">— —</small></div>
-    <div style="display:flex; gap:4px"><a class="gear" id="progressBtn" href="progress.html" aria-label="Progress dashboard" style="text-decoration:none">⚙ PROGRESS</a><button class="gear" id="effortBtn" aria-label="Effort, pace zones &amp; fuel">⚙ EFFORT</button><button class="gear" id="gearBtn" aria-label="Settings">⚙ MAXES</button></div>
+    <div style="display:flex; gap:4px"><a class="gear" id="progressBtn" href="progress.html" aria-label="Progress dashboard" style="text-decoration:none">⚙ PROGRESS</a><button class="gear" id="weekBtn" aria-label="Weekly template">⚙ WEEK</button><button class="gear" id="effortBtn" aria-label="Effort, pace zones &amp; fuel">⚙ EFFORT</button><button class="gear" id="gearBtn" aria-label="Settings">⚙ MAXES</button></div>
   </div>
   <div class="prog">
     <div class="bar"><i id="progBar" style="width:0%"></i></div>
@@ -387,6 +387,29 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
   </div>
 </div>
     <button class="done2" id="effDone">Done</button>
+  </div>
+</div>
+
+<!-- weekly template -->
+<div class="scrim" id="weekScrim">
+  <div class="sheet effsheet">
+    <h3>Weekly template</h3>
+    <p>The default shape of every week in this block.</p>
+    <div class="refcard">
+      <table class="ztab">
+        <tr><td>Monday</td><td>Sprint Row</td></tr>
+        <tr><td>Tuesday</td><td>Strength A · Heavy</td></tr>
+        <tr><td>Wednesday</td><td>VO₂ Row</td></tr>
+        <tr><td>Thursday</td><td>Strength B · Hypertrophy</td></tr>
+        <tr><td>Friday</td><td>Pump · Arms &amp; Delts</td></tr>
+        <tr><td>Saturday</td><td>Threshold Row</td></tr>
+        <tr><td>Sunday</td><td>Full Rest</td></tr>
+      </table>
+      <div class="note"><b>Strength A</b> = squat &amp; bench top sets + back-offs, pull-ups, RDL, row, face pulls. <b>Strength B</b> = front squat, OHP, trap bar, incline, cable row, hip thrust, arms, core.</div>
+      <div class="note" style="margin-top:14px"><b>Week 7 (peak):</b> Friday becomes a 30-min steady row; the pump day moves to Saturday and is optional.</div>
+      <div class="note" style="margin-top:14px"><b>Week 8 (taper):</b> Tue light confidence lifts only · Thu full rest · Fri pre-test primer · <b>Sat Aug 8 = 1-minute test</b>.</div>
+    </div>
+    <button class="done2" id="weekDone">Done</button>
   </div>
 </div>
 
@@ -944,6 +967,12 @@ const effScrim=document.getElementById("effScrim");
 document.getElementById("effortBtn").onclick=()=>{ effScrim.classList.add("show"); };
 document.getElementById("effDone").onclick=()=>{ effScrim.classList.remove("show"); };
 effScrim.addEventListener("click",e=>{ if(e.target===effScrim) effScrim.classList.remove("show"); });
+
+/* weekly template modal */
+const weekScrim=document.getElementById("weekScrim");
+document.getElementById("weekBtn").onclick=()=>{ weekScrim.classList.add("show"); };
+document.getElementById("weekDone").onclick=()=>{ weekScrim.classList.remove("show"); };
+weekScrim.addEventListener("click",e=>{ if(e.target===weekScrim) weekScrim.classList.remove("show"); });
 
 /* quick-log box */
 (function(){
