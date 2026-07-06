@@ -321,7 +321,7 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
   <div id="archive"></div>
 </details>
 
-<div class="foot" id="foot">saves to this device · jun 19 – aug 30</div>
+<div class="foot" id="foot">saves to this device · jun 19 – aug 9</div>
 
 <!-- settings -->
 <div class="scrim" id="scrim">
@@ -331,6 +331,7 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
     <div class="maxrow"><label>Back squat <span class="u">1RM</span></label><input type="number" id="mx-bs" inputmode="numeric"></div>
     <div class="maxrow"><label>Front squat <span class="u">1RM</span></label><input type="number" id="mx-fs" inputmode="numeric"></div>
     <div class="maxrow"><label>Bench press <span class="u">1RM</span></label><input type="number" id="mx-bench" inputmode="numeric"></div>
+    <div class="maxrow"><label>Overhead press <span class="u">1RM</span></label><input type="number" id="mx-ohp" inputmode="numeric"></div>
     <button class="done2" id="saveMax">Save</button>
     <button class="danger" id="resetAll">Reset all progress</button>
   </div>
@@ -351,34 +352,38 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
       <span class="readout" id="zpct">80%</span>
     </div>
     <table class="ztab">
-      <tr><td>Sprint &middot; 150m reps</td><td>1:30–1:34</td></tr>
-      <tr><td>Sprint &middot; 250m reps</td><td>1:33–1:37</td></tr>
-      <tr><td>VO₂ &middot; 500m / 4min</td><td>1:44–1:50</td></tr>
-      <tr><td>Endurance / Z2 · 55–65%</td><td>2:15–2:25</td></tr>
-      <tr><td>1-min test</td><td>max · &gt;330m</td></tr>
+      <tr><td>Sprint &middot; 150m reps</td><td>1:36–1:42</td></tr>
+      <tr><td>Sprint &middot; 250m reps</td><td>1:41–1:46</td></tr>
+      <tr><td>VO₂ &middot; 1–4 min reps</td><td>1:55–2:02</td></tr>
+      <tr><td>Threshold &middot; 8–15 min reps</td><td>2:04–2:09</td></tr>
+      <tr><td>Steady / Z2</td><td>2:09–2:20</td></tr>
+      <tr><td>1-min test pace</td><td>≤1:31 · &gt;330m</td></tr>
     </table>
-    <div class="note"><b>Why sprints sit under 1:40:</b> 150–250m is far shorter than 500m, so you ride above PB pace. The slider uses your table — 100% ≈ your 1:39.9 PB, every point below adds ~1s.</div>
-    <div class="note" style="margin-top:14px"><b>Fuel:</b> training days 2,350–2,550 kcal · 145g protein · 270–320g carb. Rest days (Thu/Sun) 2,000–2,150 kcal · 145g protein · lower carb.</div>
+    <div class="note"><b>Why sprints sit under 1:42:</b> 150–250m is far shorter than 500m, so you ride above PB pace. The slider uses your table — 100% ≈ your 1:39.9 PB, every point below adds ~1s.</div>
+    <div class="note" style="margin-top:14px"><b>Fuel:</b> training days 2,350–2,550 kcal · 145g protein · 270–320g carb. Rest days 2,000–2,150 kcal · 145g protein · lower carb. Hold maintenance — the volume drives the recomp, not a deficit.</div>
   </div>
 </div>
 
 <div class="msec">
   <div class="eyebrow">Lifting · effort &amp; progression</div>
   <div class="refcard">
-    <div class="readlbl">Working-set effort · reps in reserve</div>
+    <div class="readlbl">Powerbuilding-style top sets + back-offs</div>
     <table class="ztab">
-      <tr><td>Main · squat, bench, pull-ups, front squat</td><td>RIR 1–2</td></tr>
-      <tr><td>Secondary · RDL, rows, OHP</td><td>RIR 2–3</td></tr>
+      <tr><td>Top sets · squat &amp; bench, one per day</td><td>cap RPE 9</td></tr>
+      <tr><td>Back-offs &amp; compounds</td><td>RIR 2</td></tr>
+      <tr><td>Hinges · RDL, trap bar</td><td>RIR 2–3</td></tr>
+      <tr><td>Isolation · curls, pushdowns, raises</td><td>RIR 1–2</td></tr>
       <tr><td>Power · box jumps</td><td>RIR 3–4</td></tr>
     </table>
-    <div class="note"><b>Main sets are the stimulus:</b> fast, consistent bar speed, last rep hard but clean — never grinding. Secondary lifts may drift to RIR 2–3 on later sets; power work stays well clear of failure.</div>
+    <div class="note"><b>Top-set brackets are autoregulated:</b> treat each computed load as the middle of a ±2.5% bracket. Decide top vs bottom by how the warm-up ramp moves — not how you feel walking in. Sore from sprints = bottom of bracket, no guilt. Never grind a top set.</div>
     <div class="note" style="margin-top:14px"><b>Adjusting load, week to week</b></div>
     <table class="ztab">
-      <tr><td>All sets RIR ≥2 + fast bar</td><td>+5 lo · +2.5–5 up</td></tr>
+      <tr><td>All sets at top of rep range, RIR ≥3</td><td>+5 lb (+2.5 OHP)</td></tr>
       <tr><td>Last sets drop to RIR 0–1</td><td>hold</td></tr>
-      <tr><td>Consistently above RIR 2–3</td><td>add now</td></tr>
+      <tr><td>Intensity techniques · myo-reps, dropsets</td><td>last set only</td></tr>
     </table>
-    <div class="note"><b>Warm-up</b> on every lifting day ramps as a % of that day's working weight — under the time cap, no fatigue. If a ramp set feels slow, you went too heavy.</div>
+    <div class="note"><b>Warm-up</b> on every lifting day ramps as a % of that day's main lift — under the time cap, no fatigue. If a ramp set feels slow, you went too heavy.</div>
+    <div class="note" style="margin-top:14px"><b>Threshold fatigue valve:</b> flat on Saturday? Swap for 40 min continuous Z2 @ 2:12–2:20, r20–22. Never skip — soften.</div>
   </div>
 </div>
     <button class="done2" id="effDone">Done</button>
@@ -388,8 +393,8 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
 <script>
 "use strict";
 /* ============ MAXES (editable) ============ */
-const DEFAULT_MAX = {bs:230, fs:180, bench:130};
-const LIFT_NAME = {bs:"Back Squat", fs:"Front Squat", bench:"Bench Press"};
+const DEFAULT_MAX = {bs:230, fs:180, bench:132.5, ohp:95};
+const LIFT_NAME = {bs:"Back Squat", fs:"Front Squat", bench:"Bench Press", ohp:"Overhead Press"};
 
 /* ============ LOGBOOK RESULTS (auto-updated daily from Concept2) ============ */
 /* date -> {id, link, dist (m), time, pace (avg /500m), rate, verdict:'in'|'above'|'below'|'na', workPace (intervals), note} */
@@ -562,8 +567,8 @@ function zonePace(pct){ const s=99.9+(100-pct); const m=Math.floor(s/60), x=s-m*
 function todayISO(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 const TODAY = todayISO();
 const PHASE_COLOR = {lower:"var(--lower)",upper:"var(--upper)",sprint:"var(--sprint)",vo2:"var(--vo2)",endurance:"var(--endur)",z2:"var(--z2)",rest:"var(--rest)",test:"var(--test)"};
-const TYPE_LABEL = {lower:"LOWER",upper:"UPPER",sprint:"SPRINT",vo2:"VO₂",endurance:"ENDUR",z2:"Z2",rest:"REST",test:"TEST"};
-const TYPE_ICO = {lower:"L",upper:"U",sprint:"S",vo2:"V",endurance:"E",z2:"Z",rest:"·",test:"T"};
+const TYPE_LABEL = {lower:"STR A",upper:"STR B",sprint:"SPRINT",vo2:"VO₂",endurance:"THRESH",z2:"Z2",rest:"REST",test:"TEST"};
+const TYPE_ICO = {lower:"A",upper:"B",sprint:"S",vo2:"V",endurance:"T",z2:"Z",rest:"·",test:"★"};
 
 /* ============ PLAN ============ */
 // item: {t:'lift'|'row'|'note', n, ...}
@@ -593,84 +598,17 @@ const PLAN = [
    {date:"2026-07-04", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"30 min continuous",rest:"26–28 s/m · 62–75%",pace:"2:05–2:18"}]},
    {date:"2026-07-05", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
  ]},
- {wk:4, phase:"deload", label:"Week 4 · deload", range:"Jul 6 – 12", start:"2026-07-06", end:"2026-07-12", days:[
-   {date:"2026-07-06", dow:"Mon", type:"lower", title:"Lower Strength · deload", items:[{t:"lift",n:"Back Squat",s:"3×3",pct:74,lift:"bs"},{t:"lift",n:"Front Squat",s:"3×3",pct:68,lift:"fs"}]},
-   {date:"2026-07-07", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"8 × 250m",rest:"4:00 rest · 36–38 s/m · 90–95%",pace:"1:45–1:50"}]},
-   {date:"2026-07-08", dow:"Wed", type:"upper", title:"Upper Strength · deload", items:[{t:"lift",n:"Weighted Pull-up",s:"4×4",add:20},{t:"lift",n:"Bench Press",s:"4×3",pct:68,lift:"bench"}]},
-   {date:"2026-07-09", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
-   {date:"2026-07-10", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"1-2-3-4-3-2-1 min pyramid",rest:"3:00 rest · 28–30 s/m · 70–80%",pace:"2:00–2:10"}]},
-   {date:"2026-07-11", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"2 × 12 min",rest:"3:00 rest · 26 s/m · 65–75%",pace:"2:05–2:15"}]},
-   {date:"2026-07-12", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
- ]},
- {wk:5, phase:"build", label:"Week 5", range:"Jul 13 – 19", start:"2026-07-13", end:"2026-07-19", days:[
-   {date:"2026-07-13", dow:"Mon", type:"lower", title:"Lower Strength", items:[{t:"lift",n:"Back Squat",s:"5×3",pct:87,lift:"bs"},{t:"lift",n:"Front Squat",s:"4×3",pct:80,lift:"fs"},{t:"lift",n:"RDL",s:"3×5",w:153},{t:"lift",n:"Box Jump",s:"3×3",bw:1,note:"max explosive"},{t:"mach",mode:"lower",n:"Hack Squat or Leg Press",sets:"3 × 10–12",menu:"Quads — choose one machine. Controlled tempo, full depth.",rir:"RIR 1–3 · stop shy of failure"},{t:"mach",mode:"lower",n:"Seated / Lying Hamstring Curl",sets:"3 × 10–15",menu:"Hamstrings — squeeze + slow eccentric.",rir:"RIR 1–3"},{t:"mach",mode:"lower",n:"Calf Raise",sets:"2 × 12–15",menu:"Optional. Full stretch at bottom, pause at top.",rir:"RIR 1–3 · optional add-on"}]},
-   {date:"2026-07-14", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"300m × 4 + 150m × 4",rest:"300m@90% 4:00r · 150m@95% 2:00r · 36–38 s/m",pace:"1:45–1:50"}]},
-   {date:"2026-07-15", dow:"Wed", type:"upper", title:"Upper Strength", items:[{t:"lift",n:"Weighted Pull-up",s:"5×4",add:40},{t:"lift",n:"Bench Press",s:"5×3",pct:87,lift:"bench"},{t:"lift",n:"Overhead Press",s:"3×4",w:83,note:"80–85"},{t:"mach",mode:"upper",n:"Chest-supported Row (machine)",sets:"3 × 10–12",menu:"Mid-back / lats — chest pinned, drive elbows back.",rir:"RIR 1–3"},{t:"mach",mode:"upper",n:"Lat Pulldown",sets:"3 × 10–12",menu:"Lats — vary grip week to week (wide / neutral / underhand).",rir:"RIR 1–3"},{t:"mach",mode:"upper",n:"Cable Lateral Raise",sets:"3 × 12–15",menu:"Side delts — smooth, no swing.",rir:"RIR 1–3"},{t:"mach",mode:"upper",n:"Rear-delt Fly (machine)",sets:"3 × 12–15",menu:"Rear delts / upper back — light, high reps.",rir:"RIR 1–3"}]},
-   {date:"2026-07-16", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
-   {date:"2026-07-17", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"12 × 1:00",rest:"1:00 rest · 28–30 s/m · 73–80%",pace:"2:00–2:07"}]},
-   {date:"2026-07-18", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"5 × 1500m",rest:"3:00 rest · 26–28 s/m · 65–75%",pace:"2:05–2:15"}]},
-   {date:"2026-07-19", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
- ]},
- {wk:6, phase:"build", label:"Week 6", range:"Jul 20 – 26", start:"2026-07-20", end:"2026-07-26", days:[
-   {date:"2026-07-20", dow:"Mon", type:"lower", title:"Lower Strength", items:[{t:"lift",n:"Back Squat",s:"5×3",pct:89,lift:"bs"},{t:"lift",n:"Front Squat",s:"4×3",pct:83,lift:"fs"},{t:"lift",n:"RDL",s:"3×5",w:155},{t:"lift",n:"Box Jump",s:"3×3",bw:1,note:"max explosive"},{t:"mach",mode:"lower",n:"Hack Squat or Leg Press",sets:"3 × 10–12",menu:"Quads — choose one machine. Controlled tempo, full depth.",rir:"RIR 1–3 · stop shy of failure"},{t:"mach",mode:"lower",n:"Seated / Lying Hamstring Curl",sets:"3 × 10–15",menu:"Hamstrings — squeeze + slow eccentric.",rir:"RIR 1–3"},{t:"mach",mode:"lower",n:"Calf Raise",sets:"2 × 12–15",menu:"Optional. Full stretch at bottom, pause at top.",rir:"RIR 1–3 · optional add-on"}]},
-   {date:"2026-07-21", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"200m × 6 + 100m × 6",rest:"2:00 rest · 36→40 s/m · 90–95%",pace:"1:45–1:50"}]},
-   {date:"2026-07-22", dow:"Wed", type:"upper", title:"Upper Strength", items:[{t:"lift",n:"Weighted Pull-up",s:"5×4",add:42.5},{t:"lift",n:"Bench Press",s:"5×3",pct:88,lift:"bench"},{t:"lift",n:"Overhead Press",s:"3×4",w:85,note:""},{t:"mach",mode:"upper",n:"Chest-supported Row (machine)",sets:"3 × 10–12",menu:"Mid-back / lats — chest pinned, drive elbows back.",rir:"RIR 1–3"},{t:"mach",mode:"upper",n:"Lat Pulldown",sets:"3 × 10–12",menu:"Lats — vary grip week to week (wide / neutral / underhand).",rir:"RIR 1–3"},{t:"mach",mode:"upper",n:"Cable Lateral Raise",sets:"3 × 12–15",menu:"Side delts — smooth, no swing.",rir:"RIR 1–3"},{t:"mach",mode:"upper",n:"Rear-delt Fly (machine)",sets:"3 × 12–15",menu:"Rear delts / upper back — light, high reps.",rir:"RIR 1–3"}]},
-   {date:"2026-07-23", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
-   {date:"2026-07-24", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"400m × 10",rest:"1:30 rest · 28–30 s/m · 70–80%",pace:"2:00–2:10"}]},
-   {date:"2026-07-25", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"8 × 4 min",rest:"3:00 rest · 26–28 s/m · 65–75%",pace:"2:05–2:15"}]},
-   {date:"2026-07-26", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
- ]},
- {wk:7, phase:"peak", label:"Week 7 · heavy neural", range:"Jul 27 – Aug 2", start:"2026-07-27", end:"2026-08-02", days:[
-   {date:"2026-07-27", dow:"Mon", type:"lower", title:"Lower Strength · peak", items:[{t:"lift",n:"Back Squat",s:"6×2",pct:91,lift:"bs"},{t:"lift",n:"Front Squat",s:"3×2",pct:84,lift:"fs"},{t:"mach",mode:"lower",n:"Hack Squat or Leg Press",sets:"3 × 10–12",menu:"Quads — choose one machine. Controlled tempo, full depth.",rir:"RIR 1–3 · stop shy of failure"},{t:"mach",mode:"lower",n:"Seated / Lying Hamstring Curl",sets:"3 × 10–15",menu:"Hamstrings — squeeze + slow eccentric.",rir:"RIR 1–3"},{t:"mach",mode:"lower",n:"Calf Raise",sets:"2 × 12–15",menu:"Optional. Full stretch at bottom, pause at top.",rir:"RIR 1–3 · optional add-on"}]},
-   {date:"2026-07-28", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"15 × 30 sec",rest:"2:00 rest · 36–38 s/m · 92–96%",pace:"1:44–1:48"}]},
-   {date:"2026-07-29", dow:"Wed", type:"upper", title:"Upper Strength · peak", items:[{t:"lift",n:"Weighted Pull-up",s:"5×3",add:45},{t:"lift",n:"Bench Press",s:"5×3",pct:92,lift:"bench"},{t:"mach",mode:"upper",n:"Chest-supported Row (machine)",sets:"3 × 10–12",menu:"Mid-back / lats — chest pinned, drive elbows back.",rir:"RIR 1–3"},{t:"mach",mode:"upper",n:"Lat Pulldown",sets:"3 × 10–12",menu:"Lats — vary grip week to week (wide / neutral / underhand).",rir:"RIR 1–3"},{t:"mach",mode:"upper",n:"Cable Lateral Raise",sets:"3 × 12–15",menu:"Side delts — smooth, no swing.",rir:"RIR 1–3"},{t:"mach",mode:"upper",n:"Rear-delt Fly (machine)",sets:"3 × 12–15",menu:"Rear delts / upper back — light, high reps.",rir:"RIR 1–3"}]},
-   {date:"2026-07-30", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
-   {date:"2026-07-31", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"1250-1000-750-500 m",rest:"4:00 rest · 30–34 s/m · 72–80%",pace:"2:00–2:08"}]},
-   {date:"2026-08-01", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"30 min continuous",rest:"26–28 s/m · 62–75%",pace:"2:05–2:18"}]},
-   {date:"2026-08-02", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
- ]},
- {wk:8, phase:"deload", label:"Week 8 · deload", range:"Aug 3 – 9", start:"2026-08-03", end:"2026-08-09", days:[
-   {date:"2026-08-03", dow:"Mon", type:"lower", title:"Lower Strength · deload", items:[{t:"lift",n:"Back Squat",s:"3×3",pct:62,lift:"bs"},{t:"lift",n:"Front Squat",s:"3×3",pct:58,lift:"fs"}]},
-   {date:"2026-08-04", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"20 sec × 12",rest:"2:00 rest · 38–40 s/m · 90–98%",pace:"1:42–1:50"}]},
-   {date:"2026-08-05", dow:"Wed", type:"upper", title:"Upper Strength · deload", items:[{t:"lift",n:"Weighted Pull-up",s:"3×4",add:20},{t:"lift",n:"Bench Press",s:"3×3",pct:62,lift:"bench"}]},
-   {date:"2026-08-06", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
-   {date:"2026-08-07", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"8 × 500m",rest:"2:00 rest · 30–32 s/m · 75–80%",pace:"2:00–2:05"}]},
-   {date:"2026-08-08", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"6 × 1000m",rest:"3:00 rest · 26–28 s/m · 65–75%",pace:"2:05–2:15"}]},
-   {date:"2026-08-09", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
- ]},
- {wk:9, phase:"peak", label:"Week 9 · re-build", range:"Aug 10 – 16", start:"2026-08-10", end:"2026-08-16", days:[
-   {date:"2026-08-10", dow:"Mon", type:"lower", title:"Lower Strength", items:[{t:"lift",n:"Back Squat",s:"5×2",pct:93,lift:"bs"},{t:"lift",n:"Front Squat",s:"3×2",pct:86,lift:"fs"},{t:"mach",mode:"lower",n:"Hack Squat or Leg Press",sets:"3 × 10–12",menu:"Quads — choose one machine. Controlled tempo, full depth.",rir:"RIR 1–3 · stop shy of failure"},{t:"mach",mode:"lower",n:"Seated / Lying Hamstring Curl",sets:"3 × 10–15",menu:"Hamstrings — squeeze + slow eccentric.",rir:"RIR 1–3"},{t:"mach",mode:"lower",n:"Calf Raise",sets:"2 × 12–15",menu:"Optional. Full stretch at bottom, pause at top.",rir:"RIR 1–3 · optional add-on"}]},
-   {date:"2026-08-11", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"250m × 8",rest:"3:00 rest · 38–40 s/m · 90–95%",pace:"1:45–1:50"}]},
-   {date:"2026-08-12", dow:"Wed", type:"upper", title:"Upper Strength", items:[{t:"lift",n:"Weighted Pull-up",s:"5×3",add:47.5},{t:"lift",n:"Bench Press",s:"5×2",pct:90,lift:"bench"},{t:"mach",mode:"upper",n:"Chest-supported Row (machine)",sets:"3 × 10–12",menu:"Mid-back / lats — chest pinned, drive elbows back.",rir:"RIR 1–3"},{t:"mach",mode:"upper",n:"Lat Pulldown",sets:"3 × 10–12",menu:"Lats — vary grip week to week (wide / neutral / underhand).",rir:"RIR 1–3"},{t:"mach",mode:"upper",n:"Cable Lateral Raise",sets:"3 × 12–15",menu:"Side delts — smooth, no swing.",rir:"RIR 1–3"},{t:"mach",mode:"upper",n:"Rear-delt Fly (machine)",sets:"3 × 12–15",menu:"Rear delts / upper back — light, high reps.",rir:"RIR 1–3"}]},
-   {date:"2026-08-13", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
-   {date:"2026-08-14", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"4 × 4 min",rest:"4:00 rest · 28–30 s/m · 70–80%",pace:"2:00–2:10"}]},
-   {date:"2026-08-15", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"30 min continuous",rest:"26–28 s/m · 62–75%",pace:"2:05–2:18"}]},
-   {date:"2026-08-16", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
- ]},
- {wk:10, phase:"taper", label:"Week 10 · taper", range:"Aug 17 – 23", start:"2026-08-17", end:"2026-08-23", days:[
-   {date:"2026-08-17", dow:"Mon", type:"lower", title:"Lower · taper volume", items:[{t:"lift",n:"Back Squat",s:"3×2",pct:80,lift:"bs"},{t:"lift",n:"Front Squat",s:"2×2",pct:72,lift:"fs"}]},
-   {date:"2026-08-18", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"400m × 2",rest:"7:00 rest · 38+ s/m · 85–90%",pace:"1:50–1:55"}]},
-   {date:"2026-08-19", dow:"Wed", type:"upper", title:"Upper · taper volume", items:[{t:"lift",n:"Weighted Pull-up",s:"3×2",add:35},{t:"lift",n:"Bench Press",s:"3×2",pct:78,lift:"bench"}]},
-   {date:"2026-08-20", dow:"Thu", type:"z2", title:"Zone 2 Row", items:[{t:"row",n:"30–50 min Zone 2 row",rest:"easy aerobic · nasal-breathing pace",pace:"2:15–2:25"}]},
-   {date:"2026-08-21", dow:"Fri", type:"vo2", title:"VO₂ Row", items:[{t:"row",n:"1-2-3-4-3-2-1 min pyramid",rest:"3:00 rest · 28–30 s/m · 73–80%",pace:"2:00–2:07"}]},
-   {date:"2026-08-22", dow:"Sat", type:"endurance", title:"Endurance Row", items:[{t:"row",n:"4 × 1500m",rest:"26–28 s/m · 65–75%",pace:"2:05–2:15"}]},
-   {date:"2026-08-23", dow:"Sun", type:"rest", title:"Full Rest", items:[{t:"note",n:"Full rest"}]},
- ]},
- {wk:11, phase:"taper", label:"Week 11 · test week", range:"Aug 24 – 30", start:"2026-08-24", end:"2026-08-30", days:[
-   {date:"2026-08-24", dow:"Mon", type:"lower", title:"Primer · openers", items:[{t:"lift",n:"Back Squat",s:"2×2",pct:70,lift:"bs"}]},
-   {date:"2026-08-25", dow:"Tue", type:"sprint", title:"Sprint Row", items:[{t:"row",n:"4 × 250m",rest:"4:00 rest · 40+ s/m · 90–95%",pace:"1:45–1:50"}]},
-   {date:"2026-08-26", dow:"Wed", type:"upper", title:"Upper · openers", items:[{t:"lift",n:"Weighted Pull-up",s:"2×2",add:25},{t:"lift",n:"Bench Press",s:"2×2",pct:70,lift:"bench"}]},
-   {date:"2026-08-27", dow:"Thu", type:"rest", title:"Rest", items:[{t:"note",n:"Full rest before tests"}]},
-   {date:"2026-08-28", dow:"Fri", type:"vo2", title:"VO₂ · primer", items:[{t:"row",n:"4 × 500m",rest:"2:00 rest · 32–34 s/m · 75–80%",pace:"2:00–2:05"}]},
-   {date:"2026-08-29", dow:"Sat", type:"test", title:"TEST · 1-Minute", items:[{t:"row",n:"Max distance, 1 min",rest:"15 min WU · record m / W / pace / rate",pace:"max · >330m"}]},
-   {date:"2026-08-30", dow:"Sun", type:"test", title:"TEST · 2000m", items:[{t:"row",n:"2000m time trial",rest:"even pacing, strong finish · 28–32 s/m",pace:"≈1:50 · neg split"}]},
- ]},
+ {"wk":4,"phase":"build","label":"Week 4 · PB strength 1","range":"Jul 6 – 12","start":"2026-07-06","end":"2026-07-12","days":[{"date":"2026-07-06","dow":"Mon","type":"sprint","title":"Sprint Row","items":[{"t":"row","n":"8 × 150m all-out","rest":"3:00–3:30 full rest · 36–40 s/m · explosive first 5 strokes, then settle · log watts every rep","pace":"1:38–1:42"}]},{"date":"2026-07-07","dow":"Tue","type":"lower","title":"Strength A · Heavy","items":[{"t":"lift","n":"Box Jump","s":"3×3","bw":1,"note":"max intent · full reset each rep"},{"t":"lift","n":"Back Squat · top set","s":"1×3","pct":85,"lift":"bs","note":"bracket 82.5–87.5% · cap RPE 9"},{"t":"lift","n":"Back Squat · back-offs","s":"3×5","pct":75,"lift":"bs","note":"3 min rest"},{"t":"lift","n":"Bench Press · top set","s":"1×4","pct":82,"lift":"bench","note":"bracket 80–85% · cap RPE 9"},{"t":"lift","n":"Bench Press · back-offs","s":"2×6","pct":77,"lift":"bench","note":"hypercritical form"},{"t":"lift","n":"Weighted Pull-Up","s":"3×6–8","bw":1,"note":"add plate once 8+ on all sets"},{"t":"lift","n":"Barbell RDL","s":"3×8","w":140,"note":"RIR 2–3 · +5 when all sets RIR 3+"},{"t":"lift","n":"Chest-Supported Row","s":"3×10–12","w":null,"note":"RIR 2 · slow eccentric"},{"t":"lift","n":"Face Pull","s":"3×15–20","w":null,"note":"light · high elbows · ext. rotate"}]},{"date":"2026-07-08","dow":"Wed","type":"vo2","title":"VO₂ Row · pyramid","items":[{"t":"row","n":"1-2-3-4-3-2-1 min pyramid","rest":"3:00 paddle · 28–30 s/m · 16 min work · 4-min rep is the anchor, hold even splits","pace":"1:58–2:02"}]},{"date":"2026-07-09","dow":"Thu","type":"upper","title":"Strength B · Hypertrophy","items":[{"t":"lift","n":"Front Squat","s":"4×6","pct":67,"lift":"fs","note":"RIR 2 · elbows high, torso upright"},{"t":"lift","n":"Overhead Press","s":"4×6","pct":70,"lift":"ohp","note":"RIR 2 · squeeze glutes"},{"t":"lift","n":"Trap Bar Deadlift","s":"3×5","w":165,"note":"RIR 2–3 · push the floor away"},{"t":"lift","n":"DB Incline Press 30°","s":"3×8–10","w":null,"note":"RIR 2 · full stretch at bottom"},{"t":"lift","n":"Seated Cable Row","s":"3×10–12","w":null,"note":"RIR 2 · neutral grip"},{"t":"lift","n":"Barbell Hip Thrust","s":"3×8–10","w":null,"note":"RIR 2 · 1s pause at lockout"},{"t":"lift","n":"EZ Bar Curl","s":"3×10–12","w":null,"note":"RIR 1–2 · myo-reps last set"},{"t":"lift","n":"Cable Pushdown","s":"3×12–15","w":null,"note":"RIR 1–2 · dropset last set"},{"t":"lift","n":"Pallof Press","s":"3×10/side","w":null,"note":"slow anti-rotation"}]},{"date":"2026-07-10","dow":"Fri","type":"upper","title":"Pump · Arms & Delts","items":[{"t":"lift","n":"A1 Hammer Curl + A2 OH Triceps Ext","s":"4×8–10 / 4×10–12","w":null,"note":"superset · no rest in pair, 90s after"},{"t":"lift","n":"B1 Cable Curl + B2 Kickback","s":"3×20 / 3×20","w":null,"note":"superset · RIR 1–2"},{"t":"lift","n":"DB Lateral Raise","s":"4×12–15","w":null,"note":"RIR 1–2 · lead with elbows"},{"t":"lift","n":"Hanging Leg Raise","s":"3×10–15","w":null,"note":"no swinging"}]},{"date":"2026-07-11","dow":"Sat","type":"endurance","title":"Threshold Row","items":[{"t":"row","n":"3 × 10 min","rest":"2:00 paddle · 24–26 s/m · conversational = too easy, gasping = too hard · valve: 40 min Z2","pace":"2:05–2:08"}]},{"date":"2026-07-12","dow":"Sun","type":"rest","title":"Full Rest","items":[{"t":"note","n":"Full rest"}]}]},
+ {"wk":5,"phase":"build","label":"Week 5 · PB strength 2","range":"Jul 13 – 19","start":"2026-07-13","end":"2026-07-19","days":[{"date":"2026-07-13","dow":"Mon","type":"sprint","title":"Sprint Row · lactate","items":[{"t":"row","n":"6 × 250m","rest":"4:00 rest · 34–36 s/m · lactate tolerance, hold form when it burns","pace":"1:42–1:46"}]},{"date":"2026-07-14","dow":"Tue","type":"lower","title":"Strength A · Heavy","items":[{"t":"lift","n":"Box Jump","s":"3×3","bw":1,"note":"max intent · full reset each rep"},{"t":"lift","n":"Back Squat · top set","s":"1×2","pct":87,"lift":"bs","note":"bracket 85–90% · cap RPE 9 · 250s bite — bottom of bracket is fine"},{"t":"lift","n":"Back Squat · back-offs","s":"3×5","pct":75,"lift":"bs","note":"3 min rest"},{"t":"lift","n":"Bench Press · top set","s":"1×3","pct":85,"lift":"bench","note":"bracket 82.5–87.5% · cap RPE 9"},{"t":"lift","n":"Bench Press · back-offs","s":"2×6","pct":77,"lift":"bench","note":"hypercritical form"},{"t":"lift","n":"Weighted Pull-Up","s":"3×6–8","bw":1,"note":"add plate once 8+ on all sets"},{"t":"lift","n":"Barbell RDL","s":"3×8","w":145,"note":"RIR 2–3 · +5 when all sets RIR 3+"},{"t":"lift","n":"Chest-Supported Row","s":"3×10–12","w":null,"note":"RIR 2 · slow eccentric"},{"t":"lift","n":"Face Pull","s":"3×15–20","w":null,"note":"light · high elbows · ext. rotate"}]},{"date":"2026-07-15","dow":"Wed","type":"vo2","title":"VO₂ Row","items":[{"t":"row","n":"6 × 3 min","rest":"2:30 paddle · 29–31 s/m · 18 min work · slightly faster than last week","pace":"1:57–2:01"}]},{"date":"2026-07-16","dow":"Thu","type":"upper","title":"Strength B · Hypertrophy","items":[{"t":"lift","n":"Front Squat","s":"4×6","pct":67,"lift":"fs","note":"RIR 2 · +5 if all sets were RIR 3+"},{"t":"lift","n":"Overhead Press","s":"4×6","pct":70,"lift":"ohp","note":"RIR 2 · +2.5 if earned"},{"t":"lift","n":"Trap Bar Deadlift","s":"3×5","w":170,"note":"RIR 2–3"},{"t":"lift","n":"DB Incline Press 30°","s":"3×8–10","w":null,"note":"RIR 2 · full stretch at bottom"},{"t":"lift","n":"Seated Cable Row","s":"3×10–12","w":null,"note":"RIR 2 · neutral grip"},{"t":"lift","n":"Barbell Hip Thrust","s":"3×8–10","w":null,"note":"RIR 2 · 1s pause at lockout"},{"t":"lift","n":"EZ Bar Curl","s":"3×10–12","w":null,"note":"RIR 1–2 · myo-reps last set"},{"t":"lift","n":"Cable Pushdown","s":"3×12–15","w":null,"note":"RIR 1–2 · dropset last set"},{"t":"lift","n":"Pallof Press","s":"3×10/side","w":null,"note":"slow anti-rotation"}]},{"date":"2026-07-17","dow":"Fri","type":"upper","title":"Pump · Arms & Delts","items":[{"t":"lift","n":"A1 Hammer Curl + A2 OH Triceps Ext","s":"4×8–10 / 4×10–12","w":null,"note":"superset · no rest in pair, 90s after"},{"t":"lift","n":"B1 Cable Curl + B2 Kickback","s":"3×20 / 3×20","w":null,"note":"superset · RIR 1–2"},{"t":"lift","n":"DB Lateral Raise","s":"4×12–15","w":null,"note":"RIR 1–2 · lead with elbows"},{"t":"lift","n":"Hanging Leg Raise","s":"3×10–15","w":null,"note":"no swinging"}]},{"date":"2026-07-18","dow":"Sat","type":"endurance","title":"Threshold Row","items":[{"t":"row","n":"4 × 8 min","rest":"2:00 paddle · 25–27 s/m · 32 min work · valve: 40 min Z2","pace":"2:04–2:07"}]},{"date":"2026-07-19","dow":"Sun","type":"rest","title":"Full Rest","items":[{"t":"note","n":"Full rest"}]}]},
+ {"wk":6,"phase":"build","label":"Week 6 · volume wave","range":"Jul 20 – 26","start":"2026-07-20","end":"2026-07-26","days":[{"date":"2026-07-20","dow":"Mon","type":"sprint","title":"Sprint Row","items":[{"t":"row","n":"8 × 150m","rest":"3:00–3:30 full rest · 36–40 s/m · mission: beat Week-4 watts","pace":"1:37–1:41"}]},{"date":"2026-07-21","dow":"Tue","type":"lower","title":"Strength A · Volume wave","items":[{"t":"lift","n":"Box Jump","s":"3×3","bw":1,"note":"max intent · full reset each rep"},{"t":"lift","n":"Back Squat · top set","s":"1×4","pct":82,"lift":"bs","note":"bracket 80–85% · deliberately lighter, more reps"},{"t":"lift","n":"Back Squat · back-offs","s":"3×5","pct":75,"lift":"bs","note":"3 min rest"},{"t":"lift","n":"Bench Press · top set","s":"1×5","pct":80,"lift":"bench","note":"bracket 77.5–82.5%"},{"t":"lift","n":"Bench Press · back-offs","s":"2×6","pct":77,"lift":"bench","note":"hypercritical form"},{"t":"lift","n":"Weighted Pull-Up","s":"3×6–8","bw":1,"note":"add plate once 8+ on all sets"},{"t":"lift","n":"Barbell RDL","s":"3×8","w":150,"note":"RIR 2–3"},{"t":"lift","n":"Chest-Supported Row","s":"3×10–12","w":null,"note":"RIR 2 · slow eccentric"},{"t":"lift","n":"Face Pull","s":"3×15–20","w":null,"note":"light · high elbows · ext. rotate"}]},{"date":"2026-07-22","dow":"Wed","type":"vo2","title":"VO₂ Row · race touch","items":[{"t":"row","n":"8 × 2 min","rest":"2:00 paddle · 30–32 s/m · a touch of 2K race pace · 16 min work","pace":"1:55–1:57"}]},{"date":"2026-07-23","dow":"Thu","type":"upper","title":"Strength B · Hypertrophy","items":[{"t":"lift","n":"Front Squat","s":"4×6","pct":67,"lift":"fs","note":"RIR 2 · progress if earned"},{"t":"lift","n":"Overhead Press","s":"4×6","pct":70,"lift":"ohp","note":"RIR 2"},{"t":"lift","n":"Trap Bar Deadlift","s":"3×5","w":170,"note":"RIR 2–3"},{"t":"lift","n":"DB Incline Press 30°","s":"3×8–10","w":null,"note":"RIR 2 · full stretch at bottom"},{"t":"lift","n":"Seated Cable Row","s":"3×10–12","w":null,"note":"RIR 2 · neutral grip"},{"t":"lift","n":"Barbell Hip Thrust","s":"3×8–10","w":null,"note":"RIR 2 · 1s pause at lockout"},{"t":"lift","n":"EZ Bar Curl","s":"3×10–12","w":null,"note":"RIR 1–2 · myo-reps last set"},{"t":"lift","n":"Cable Pushdown","s":"3×12–15","w":null,"note":"RIR 1–2 · dropset last set"},{"t":"lift","n":"Pallof Press","s":"3×10/side","w":null,"note":"slow anti-rotation"}]},{"date":"2026-07-24","dow":"Fri","type":"upper","title":"Pump · Arms & Delts","items":[{"t":"lift","n":"A1 Hammer Curl + A2 OH Triceps Ext","s":"4×8–10 / 4×10–12","w":null,"note":"superset · no rest in pair, 90s after"},{"t":"lift","n":"B1 Cable Curl + B2 Kickback","s":"3×20 / 3×20","w":null,"note":"superset · RIR 1–2"},{"t":"lift","n":"DB Lateral Raise","s":"4×12–15","w":null,"note":"RIR 1–2 · lead with elbows"},{"t":"lift","n":"Hanging Leg Raise","s":"3×10–15","w":null,"note":"no swinging"}]},{"date":"2026-07-25","dow":"Sat","type":"endurance","title":"Threshold Row · long reps","items":[{"t":"row","n":"2 × 15 min","rest":"3:00 paddle · 24–26 s/m · settle in and hold · valve: 40 min Z2","pace":"2:06–2:09"}]},{"date":"2026-07-26","dow":"Sun","type":"rest","title":"Full Rest","items":[{"t":"note","n":"Full rest"}]}]},
+ {"wk":7,"phase":"peak","label":"Week 7 · peak","range":"Jul 27 – Aug 2","start":"2026-07-27","end":"2026-08-02","days":[{"date":"2026-07-27","dow":"Mon","type":"sprint","title":"Sprint Row · peak volume","items":[{"t":"row","n":"4 × 250m + 4 × 150m","rest":"250s @ 1:41–1:45, 4:00 rest · 150s @ 1:36–1:40, 3:00 rest · biggest sprint day of the block","pace":"1:36–1:45"}]},{"date":"2026-07-28","dow":"Tue","type":"lower","title":"Strength A · Heaviest","items":[{"t":"lift","n":"Box Jump","s":"3×3","bw":1,"note":"max intent · full reset each rep"},{"t":"lift","n":"Back Squat · top set","s":"1×2","pct":89,"lift":"bs","note":"bracket 87.5–92.5% · cap RPE 9 — if it moves badly, that's the number"},{"t":"lift","n":"Back Squat · back-offs","s":"3×5","pct":75,"lift":"bs","note":"3 min rest"},{"t":"lift","n":"Bench Press · top set","s":"1×2","pct":87,"lift":"bench","note":"bracket 85–90% · cap RPE 9"},{"t":"lift","n":"Bench Press · back-offs","s":"2×6","pct":77,"lift":"bench","note":"hypercritical form"},{"t":"lift","n":"Weighted Pull-Up","s":"3×6–8","bw":1,"note":"hold load this week"},{"t":"lift","n":"Barbell RDL","s":"3×8","w":150,"note":"RIR 2–3"},{"t":"lift","n":"Chest-Supported Row","s":"3×10–12","w":null,"note":"RIR 2 · slow eccentric"},{"t":"lift","n":"Face Pull","s":"3×15–20","w":null,"note":"light · high elbows"}]},{"date":"2026-07-29","dow":"Wed","type":"vo2","title":"VO₂ Row · test rehearsal","items":[{"t":"row","n":"10 × 1 min on / 1 min easy","rest":"36–40 s/m · direct rehearsal of >330m pace · cut to 8 reps if pace collapses","pace":"1:31–1:34"}]},{"date":"2026-07-30","dow":"Thu","type":"upper","title":"Strength B · Trimmed","items":[{"t":"lift","n":"Front Squat","s":"4×6","pct":67,"lift":"fs","note":"RIR 2"},{"t":"lift","n":"Overhead Press","s":"4×6","pct":70,"lift":"ohp","note":"RIR 2"},{"t":"lift","n":"DB Incline Press 30°","s":"3×8–10","w":null,"note":"RIR 2"},{"t":"lift","n":"Seated Cable Row","s":"3×10–12","w":null,"note":"RIR 2"},{"t":"lift","n":"Barbell Hip Thrust","s":"3×8–10","w":null,"note":"RIR 2 · 1s pause"},{"t":"lift","n":"EZ Bar Curl","s":"3×10–12","w":null,"note":"straight sets — no myo-reps this week"},{"t":"lift","n":"Cable Pushdown","s":"3×12–15","w":null,"note":"straight sets — no dropset this week"},{"t":"lift","n":"Pallof Press","s":"3×10/side","w":null,"note":"slow anti-rotation"},{"t":"note","n":"No trap bar this week — yesterday was brutal, recovery wins"}]},{"date":"2026-07-31","dow":"Fri","type":"endurance","title":"Steady Row","items":[{"t":"row","n":"30 min continuous","rest":"22–24 s/m · easy-moderate · recovery-flavored volume, not a workout to win","pace":"2:09–2:12"}]},{"date":"2026-08-01","dow":"Sat","type":"upper","title":"Pump · optional","items":[{"t":"lift","n":"A1 Hammer Curl + A2 OH Triceps Ext","s":"4×8–10 / 4×10–12","w":null,"note":"superset"},{"t":"lift","n":"B1 Cable Curl + B2 Kickback","s":"3×20 / 3×20","w":null,"note":"superset · RIR 1–2"},{"t":"lift","n":"DB Lateral Raise","s":"4×12–15","w":null,"note":"RIR 1–2"},{"t":"lift","n":"Hanging Leg Raise","s":"3×10–15","w":null,"note":"no swinging"},{"t":"note","n":"Peak week — skip entirely if cooked, nothing depends on it"}]},{"date":"2026-08-02","dow":"Sun","type":"rest","title":"Full Rest","items":[{"t":"note","n":"Full rest"}]}]},
+ {"wk":8,"phase":"taper","label":"Week 8 · taper + test","range":"Aug 3 – 9","start":"2026-08-03","end":"2026-08-09","days":[{"date":"2026-08-03","dow":"Mon","type":"sprint","title":"Sprint Row · taper","items":[{"t":"row","n":"4 × 150m","rest":"3:30 full rest · 36–40 s/m · quality only, stop while fresh","pace":"1:37–1:41"}]},{"date":"2026-08-04","dow":"Tue","type":"lower","title":"Strength · confidence","items":[{"t":"lift","n":"Box Jump","s":"3×3","bw":1,"note":"max intent"},{"t":"lift","n":"Back Squat · single","s":"1×1","pct":85,"lift":"bs","note":"smooth confidence single — nowhere near max"},{"t":"lift","n":"Back Squat · back-offs","s":"2×5","pct":74,"lift":"bs"},{"t":"lift","n":"Bench Press · single","s":"1×1","pct":85,"lift":"bench","note":"smooth and fast"},{"t":"lift","n":"Bench Press · back-offs","s":"2×5","pct":75,"lift":"bench"},{"t":"lift","n":"Pull-Up","s":"2×6","bw":1,"note":"easy"},{"t":"lift","n":"Barbell RDL","s":"2×8","w":120,"note":"RIR 4 · light and crisp · under 45 min total"}]},{"date":"2026-08-05","dow":"Wed","type":"vo2","title":"Sharpener","items":[{"t":"row","n":"6 × 45 sec","rest":"2:30 full rest · 38–40 s/m · short, sharp, low volume — leave wanting more","pace":"1:31–1:34"}]},{"date":"2026-08-06","dow":"Thu","type":"rest","title":"Full Rest","items":[{"t":"note","n":"Freshness beats stimulus now — no second strength day this week"}]},{"date":"2026-08-07","dow":"Fri","type":"z2","title":"Pre-Test Primer","items":[{"t":"row","n":"20 min Z2 + 4 × 10-stroke bursts","rest":"Z2 @ r20–22 · bursts @ 38–40 s/m with 2:00 easy between · light neural touch-up","pace":"2:15–2:20"}]},{"date":"2026-08-08","dow":"Sat","type":"test","title":"TEST · 1-Minute","items":[{"t":"row","n":"Max distance, 1 min · target >330m","rest":"WU: 10 min progressive + 2×20s builds + 5 min easy · settle ~1:33 first 20s, hold through 40, empty last 20 · fly-and-die is the only way to lose","pace":"≤1:31 · 38–42 s/m"}]},{"date":"2026-08-09","dow":"Sun","type":"rest","title":"Rest · Block Complete","items":[{"t":"note","n":"Log meters, avg pace, avg watts, peak watts — then build the next block"}]}]},
 ];
 
 /* ---- inject auto warm-up on lifting days (ramps to the day's main lift) ---- */
 PLAN.forEach(w=>w.days.forEach(d=>{
   if(d.type==="lower"||d.type==="upper"){
-    const main=d.items.find(it=>it.t==="lift" && /Back Squat|Bench Press/i.test(it.n));
+    const main=d.items.find(it=>it.t==="lift" && /Back Squat|Bench Press|Front Squat/i.test(it.n) && it.pct!=null);
     const pull=d.items.find(it=>it.t==="lift" && /Pull-?up/i.test(it.n));
     if(main && main.pct!=null){
       const wu={t:"warmup", mode:d.type, pct:main.pct, lift:main.lift};
@@ -705,6 +643,7 @@ function weekProgress(w){ const ids=weekItemIds(w); const dn=ids.filter(isDone).
 function rirFor(name){
   const n=name.toLowerCase();
   if(/jump|clean|snatch|plyo/.test(n)) return {t:"power", txt:"RIR 3–4"};
+  if(/top set|single/.test(n)) return {t:"main", txt:"RPE ≤9"};
   if(/squat|bench|pull-?up/.test(n)) return {t:"main", txt:"RIR 1–2"};
   return {t:"sec", txt:"RIR 2–3"};
 }
@@ -904,7 +843,7 @@ function render(){
   else {
     const nx=findNext();
     if(nx){ eye.textContent="Next up"; todayEl.innerHTML=dayCard(nx,{today:true, forceOpen:true}); }
-    else if(TODAY>PLAN[PLAN.length-1].end){ eye.textContent="Block complete"; todayEl.innerHTML='<div class="refcard"><div class="iname">Block done — Jun 19 → Aug 30 🏁</div><div class="note">Log your 1-min and 2k test numbers, then build the next block.</div></div>'; }
+    else if(TODAY>PLAN[PLAN.length-1].end){ eye.textContent="Block complete"; todayEl.innerHTML='<div class="refcard"><div class="iname">Block done — Jun 19 → Aug 9 🏁</div><div class="note">Log your 1-min test numbers (meters, avg pace, avg watts, peak watts), then build the next block.</div></div>'; }
     else { eye.textContent="Starts soon"; todayEl.innerHTML='<div class="refcard"><div class="iname">Block starts Jun 19</div></div>'; }
   }
 
@@ -986,14 +925,15 @@ zs.addEventListener("input",zupd); zupd();
 
 /* settings */
 const scrim=document.getElementById("scrim");
-function openMax(){ document.getElementById("mx-bs").value=S.max.bs; document.getElementById("mx-fs").value=S.max.fs; document.getElementById("mx-bench").value=S.max.bench; scrim.classList.add("show"); }
+function openMax(){ document.getElementById("mx-bs").value=S.max.bs; document.getElementById("mx-fs").value=S.max.fs; document.getElementById("mx-bench").value=S.max.bench; document.getElementById("mx-ohp").value=S.max.ohp; scrim.classList.add("show"); }
 document.getElementById("gearBtn").onclick=openMax;
 scrim.addEventListener("click",e=>{ if(e.target===scrim) scrim.classList.remove("show"); });
 document.getElementById("saveMax").onclick=()=>{
   const bs=+document.getElementById("mx-bs").value||S.max.bs;
   const fs=+document.getElementById("mx-fs").value||S.max.fs;
   const bench=+document.getElementById("mx-bench").value||S.max.bench;
-  S.max={bs,fs,bench}; save(); scrim.classList.remove("show"); render();
+  const ohp=+document.getElementById("mx-ohp").value||S.max.ohp;
+  S.max={bs,fs,bench,ohp}; save(); scrim.classList.remove("show"); render();
 };
 document.getElementById("resetAll").onclick=()=>{
   if(confirm("Clear all check-offs for the whole block? Your maxes stay.")){ S.checks={}; S.open={}; save(); scrim.classList.remove("show"); render(); }
