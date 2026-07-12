@@ -240,6 +240,14 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
 .logtext{width:100%; background:var(--panel); border:1px solid var(--line); border-radius:9px; padding:9px;
   font-family:var(--disp); font-size:13.5px; color:var(--ink); resize:vertical; min-height:46px}
 .logtext:focus{outline:none; border-color:var(--acc)}
+.ezbtn{display:inline-flex; align-items:center; gap:8px; margin:10px 2px 4px; padding:11px 16px;
+  background:linear-gradient(180deg,#12b886,#0e9d6c); color:#fff; border-radius:11px;
+  font-family:var(--disp); font-weight:700; font-size:14px; text-decoration:none;
+  box-shadow:0 4px 14px -4px rgba(14,157,108,.6); -webkit-tap-highlight-color:transparent}
+.ezbtn:hover{filter:brightness(1.05)}
+.ezbtn:active{transform:translateY(1px)}
+.ezbtn .ezico{font-size:16px; line-height:1}
+.ezbtn .ezarrow{margin-left:2px; opacity:.85; font-weight:600}
 .daylog{margin:12px 2px 4px}
 .daylog-lbl{font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--acc); margin-bottom:6px}
 .parsehint{margin-top:6px}
@@ -453,6 +461,38 @@ const RESULTS = {
     band:"2:05\u20132:18", verdict:"in", note:"30 min continuous \u2014 6,899m at avg 2:10.5 /500m, inside the 2:05\u20132:18 endurance band. Even 6-min splits (2:09.6\u20132:11.6), rate 25\u201327 s/m."}
 };
 const LOGBOOK_BASE = "https://log.concept2.com/profile/2198296/log/";
+
+/* ============ ERGZONE WORKOUT LINKS (date -> deep link that opens the ErgZone app to that workout) ============ */
+const EZLINK = {
+  "2026-07-13":"https://www.erg.zone/join?id=hwA8F8NeRKqk5IM5J_-esQ",
+  "2026-07-15":"https://www.erg.zone/join?id=4Sl-CoDyT5eIRUbpkKgEyw",
+  "2026-07-18":"https://www.erg.zone/join?id=KGeKe2JxS8iTIz9vG1JZ7Q",
+  "2026-07-20":"https://www.erg.zone/join?id=4Dpinn3aSw2QZNJWzqwMFQ",
+  "2026-07-22":"https://www.erg.zone/join?id=2KpWQjzjSiu1TBEnHvNFeg",
+  "2026-07-25":"https://www.erg.zone/join?id=2pcVLI8PSZ6aL-_0PhIbIw",
+  "2026-07-27":"https://www.erg.zone/join?id=r8ymNkcnRh2k5xPugDUAlg",
+  "2026-07-29":"https://www.erg.zone/join?id=BXWMxEExR26_ChSuH7xzpQ",
+  "2026-08-01":"https://www.erg.zone/join?id=X8FeM7ZGSTGka8IJroa_Jw",
+  "2026-08-03":"https://www.erg.zone/join?id=On23Omg_QzyaY5H8IRHoPw",
+  "2026-08-05":"https://www.erg.zone/join?id=VJXHb7kxQgi-5c-lJ49MgQ",
+  "2026-08-08":"https://www.erg.zone/join?id=_nO7aoLfSkiTVMNebrJc0g",
+  "2026-08-10":"https://www.erg.zone/join?id=nHgnQMniSyqA3YVkHEPHnw",
+  "2026-08-12":"https://www.erg.zone/join?id=TAqmfw9ARUmrNHcXuPlYXg",
+  "2026-08-15":"https://www.erg.zone/join?id=Sj36R6soRgmsIPPOtwTVVQ",
+  "2026-08-17":"https://www.erg.zone/join?id=teR0vrzQSVOIiHIG-1k0GA",
+  "2026-08-19":"https://www.erg.zone/join?id=9XQxUahxR_C-buwpxdjlqg",
+  "2026-08-22":"https://www.erg.zone/join?id=6SNYjcu1TVaBz73I2_mBNg",
+  "2026-08-24":"https://www.erg.zone/join?id=-0L3gU_EQ6CmAtvWFJeD7A",
+  "2026-08-26":"https://www.erg.zone/join?id=rn6fLoFAStu2zfHnyDZoEw",
+  "2026-08-29":"https://www.erg.zone/join?id=armHmv_3QgS4OPVoku67XA",
+  "2026-08-30":"https://www.erg.zone/join?id=1pWtAq0hS5KdmKm-Z2UddA"
+};
+function ergzoneBtnHTML(d){
+  const url = EZLINK[d.date];
+  if(!url || !(d.items && d.items.some(it=>it.t==="row"))) return "";
+  return '<a class="ezbtn" href="'+url+'" target="_blank" rel="noopener">'
+    + '<span class="ezico">🚣</span> Start in ErgZone <span class="ezarrow">↗</span></a>';
+}
 
 /* ============ ENTRY LOGGING (per-set -> Google Sheet via JSONP + localStorage) ============ */
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyq0ZEWv8ZfkL8XhESm5gU7APsIVvm86VRGt8HFbTVepVQJEixQ4Lk_P9GGdEvodsw/exec";
@@ -794,7 +834,7 @@ function dayCard(d, opts){
         + '<span class="mini">'+(done?"done":d.items.filter(i=>isDone(i.id)).length+"/"+d.items.length)+'</span></span>'
      + '<span class="chev">▶</span>'
    + '</button>'
-   + '<div class="cbody">'+items + resultHTML(d) + logUIHTML(d)
+   + '<div class="cbody">'+items + ergzoneBtnHTML(d) + resultHTML(d) + logUIHTML(d)
      + '<div class="dfoot">'+fuelLine(d.type)+allBtn+'</div>'
    + '</div></div>';
 }
