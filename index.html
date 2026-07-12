@@ -240,6 +240,8 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
 .logtext{width:100%; background:var(--panel); border:1px solid var(--line); border-radius:9px; padding:9px;
   font-family:var(--disp); font-size:13.5px; color:var(--ink); resize:vertical; min-height:46px}
 .logtext:focus{outline:none; border-color:var(--acc)}
+.daylog{margin:12px 2px 4px}
+.daylog-lbl{font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--acc); margin-bottom:6px}
 .parsehint{margin-top:6px}
 .pspreview{font-family:var(--mono); font-size:11px; color:var(--mut); background:var(--panel2);
   border:1px solid var(--line); border-radius:8px; padding:7px 9px; line-height:1.7}
@@ -697,7 +699,7 @@ function loadReadout(it){
     if(it.pct!=null) return {val:wt(it.pct,it.lift)+" lb", lbl:it.pct+"% "+it.lift};
     if(it.w!=null) return {val:it.w+" lb", lbl:it.note||""};
     if(it.add!=null) return {val:"+"+it.add+" lb", lbl:"added"};
-    if(it.bw) return {val:"bodyweight", lbl:it.note||""};
+    if(it.bw) return {val:"bodyweight", lbl:""}; // note shows in the sub line; keep the right column short so it doesn't overflow on mobile
     if(it.w===null) return {val:it.note||"heavy", lbl:""}; // chest row etc, no number
   }
   return null;
@@ -751,34 +753,23 @@ function exItems(d){
   });
   return out;
 }
+function dayLogEntry(date){
+  const es=ENTRIES.filter(e=>e.date===date && e.exercise==="Session log")
+    .sort((a,b)=>(b.ts||"").localeCompare(a.ts||""));
+  return es.length? (es[0].notes||"") : "";
+}
 function logUIHTML(d){
-  const ex=exItems(d); if(!ex.length) return "";
-  return ex.map(x=>{
-    const hist=entriesFor(d.date, x.name);
-    const last=lastEntryFor(x.name, d.date);
-    let histHTML="";
-    if(hist.length){
-      const byTs=hist[0].ts;
-      const sess=hist.filter(h=>h.ts===byTs).sort((a,b)=>(+a.set_num||0)-(+b.set_num||0));
-      const parts=sess.filter(h=>h.weight||h.reps).map(h=>(h.weight||"?")+(h.reps?"×"+h.reps:"")+(h.rir_rpe?" @"+h.rir_rpe:""));
-      const note=sess.find(h=>h.notes)?sess.find(h=>h.notes).notes:"";
-      histHTML='<div class="loghist"><span class="hh">logged</span> '+(parts.join("  ·  ")||"—")+(note?'<br>'+esc(note):'')+'</div>';
-    } else if(last){
-      histHTML='<div class="loghist"><span class="hh">last '+fmtDate(last.date)+'</span> '+(last.weight?'<b>'+esc(last.weight)+'</b> ':'')+(last.reps?'×'+last.reps+' ':'')+(last.notes?'· '+esc(last.notes):'')+'</div>';
-    }
-    const has=hist.length?" has":"";
-    const eid=(d.date+"|"+x.name).replace(/[^a-zA-Z0-9]/g,"_");
-    return '<div class="logwrap" data-ex="'+encodeURIComponent(x.name)+'" data-date="'+d.date+'" data-dtype="'+x.dtype+'" data-pres="'+encodeURIComponent(x.prescribed)+'">'
-      + '<div style="margin:8px 0 0 36px"><button class="logbtn'+has+'" data-logtoggle="'+eid+'">'+(hist.length?"✓ Logged · edit":"+ Log")+'</button></div>'
-      + histHTML
-      + '<div class="logform" id="lf_'+eid+'">'
-        + '<textarea class="logtext" data-logarea="'+eid+'" placeholder="Plain English — e.g. 5x3 @185, RIR 2,2,3,3,1, felt strong"></textarea>'
-        + '<div class="parsehint" id="ph_'+eid+'"></div>'
-        + '<div class="saverow"><button class="logsave" data-logsave="'+eid+'">Save</button>'
-        + '<span class="savestat" id="st_'+eid+'"></span>'
-        + '<span class="loghint">prescribed: '+(esc(x.prescribed)||"—")+'</span></div>'
-      + '</div></div>';
-  }).join("");
+  // one open text box per workout — saved as a single spreadsheet line (processed later)
+  const hasWork = d.items.some(it=>it.t==="lift"||it.t==="mach"||it.t==="row");
+  if(!hasWork) return "";
+  const prev = dayLogEntry(d.date);
+  const eid = d.date.replace(/[^0-9]/g,"");
+  return '<div class="daylog" data-date="'+d.date+'" data-dtype="'+d.type+'">'
+    + '<div class="daylog-lbl">Session log</div>'
+    + '<textarea class="logtext" data-daylogarea="'+eid+'" placeholder="Log the whole session in plain English — lifts, weights, reps, paces, how it felt. Saved as one line; I’ll process it later.">'+esc(prev)+'</textarea>'
+    + '<div class="saverow"><button class="logsave" data-daylogsave="'+eid+'" data-date="'+d.date+'" data-dtype="'+d.type+'">'+(prev?"Update log":"Save log")+'</button>'
+      + '<span class="savestat'+(prev?" ok":"")+'" id="ds_'+eid+'">'+(prev?"✓ saved":"")+'</span></div>'
+  + '</div>';
 }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function dayCard(d, opts){
@@ -917,27 +908,19 @@ document.body.addEventListener("click",e=>{
     if(el) el.scrollIntoView({behavior:"smooth",block:"center"});
     return;
   }
-  const lt=e.target.closest("[data-logtoggle]");
-  if(lt){ const f=document.getElementById("lf_"+lt.dataset.logtoggle); if(f) f.classList.toggle("show"); return; }
-  const lta=e.target.closest("[data-logarea]");
-  // live parse preview as you type is wired separately; here handle save
-  const ls=e.target.closest("[data-logsave]");
-  if(ls){
-    const wrap=ls.closest(".logwrap"); const form=ls.closest(".logform");
-    const meta={ date:wrap.dataset.date, day_type:wrap.dataset.dtype,
-      exercise:decodeURIComponent(wrap.dataset.ex), prescribed:decodeURIComponent(wrap.dataset.pres) };
-    const area=form.querySelector("[data-logarea]"); const txt=area?area.value.trim():"";
-    const stat=document.getElementById("st_"+ls.dataset.logsave);
+  const ds=e.target.closest("[data-daylogsave]");
+  if(ds){
+    const wrap=ds.closest(".daylog");
+    const area=wrap?wrap.querySelector("[data-daylogarea]"):null; const txt=area?area.value.trim():"";
+    const stat=document.getElementById("ds_"+ds.dataset.daylogsave);
     if(!txt){ if(stat){stat.textContent="type something first"; stat.className="savestat warn";} return; }
-    const p=parseEntry(txt);
     if(stat){ stat.textContent="saving…"; stat.className="savestat saving"; }
-    logSets(meta, p.sets, p.notes, function(state, info){
+    // one free-text row per save (empty set list -> logSets writes a single line with the note)
+    logSets({date:ds.dataset.date, day_type:ds.dataset.dtype, exercise:"Session log", prescribed:""}, [], txt, function(state){
       if(!stat) return;
-      let flag = p.flags.length? " · ⚠ "+p.flags.join("; ") : "";
-      if(state==="ok"){ stat.textContent="✓ saved "+p.sets.length+" set"+(p.sets.length>1?"s":"")+flag; stat.className="savestat "+(p.flags.length?"warn":"ok"); setTimeout(()=>render(),900); }
-      else if(state==="partial"){ stat.textContent="⚠ saved "+info.ok+", "+info.fail+" failed — retry"; stat.className="savestat warn"; }
-      else if(state==="empty"){ stat.textContent="nothing parsed — add reps/weight"; stat.className="savestat warn"; }
-      else { stat.textContent="⚠ not saved — check connection, retry"; stat.className="savestat warn"; }
+      if(state==="ok"){ stat.textContent="✓ saved"; stat.className="savestat ok"; ds.textContent="Update log"; }
+      else if(state==="partial"){ stat.textContent="⚠ partial — retry"; stat.className="savestat warn"; }
+      else { stat.textContent="⚠ not saved — retry"; stat.className="savestat warn"; }
     });
     return;
   }
