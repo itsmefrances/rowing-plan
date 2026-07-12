@@ -433,32 +433,41 @@ const LIFT_NAME = {bs:"Back Squat", fs:"Front Squat", bench:"Bench Press", ohp:"
 
 /* ============ LOGBOOK RESULTS (auto-updated daily from Concept2) ============ */
 /* date -> {id, link, dist (m), time, pace (avg /500m), rate, verdict:'in'|'above'|'below'|'na', workPace (intervals), note} */
-/* Updated: 2026-07-05 */
+/* Updated: 2026-07-12 */
 const RESULTS = {
   "2026-06-19": {id:117692606, link:"https://log.concept2.com/profile/2198296/log/117692606",
     dist:3386, time:"22:20.0", pace:"1:58.1", rate:29,
-    band:"1:55\u20132:05", verdict:"in", note:"10 \u00d7 1:20 on / 60s off (logged Jun 18) \u2014 work pace 1:58.1 /500m sits inside the 1:55\u20132:05 band. Rate 29\u201331 s/m; final rep quickest at 1:53.6."},
+    band:"1:55\\u20132:05", verdict:"in", note:"10 × 1:20 on / 60s off (logged Jun 18) — work pace 1:58.1 /500m sits inside the 1:55–2:05 band. Rate 29–31 s/m; final rep quickest at 1:53.6."},
   "2026-06-21": {id:117775804, link:"https://log.concept2.com/profile/2198296/log/117775804",
     dist:21097, time:"1:35:58.0", pace:"2:16.5", rate:24,
-    band:"2:15\u20132:25", verdict:"in", note:"Solstice 21.1\u202fkm \u2014 avg 2:16.5 sits right inside the 2:15\u20132:25 endurance band."},
+    band:"2:15\\u20132:25", verdict:"in", note:"Solstice 21.1 km — avg 2:16.5 sits right inside the 2:15–2:25 endurance band."},
   "2026-06-23": {id:117874511, link:"https://log.concept2.com/profile/2198296/log/117874511",
     dist:2000, time:"28:05.9", pace:"1:46.5", rate:35,
-    band:"1:45\u20131:50", verdict:"in", note:"8 \u00d7 250m sprints (logged Jun 24) \u2014 work pace 1:46.5 /500m lands inside the 1:45\u20131:50 band. Rate 35\u201338 s/m."},
+    band:"1:45\\u20131:50", verdict:"in", note:"8 × 250m sprints (logged Jun 24) — work pace 1:46.5 /500m lands inside the 1:45–1:50 band. Rate 35–38 s/m."},
   "2026-06-26": {id:117936225, link:"https://log.concept2.com/profile/2198296/log/117936225",
     dist:4000, time:"29:45.3", pace:"1:58.2", rate:29,
-    band:"2:00\u20132:05", verdict:"above", note:"8 \u00d7 500m VO\u2082 \u2014 work pace 1:58.2 /500m, a touch faster than the 2:00\u20132:05 target (above zone). Rate 28\u201331 s/m; reps got quicker through the set."},
+    band:"2:00\\u20132:05", verdict:"above", note:"8 × 500m VO₂ — work pace 1:58.2 /500m, a touch faster than the 2:00–2:05 target (above zone). Rate 28–31 s/m; reps got quicker through the set."},
   "2026-06-27": {id:117961963, link:"https://log.concept2.com/profile/2198296/log/117961963",
     dist:6652, time:"37:00.0", pace:"2:06.3", rate:26,
-    band:"2:05\u20132:15", verdict:"in", note:"4 \u00d7 7 min \u2014 work pace 2:06.3 /500m sits inside the 2:05\u20132:15 endurance band. Steady, even splits with a slight negative split. Rate 25\u201327 s/m."},
+    band:"2:05\\u20132:15", verdict:"in", note:"4 × 7 min — work pace 2:06.3 /500m sits inside the 2:05–2:15 endurance band. Steady, even splits with a slight negative split. Rate 25–27 s/m."},
   "2026-06-30": {id:118048274, link:"https://log.concept2.com/profile/2198296/log/118048274",
     dist:900, time:"13:02.5", pace:"1:41.4", rate:39,
-    band:"1:45\u20131:50", verdict:"above", note:"5 \u00d7 300m sprint (did 3 of 5) \u2014 work pace 1:41.4 /500m, well faster than the 1:45\u20131:50 target (above zone). Rate 39\u201340 s/m."},
+    band:"1:45\\u20131:50", verdict:"above", note:"5 × 300m sprint (did 3 of 5) — work pace 1:41.4 /500m, well faster than the 1:45–1:50 target (above zone). Rate 39–40 s/m."},
   "2026-07-03": {id:118154229, link:"https://log.concept2.com/profile/2198296/log/118154229",
     dist:4000, time:"28:00.0", pace:"2:00.0", rate:30,
-    band:"2:00\u20132:10", verdict:"in", note:"4 \u00d7 4 min \u2014 work pace 2:00.0 /500m, right on the fast edge of the 2:00\u20132:10 band. Rate 29\u201331 s/m; final rep 1:58.7."},
+    band:"2:00\\u20132:10", verdict:"in", note:"4 × 4 min — work pace 2:00.0 /500m, right on the fast edge of the 2:00–2:10 band. Rate 29–31 s/m; final rep 1:58.7."},
   "2026-07-04": {id:118185760, link:"https://log.concept2.com/profile/2198296/log/118185760",
     dist:6899, time:"30:00.0", pace:"2:10.5", rate:26,
-    band:"2:05\u20132:18", verdict:"in", note:"30 min continuous \u2014 6,899m at avg 2:10.5 /500m, inside the 2:05\u20132:18 endurance band. Even 6-min splits (2:09.6\u20132:11.6), rate 25\u201327 s/m."}
+    band:"2:05\\u20132:18", verdict:"in", note:"30 min continuous — 6,899m at avg 2:10.5 /500m, inside the 2:05–2:18 endurance band. Even 6-min splits (2:09.6–2:11.6), rate 25–27 s/m."},
+  "2026-07-06": {id:118228593, link:"https://log.concept2.com/profile/2198296/log/118228593",
+    dist:1277, time:"10:00.0", pace:"3:54.9", rate:14,
+    band:"1:38–1:42", verdict:"below", note:"1,277m in 10:00.0 — avg 3:54.9 /500m vs 1:38–1:42 target: slower than target (below zone). Rate 14 s/m."},
+  "2026-07-08": {id:118298168, link:"https://log.concept2.com/profile/2198296/log/118298168",
+    dist:1420, time:"15:00.0", pace:"5:16.9", rate:10,
+    band:"1:58–2:02", verdict:"below", note:"1,420m in 15:00.0 — avg 5:16.9 /500m vs 1:58–2:02 target: slower than target (below zone). Rate 10 s/m."},
+  "2026-07-11": {id:118393283, link:"https://log.concept2.com/profile/2198296/log/118393283",
+    dist:5622, time:"24:00.0", pace:"2:08.1", rate:25,
+    band:"2:05–2:08", verdict:"in", note:"3 work intervals — avg work pace 2:08.1 /500m vs 2:05–2:08 target: in zone. Rate 25 s/m."}
 };
 const LOGBOOK_BASE = "https://log.concept2.com/profile/2198296/log/";
 

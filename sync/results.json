@@ -86,5 +86,38 @@
   "band": "2:05\\u20132:18",
   "verdict": "in",
   "note": "30 min continuous — 6,899m at avg 2:10.5 /500m, inside the 2:05–2:18 endurance band. Even 6-min splits (2:09.6–2:11.6), rate 25–27 s/m."
+ },
+ "2026-07-06": {
+  "id": 118228593,
+  "link": "https://log.concept2.com/profile/2198296/log/118228593",
+  "dist": 1277,
+  "time": "10:00.0",
+  "pace": "3:54.9",
+  "rate": 14,
+  "band": "1:38–1:42",
+  "verdict": "below",
+  "note": "1,277m in 10:00.0 — avg 3:54.9 /500m vs 1:38–1:42 target: slower than target (below zone). Rate 14 s/m."
+ },
+ "2026-07-08": {
+  "id": 118298168,
+  "link": "https://log.concept2.com/profile/2198296/log/118298168",
+  "dist": 1420,
+  "time": "15:00.0",
+  "pace": "5:16.9",
+  "rate": 10,
+  "band": "1:58–2:02",
+  "verdict": "below",
+  "note": "1,420m in 15:00.0 — avg 5:16.9 /500m vs 1:58–2:02 target: slower than target (below zone). Rate 10 s/m."
+ },
+ "2026-07-11": {
+  "id": 118393283,
+  "link": "https://log.concept2.com/profile/2198296/log/118393283",
+  "dist": 5622,
+  "time": "24:00.0",
+  "pace": "2:08.1",
+  "rate": 25,
+  "band": "2:05–2:08",
+  "verdict": "in",
+  "note": "3 work intervals — avg work pace 2:08.1 /500m vs 2:05–2:08 target: in zone. Rate 25 s/m."
  }
 }
