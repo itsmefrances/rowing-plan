@@ -490,7 +490,7 @@ const EZLINK = {
 function ergzoneBtnHTML(d){
   const url = EZLINK[d.date];
   if(!url || !(d.items && d.items.some(it=>it.t==="row"))) return "";
-  return '<a class="ezbtn" href="'+url+'" target="_blank" rel="noopener">'
+  return '<a class="ezbtn" href="'+url+'" rel="noopener">'
     + '<span class="ezico">🚣</span> Start in ErgZone <span class="ezarrow">↗</span></a>';
 }
 
