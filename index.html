@@ -697,10 +697,10 @@ function loadReadout(it){
   if(it.t==="row") return {val:it.pace, lbl:"split /500m"};
   if(it.t==="lift"){
     if(it.pct!=null) return {val:wt(it.pct,it.lift)+" lb", lbl:it.pct+"% "+it.lift};
-    if(it.w!=null) return {val:it.w+" lb", lbl:it.note||""};
+    if(it.w!=null) return {val:it.w+" lb", lbl:""}; // note shows in the sub line, not the narrow right column (mobile overflow)
     if(it.add!=null) return {val:"+"+it.add+" lb", lbl:"added"};
     if(it.bw) return {val:"bodyweight", lbl:""}; // note shows in the sub line; keep the right column short so it doesn't overflow on mobile
-    if(it.w===null) return {val:it.note||"heavy", lbl:""}; // chest row etc, no number
+    if(it.w===null) return null; // cue-only lift (chest row, face pull) — no load; note shows in the sub line
   }
   return null;
 }
@@ -724,7 +724,7 @@ function itemHTML(it){
   if(it.t==="lift"){
     const r=rirFor(it.n);
     sub = it.s + ' · <span class="rir rir-'+r.t+'">'+r.txt+'</span>';
-    if(it.note && it.w!==null) sub += " · "+it.note;
+    if(it.note) sub += " · "+it.note; // always route the note to the wrapping sub line
   }
   else if(it.t==="row"){ sub = it.rest||""; }
   let right="";
