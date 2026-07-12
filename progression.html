@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f4f7">
+<title>Progression · Recomp Block</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#f3f4f7; --panel:#ffffff; --panel2:#eceef2; --line:#e1e4ea;
+  --ink:#1b1e25; --mut:#697080; --faint:#9aa1ad; --acc:#0e9d6c;
+  --squat:#bf7016; --bench:#2d77c7; --dead:#7b46d4;
+  --build:#5b94c8; --deload:#aab0bb; --peak:#d6925a; --taper:#a98fd6; --test:#a87c20;
+  --disp:'Space Grotesk',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box; margin:0; padding:0}
+body{font-family:var(--disp); background:var(--bg); color:var(--ink); line-height:1.5; padding:0 0 60px}
+header{background:linear-gradient(180deg,#fff,#f6f7f9); border-bottom:1px solid var(--line); padding:16px}
+.htop{display:flex; align-items:center; justify-content:space-between; gap:12px; max-width:960px; margin:0 auto}
+.brand{font-weight:700; font-size:20px; letter-spacing:-.02em}
+.brand small{font-family:var(--mono); font-weight:500; font-size:12px; color:var(--mut); margin-left:8px}
+.back{font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--mut);
+  text-decoration:none; border:1px solid var(--line); border-radius:9px; padding:8px 12px; background:#fff}
+.back:hover{border-color:var(--acc); color:var(--acc)}
+.wrap{max-width:960px; margin:0 auto; padding:18px 16px}
+.lead{color:var(--mut); font-size:14.5px; margin:2px 0 16px}
+.rail{display:flex; gap:3px; margin:14px 0 6px}
+.seg{flex:1; text-align:center; padding:7px 2px; border-radius:6px; color:#fff; font-family:var(--mono);
+  font-size:10px; font-weight:700; letter-spacing:.02em; min-width:0}
+.seg small{display:block; font-weight:500; font-size:8.5px; opacity:.9; text-transform:uppercase; letter-spacing:.06em}
+.ph-build{background:var(--build)} .ph-deload{background:var(--deload)} .ph-peak{background:var(--peak)}
+.ph-taper{background:var(--taper)} .ph-test{background:var(--test)}
+.legend{display:flex; flex-wrap:wrap; gap:12px; margin:10px 0 4px; font-family:var(--mono); font-size:11.5px; color:var(--mut)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.dot{width:11px; height:11px; border-radius:3px; display:inline-block}
+.card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; margin-top:16px;
+  box-shadow:0 1px 2px rgba(20,24,34,.05),0 4px 14px rgba(20,24,34,.04)}
+.card h2{font-size:16px; font-weight:650; margin-bottom:2px}
+.card .sub{font-size:12.5px; color:var(--mut); margin-bottom:12px}
+.chartbox{position:relative; height:300px}
+.arcs{display:grid; grid-template-columns:1fr; gap:10px; margin-top:6px}
+.arc{border-left:4px solid var(--c); background:var(--panel2); border-radius:0 10px 10px 0; padding:9px 12px}
+.arc b{font-size:13.5px} .arc span{display:block; font-size:12.5px; color:var(--mut); margin-top:2px}
+.tablewrap{overflow-x:auto; margin-top:6px; -webkit-overflow-scrolling:touch}
+table{border-collapse:collapse; width:100%; font-family:var(--mono); font-size:12.5px; min-width:520px}
+th,td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); white-space:nowrap}
+th{font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); font-weight:600}
+td.wk{font-weight:700}
+.tag{font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+  color:#fff; border-radius:99px; padding:2px 7px}
+.cell b{font-weight:700} .cell small{color:var(--mut); font-weight:500}
+.foot{font-size:12px; color:var(--mut); margin-top:16px; font-family:var(--mono); line-height:1.6}
+@media(max-width:560px){ .brand{font-size:17px} .chartbox{height:260px} }
+</style>
+</head>
+<body>
+<header><div class="htop">
+  <div class="brand">📈 Progression<small id="cyc">Powerbuilding · Weeks 3–10</small></div>
+  <a class="back" href="index.html">← Plan</a>
+</div></header>
+
+<div class="wrap">
+  <p class="lead">How each main lift is programmed to <b>build, peak, deload and test</b> across the cycle. Top-set numbers only (the heaviest set of the day); weights are computed from your current maxes on the plan page.</p>
+
+  <div class="rail" id="rail"></div>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--squat)"></i>Squat</span>
+    <span><i class="dot" style="background:var(--bench)"></i>Bench</span>
+    <span><i class="dot" style="background:var(--dead)"></i>Deadlift</span>
+    <span style="margin-left:auto"><i class="dot" style="background:var(--build)"></i>build</span>
+    <span><i class="dot" style="background:var(--deload)"></i>deload</span>
+    <span><i class="dot" style="background:var(--peak)"></i>peak</span>
+    <span><i class="dot" style="background:var(--taper)"></i>taper</span>
+    <span><i class="dot" style="background:var(--test)"></i>test</span>
+  </div>
+
+  <div class="card">
+    <h2>Top-set intensity</h2>
+    <div class="sub">% of your 1-rep max — the wave you actually feel. Note the deload dip (Wk 5) and the peak (Wk 8).</div>
+    <div class="chartbox"><canvas id="pctChart"></canvas></div>
+  </div>
+
+  <div class="card">
+    <h2>Working weight</h2>
+    <div class="sub">Top-set load in lb, from your maxes (Squat <span id="mBs"></span> · Bench <span id="mBench"></span> · Deadlift <span id="mDl"></span>). Point labels show reps.</div>
+    <div class="chartbox"><canvas id="lbChart"></canvas></div>
+  </div>
+
+  <div class="card">
+    <h2>The arc of each lift</h2>
+    <div class="arcs">
+      <div class="arc" style="--c:var(--squat)"><b>Back Squat</b><span id="arcS"></span></div>
+      <div class="arc" style="--c:var(--bench)"><b>Bench Press</b><span id="arcB"></span></div>
+      <div class="arc" style="--c:var(--dead)"><b>Deadlift</b><span id="arcD"></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Week by week</h2>
+    <div class="tablewrap"><table id="tbl"></table></div>
+  </div>
+
+  <p class="foot">Reps shown per top set. Deload week trades intensity for a lighter, higher-rep reset. Test week is AMRAP @ 90% (as-many-reps, capped RPE ~9.5) to gauge your new maxes. Edit your maxes on the <a href="index.html" style="color:var(--acc)">plan page</a> and this recomputes.</p>
+</div>
+
+<script>
+"use strict";
+let MAX = {bs:230, fs:180, bench:132.5, ohp:95, dl:270};
+try { const s=JSON.parse(localStorage.getItem("recomp-tracker-2026")); if(s&&s.max) MAX=Object.assign(MAX,s.max); } catch(e){}
+const r5 = x => Math.round(x/5)*5;
+const load = (pct,l) => r5(MAX[l]*pct/100);
+
+const PHASE = {build:"var(--build)", deload:"var(--deload)", peak:"var(--peak)", taper:"var(--taper)", test:"var(--test)"};
+const PHLBL = {build:"Build", deload:"Deload", peak:"Peak", taper:"Taper", test:"Test"};
+const WEEKS = [
+  {pb:"W3", phase:"build",  range:"Jul 13", bs:{pct:89,reps:"1"},    bench:{pct:91,reps:"1"},    dl:{pct:90,reps:"2–4"}},
+  {pb:"W4", phase:"build",  range:"Jul 20", bs:{pct:89,reps:"1"},    bench:{pct:92,reps:"1"},    dl:{pct:93,reps:"1"}},
+  {pb:"W5", phase:"deload", range:"Jul 27", bs:{pct:76,reps:"5"},    bench:{pct:85,reps:"3"},    dl:{pct:85,reps:"3"}},
+  {pb:"W6", phase:"build",  range:"Aug 3",  bs:{pct:89,reps:"1"},    bench:{pct:92,reps:"1"},    dl:{pct:93,reps:"2"}},
+  {pb:"W7", phase:"build",  range:"Aug 10", bs:{pct:91,reps:"1"},    bench:{pct:95,reps:"1"},    dl:{pct:91,reps:"3"}},
+  {pb:"W8", phase:"peak",   range:"Aug 17", bs:{pct:92,reps:"1"},    bench:{pct:95,reps:"1"},    dl:{pct:96,reps:"1"}},
+  {pb:"W9", phase:"taper",  range:"Aug 24", bs:{pct:90,reps:"1"},    bench:{pct:93,reps:"1"},    dl:{pct:90,reps:"1"}},
+  {pb:"W10",phase:"test",   range:"Aug 31", bs:{pct:90,reps:"AMRAP"},bench:{pct:90,reps:"AMRAP"},dl:{pct:90,reps:"AMRAP"}},
+];
+const LIFTS = [
+  {key:"bs",    name:"Squat",    css:getVar('--squat')},
+  {key:"bench", name:"Bench",    css:getVar('--bench')},
+  {key:"dl",    name:"Deadlift", css:getVar('--dead')},
+];
+function getVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+function phaseColor(p){ return getVar(PHASE[p].replace('var(','').replace(')','')); }
+
+// maxes readout
+mBs.textContent = MAX.bs+"lb"; mBench.textContent = MAX.bench+"lb"; mDl.textContent = MAX.dl+"lb";
+
+// phase rail
+rail.innerHTML = WEEKS.map(w =>
+  `<div class="seg ph-${w.phase}"><small>${PHLBL[w.phase]}</small>${w.pb}</div>`).join("");
+
+try {
+const labels = WEEKS.map(w => w.pb);
+function ds(field){
+  return LIFTS.map(L => ({
+    label: L.name,
+    data: WEEKS.map(w => w[L.key][field==="pct" ? "pct" : "pct"]),
+    _reps: WEEKS.map(w => w[L.key].reps),
+    _lift: L.key,
+    borderColor: L.css, backgroundColor: L.css,
+    pointBackgroundColor: WEEKS.map(w => phaseColor(w.phase)),
+    pointBorderColor: L.css, pointBorderWidth: 2, pointRadius: 5, pointHoverRadius: 7,
+    tension: .3, borderWidth: 2.5,
+  }));
+}
+const gridC = getVar('--line'), tickC = getVar('--mut');
+const commonScales = (yTitle, yFmt, yMin, yMax) => ({
+  x:{ grid:{color:gridC}, ticks:{color:tickC, font:{family:"'JetBrains Mono'", size:11}} },
+  y:{ grid:{color:gridC}, min:yMin, max:yMax, title:{display:true, text:yTitle, color:tickC, font:{family:"'JetBrains Mono'",size:11}},
+      ticks:{color:tickC, font:{family:"'JetBrains Mono'",size:11}, callback:yFmt} },
+});
+Chart.defaults.font.family = "'Space Grotesk'";
+
+// intensity chart (%1RM)
+new Chart(pctChart, {
+  type:"line",
+  data:{ labels, datasets: ds("pct") },
+  options:{ responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ labels:{color:getVar('--ink'), usePointStyle:true, boxWidth:8} },
+      tooltip:{ callbacks:{ label: c => `${c.dataset.label}: ${c.parsed.y}% × ${c.dataset._reps[c.dataIndex]} · ${PHLBL[WEEKS[c.dataIndex].phase]}` } } },
+    scales: commonScales("% of 1RM", v => v+"%", 65, 100) }
+});
+// load chart (lb) with reps labels
+const repLabel = {
+  id:"repLabel",
+  afterDatasetsDraw(chart){
+    const {ctx} = chart;
+    ctx.save(); ctx.font="600 10px 'JetBrains Mono'"; ctx.textAlign="center";
+    chart.data.datasets.forEach((d,di)=>{
+      const meta = chart.getDatasetMeta(di);
+      meta.data.forEach((pt,i)=>{
+        ctx.fillStyle = d.borderColor;
+        ctx.fillText("×"+d._reps[i], pt.x, pt.y-9);
+      });
+    });
+    ctx.restore();
+  }
+};
+new Chart(lbChart, {
+  type:"line",
+  data:{ labels, datasets: LIFTS.map(L => ({
+    label:L.name, data:WEEKS.map(w=>load(w[L.key].pct, L.key)), _reps:WEEKS.map(w=>w[L.key].reps),
+    borderColor:L.css, backgroundColor:L.css,
+    pointBackgroundColor: WEEKS.map(w=>phaseColor(w.phase)), pointBorderColor:L.css, pointBorderWidth:2,
+    pointRadius:5, pointHoverRadius:7, tension:.3, borderWidth:2.5 })) },
+  options:{ responsive:true, maintainAspectRatio:false, layout:{padding:{top:16}},
+    plugins:{ legend:{ labels:{color:getVar('--ink'), usePointStyle:true, boxWidth:8} },
+      tooltip:{ callbacks:{ label: c => `${c.dataset.label}: ${c.parsed.y} lb × ${c.dataset._reps[c.dataIndex]} (${WEEKS[c.dataIndex][LIFTS[c.datasetIndex].key].pct}%)` } } },
+    scales: commonScales("lb", v => v, undefined, undefined) },
+  plugins:[repLabel]
+});
+} catch(e){ console.warn("chart render failed:", e); }
+
+// arcs
+arcS.textContent = `Grinds heavy singles at 89% through the build, backs off to a light 76%×5 on the deload, sharpens to 92% in peak week, then AMRAP @90% to retest (${load(89,'bs')}→${load(92,'bs')} lb top end).`;
+arcB.textContent = `Climbs from 91% to a 95% single at peak, deloads to 85%×3 mid-cycle, tapers to 93%, then AMRAP @90% (${load(91,'bench')}→${load(95,'bench')} lb).`;
+arcD.textContent = `The heaviest mover — top single builds 90%→96% (peak), with a 85%×3 deload reset and lighter 3s along the way, finishing on an AMRAP @90% (${load(90,'dl')}→${load(96,'dl')} lb).`;
+
+// table
+const head = `<tr><th>Week</th><th>Phase</th><th>Squat</th><th>Bench</th><th>Deadlift</th></tr>`;
+const cell = (w,k) => `<td class="cell"><b>${load(w[k].pct,k)}</b> <small>× ${w[k].reps} @ ${w[k].pct}%</small></td>`;
+tbl.innerHTML = head + WEEKS.map(w =>
+  `<tr><td class="wk">${w.pb} <small style="color:var(--mut);font-weight:500">${w.range}</small></td>`+
+  `<td><span class="tag" style="background:${phaseColor(w.phase)}">${PHLBL[w.phase]}</span></td>`+
+  cell(w,"bs")+cell(w,"bench")+cell(w,"dl")+`</tr>`).join("");
+</script>
+</body>
+</html>
