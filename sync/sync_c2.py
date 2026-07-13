@@ -141,6 +141,23 @@ def band_ends(band):
     return None
 
 
+def plausible(w, band):
+    """Reject warm-up paddles / stray easy rows so they can't claim a plan day."""
+    if len(w.get("intervals") or []) >= 2:
+        return True
+    wp, _ = work_pace(w)
+    ps = pace_secs(wp) if wp else None
+    if ps is None:
+        return False
+    ends = band_ends(band)
+    if ends:
+        return ps <= ends[1] + 20          # within 20s of the slow end
+    m = re.search(r"(\d+:\d\d(?:\.\d)?)", band or "")
+    if m:
+        return ps <= pace_secs(m.group(1)) + 15   # single-pace bands (tests)
+    return False
+
+
 def score(w, band):
     """Rank same-day candidates: real workouts beat warm-up paddles."""
     s = 0.0
@@ -199,7 +216,7 @@ def main():
         for rank, pd in enumerate([w["date"],
                                    (d + datetime.timedelta(days=1)).isoformat(),
                                    (d - datetime.timedelta(days=1)).isoformat()]):
-            if pd in bands and pd not in results:
+            if pd in bands and pd not in results and plausible(w, bands[pd]):
                 cands.append((pd, rank, -score(w, bands[pd]), w))
     cands.sort(key=lambda c: (c[0], c[1], c[2]))
 
