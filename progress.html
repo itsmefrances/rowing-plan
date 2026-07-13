@@ -108,13 +108,25 @@ select{font-family:var(--mono); font-size:13px; padding:8px 10px; border:1px sol
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyq0ZEWv8ZfkL8XhESm5gU7APsIVvm86VRGt8HFbTVepVQJEixQ4Lk_P9GGdEvodsw/exec";
 const LOGKEY = "recomp-entries-2026";
 
-/* rowing results mirrored from tracker — each tagged with its rowing category */
-const ROW_RESULTS = {
-  "2026-06-21":{date:"2026-06-21",cat:"endurance",label:"Solstice 21.1km",pace:"2:16.5",band:"2:15–2:25",verdict:"in"},
-  "2026-06-23":{date:"2026-06-23",cat:"sprint",label:"8×250m sprint",pace:"1:46.5",band:"1:45–1:50",verdict:"in"},
-  "2026-06-26":{date:"2026-06-26",cat:"vo2",label:"8×500m VO₂",pace:"1:58.2",band:"2:00–2:05",verdict:"above"},
-  "2026-06-27":{date:"2026-06-27",cat:"endurance",label:"4×7min endurance",pace:"2:06.3",band:"2:05–2:15",verdict:"in"}
-};
+/* rowing results — loaded live from sync/results.json (maintained by the daily Concept2 sync) */
+let ROWS = [];
+function rowCat(band){
+  // classify by the band's fast end: sprints are fastest, then VO2, else threshold/endurance
+  const m = String(band||"").match(/(\d+):(\d+(?:\.\d+)?)/);
+  if(!m) return "test";
+  const fast = (+m[1])*60 + (+m[2]);
+  if(fast < 112) return "sprint";       // < 1:52
+  if(fast < 123.5) return "vo2";        // < 2:03.5
+  return "endurance";
+}
+function loadRowing(){
+  return fetch("sync/results.json?_="+Date.now())
+    .then(r=>r.json())
+    .then(j=>{ ROWS = Object.entries(j).map(([date,v])=>({
+        date, cat: rowCat(v.band), pace: v.pace, band: v.band, verdict: v.verdict,
+        dist: v.dist, note: v.note, link: v.link })); })
+    .catch(e=>{ ROWS = []; });
+}
 
 function paceToSec(p){ if(!p) return null; const m=String(p).match(/(\d+):(\d+(?:\.\d+)?)/); return m?(+m[1])*60+(+m[2]):null; }
 function secToPace(v){ const m=Math.floor(v/60),s=Math.round((v-m*60)*10)/10; return m+":"+(s<10?"0":"")+s.toFixed(1); }
@@ -211,18 +223,20 @@ function draw(name){
 }
 function drawRowing(name){
   const cat={"Rowing · Sprint":"sprint","Rowing · VO₂":"vo2","Rowing · Endurance":"endurance"}[name];
-  const rows=Object.values(ROW_RESULTS).filter(r=>r.cat===cat).sort((a,b)=>a.date.localeCompare(b.date));
-  document.getElementById("metricBadge").textContent="pace /500m";
+  const rows=ROWS.filter(r=>r.cat===cat).sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById("metricBadge").textContent="work pace /500m";
   if(!rows.length){ drawEmpty(); return; }
   const dates=rows.map(r=>r.date);
   const data=rows.map(r=>paceToSec(r.pace));
   const colors=rows.map(r=> r.verdict==="in"?"#0e9d6c": r.verdict==="above"?"#7b46d4":"#d83a3a");
   paint(name, dates, data, colors, true, v=>secToPace(v)+" /500m");
   const last=rows[rows.length-1];
+  const inZone=rows.filter(r=>r.verdict==="in"||r.verdict==="above").length;
   document.getElementById("stat").innerHTML=
     '<div class="s">sessions<b>'+rows.length+'</b></div>'
    +'<div class="s">latest<b>'+last.pace+'</b></div>'
-   +'<div class="s">vs band<b>'+last.verdict+'</b></div>';
+   +'<div class="s">vs band<b>'+last.verdict+'</b></div>'
+   +'<div class="s">hit target<b>'+inZone+'/'+rows.length+'</b></div>';
 }
 function paint(label, labels, data, color, reverseY, fmt){
   const ctx=document.getElementById("chart");
@@ -261,7 +275,7 @@ function load(){
   document.body.appendChild(s);
   setTimeout(()=>{ if(!done){ ENTRIES=mergeEntries(null); renderAll(); } }, 7000);
 }
-load();
+loadRowing().finally(load);
 </script>
 </body>
 </html>
