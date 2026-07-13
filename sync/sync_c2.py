@@ -63,6 +63,12 @@ def time_secs(t):
     return sum(x * 60 ** (len(parts) - 1 - i) for i, x in enumerate(parts))
 
 
+def fmt_time(sec):
+    sec = round(sec, 1)
+    h = int(sec // 3600); m = int((sec % 3600) // 60); s = sec - h * 3600 - m * 60
+    return (f"{h}:{m:02d}:{s:04.1f}" if h else f"{m}:{s:04.1f}")
+
+
 def parse_workout(html):
     lines = strip_tags(html)
     out = {}
@@ -114,6 +120,15 @@ def parse_workout(html):
                 i += 1
     if intervals:
         out["intervals"] = intervals
+        # "Variable Interval" pages have an empty/zero hero block — derive from intervals
+        tot_d = sum(x["dist"] for x in intervals)
+        tot_t = sum(time_secs(x["time"]) for x in intervals)
+        if not out.get("dist"):
+            out["dist"] = tot_d
+        if not out.get("time"):
+            out["time"] = fmt_time(tot_t)
+        if not out.get("pace") and tot_d:
+            out["pace"] = fmt_pace(tot_t / tot_d * 500)
     if DEBUG:
         print("---- page text (first 160 lines) ----")
         for ln in lines[:160]:
