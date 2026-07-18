@@ -433,7 +433,7 @@ const LIFT_NAME = {bs:"Back Squat", fs:"Front Squat", bench:"Bench Press", ohp:"
 
 /* ============ LOGBOOK RESULTS (auto-updated daily from Concept2) ============ */
 /* date -> {id, link, dist (m), time, pace (avg /500m), rate, verdict:'in'|'above'|'below'|'na', workPace (intervals), note} */
-/* Updated: 2026-07-17 */
+/* Updated: 2026-07-18 */
 const RESULTS = {
   "2026-06-19": {id:117692606, link:"https://log.concept2.com/profile/2198296/log/117692606",
     dist:3386, time:"22:20.0", pace:"1:58.1", rate:29,
@@ -467,7 +467,7 @@ const RESULTS = {
     band:"2:05–2:08", verdict:"in", note:"3 work intervals — avg work pace 2:08.1 /500m vs 2:05–2:08 target: in zone. Rate 25 s/m."},
   "2026-07-18": {id:118580702, link:"https://log.concept2.com/profile/2198296/log/118580702",
     dist:7500, time:"32:07.7", pace:"2:08.5", rate:27,
-    band:"2:05–2:10", verdict:"in", note:"6 work intervals (logged Jul 17) — avg work pace 2:08.5 /500m vs 2:05–2:10 target: in zone. Rate 27 s/m."}
+    band:"2:05\u20132:10", verdict:"in", note:"5 \u00d7 1500m threshold (logged Jul 17) \u2014 avg work pace 2:08.5 /500m sits inside the 2:05\u20132:10 band. Negative split 2:09.9 \u2192 2:06.7, rate 26\u201328 s/m."}
 };
 const LOGBOOK_BASE = "https://log.concept2.com/profile/2198296/log/";
 
@@ -1044,4 +1044,5 @@ try{ flushUnsynced(); }catch(e){}
 </script>
 </body>
 </html>
+
 
