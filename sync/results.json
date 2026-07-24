@@ -130,5 +130,16 @@
   "band": "1:35–1:44",
   "verdict": "in",
   "note": "13 work intervals — avg work pace 1:42.5 /500m vs 1:35–1:44 target: in zone. Rate 36 s/m."
+ },
+ "2026-07-24": {
+  "id": 118804331,
+  "link": "https://log.concept2.com/profile/2198296/log/118804331",
+  "dist": 7687,
+  "time": "32:00.0",
+  "pace": "2:04.9",
+  "rate": 26,
+  "band": "2:04–2:09",
+  "verdict": "in",
+  "note": "9 work intervals — avg work pace 2:04.9 /500m vs 2:04–2:09 target: in zone. Rate 26 s/m."
  }
 }
