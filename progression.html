@@ -111,8 +111,8 @@ td.wk{font-weight:700}
 
 <script>
 "use strict";
-let MAX = {bs:230, fs:180, bench:132.5, ohp:95, dl:270};
-try { const s=JSON.parse(localStorage.getItem("recomp-tracker-2026")); if(s&&s.max) MAX=Object.assign(MAX,s.max); } catch(e){}
+let MAX = {bs:240, fs:180, bench:132.5, ohp:100, dl:280};
+try { const s=JSON.parse(localStorage.getItem("recomp-tracker-2026")); if(s&&s.max){ const OLD={bs:230,dl:270,ohp:95}; for(const k in OLD){ if(s.max[k]===OLD[k]) delete s.max[k]; } MAX=Object.assign(MAX,s.max); } } catch(e){}
 const r5 = x => Math.round(x/5)*5;
 const load = (pct,l) => r5(MAX[l]*pct/100);
 
