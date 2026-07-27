@@ -759,7 +759,16 @@ function warmupHTML(it){
 function loadReadout(it){
   if(it.t==="row") return {val:it.pace, lbl:"split /500m"};
   if(it.t==="lift"){
-    if(it.pct!=null) return {val:wt(it.pct,it.lift)+" lb", lbl:it.pct+"% "+it.lift};
+    if(it.pct!=null){
+      // Heavy build/peak weeks show a range: planned load -> +4% stretch (she's
+      // been outpacing targets). Deload stays light; taper/test stay exact.
+      const d=(it.id||"").slice(0,10);
+      if(d>="2026-08-03" && d<="2026-08-23"){
+        const lo=wt(it.pct,it.lift), hi=wt(it.pct+4,it.lift);
+        if(hi>lo) return {val:lo+"–"+hi+" lb", lbl:it.pct+"–"+(it.pct+4)+"% "+it.lift};
+      }
+      return {val:wt(it.pct,it.lift)+" lb", lbl:it.pct+"% "+it.lift};
+    }
     if(it.w!=null) return {val:it.w+" lb", lbl:""}; // note shows in the sub line, not the narrow right column (mobile overflow)
     if(it.add!=null) return {val:"+"+it.add+" lb", lbl:"added"};
     if(it.bw) return {val:"bodyweight", lbl:""}; // note shows in the sub line; keep the right column short so it doesn't overflow on mobile
