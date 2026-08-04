@@ -188,6 +188,22 @@ def score(w, band):
     return s
 
 
+def inspect(wid):
+    """Fetch one workout page and print its per-interval splits."""
+    status, page = fetch(f"{BASE}/{wid}")
+    w = parse_workout(page)
+    print(f"workout {wid}: date {w.get('date')}  dist {w.get('dist')}m  time {w.get('time')}  "
+          f"avg pace {w.get('pace')}  rate {w.get('rate')}")
+    iv = w.get("intervals") or []
+    if not iv:
+        print("no work intervals parsed (continuous row or unrecognized layout)")
+        return
+    print(f"{'rep':4}{'time':10}{'meters':8}{'pace/500m'}")
+    for i, x in enumerate(iv, 1):
+        print(f"{i:<4}{x['time']:10}{x['dist']:<8}{x['pace']}")
+
+
+
 def main():
     results = json.load(open(RESULTS_JSON))
     used_ids = {v["id"] for v in results.values()}
@@ -296,4 +312,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if "--inspect" in sys.argv:
+        inspect(int(sys.argv[sys.argv.index("--inspect") + 1]))
+    else:
+        main()
