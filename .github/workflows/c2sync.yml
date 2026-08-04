@@ -9,6 +9,10 @@ on:
         description: "Verbose page dump for parser debugging"
         type: boolean
         default: false
+      inspect:
+        description: "Workout ID to inspect (prints per-interval splits, no sync)"
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -29,7 +33,9 @@ jobs:
 
       - name: Sync logbook
         run: |
-          if [ "${{ inputs.debug }}" = "true" ]; then
+          if [ -n "${{ inputs.inspect }}" ]; then
+            python sync/sync_c2.py --inspect "${{ inputs.inspect }}"
+          elif [ "${{ inputs.debug }}" = "true" ]; then
             python sync/sync_c2.py --debug
           else
             python sync/sync_c2.py
