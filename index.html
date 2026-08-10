@@ -250,6 +250,11 @@ details.arc[open] > summary::before{transform:rotate(90deg)}
 .ezbtn .ezarrow{margin-left:2px; opacity:.85; font-weight:600}
 .daylog{margin:12px 2px 4px}
 .daylog-lbl{font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--acc); margin-bottom:6px}
+.lastfx{margin:8px 2px 2px; padding:7px 10px; border-left:3px solid var(--line); background:var(--panel2);
+  border-radius:0 9px 9px 0; font-family:var(--mono); font-size:11.5px; color:var(--mut); line-height:1.55}
+.lastfx b{color:var(--ink); font-weight:600}
+.lastfx .lfx-k{text-transform:uppercase; font-size:9.5px; letter-spacing:.08em; color:var(--faint); margin-right:4px}
+.lastfx a{color:var(--acc); text-decoration:none; font-weight:600; white-space:nowrap}
 .parsehint{margin-top:6px}
 .pspreview{font-family:var(--mono); font-size:11px; color:var(--mut); background:var(--panel2);
   border:1px solid var(--line); border-radius:8px; padding:7px 9px; line-height:1.7}
@@ -865,6 +870,53 @@ function logUIHTML(d){
   + '</div>';
 }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+/* ---- "last effort" note: previous same/similar workout for comparison ---- */
+const ROWDAYS = [];
+PLAN.forEach(w=>w.days.forEach(x=>{ const r=x.items.find(it=>it.t==="row"); if(r) ROWDAYS.push({date:x.date, type:x.type, n:r.n}); }));
+function normName(s){ return String(s||"").toLowerCase().replace(/×/g,"x").replace(/\s+/g," ").trim(); }
+function lastRowEffort(d){
+  const me=d.items.find(it=>it.t==="row"); if(!me) return null;
+  const mine=normName(me.n);
+  let exact=null, similar=null;
+  ROWDAYS.forEach(rd=>{
+    if(rd.date>=d.date) return;
+    const res=RESULTS[rd.date]; if(!res) return;
+    if(normName(rd.n)===mine){ if(!exact||rd.date>exact.date) exact={date:rd.date,res:res}; }
+    else if(rd.type===d.type){ if(!similar||rd.date>similar.date) similar={date:rd.date,res:res}; }
+  });
+  const hit=exact||similar; if(!hit) return null;
+  hit.kind = exact ? "same workout" : "similar "+(TYPE_LABEL[d.type]||d.type).toLowerCase();
+  return hit;
+}
+function lastSessionNote(date){
+  const es=ENTRIES.filter(e=>String(e.date||"").slice(0,10)===date && (e.exercise==="Session log"||e.exercise==="(free note)") && e.notes)
+    .sort((a,b)=>String(b.ts||"").localeCompare(String(a.ts||"")));
+  return es.length ? es[0].notes : "";
+}
+function lastLiftEffort(d){
+  if(d.type!=="lower" && d.type!=="upper") return null;
+  let prev=null;
+  PLAN.forEach(w=>w.days.forEach(x=>{ if(x.date<d.date && x.title===d.title && (!prev||x.date>prev.date)) prev=x; }));
+  if(!prev) return null;
+  const note=lastSessionNote(prev.date);
+  return note ? {date:prev.date, text:note} : null;
+}
+function lastEffortHTML(d){
+  const r=lastRowEffort(d);
+  if(r){
+    const vl=verdictLabel(r.res.verdict);
+    return '<div class="lastfx"><span class="lfx-k">Last · '+r.kind+'</span>'+fmtDate(r.date)
+      +' · <b>'+r.res.pace+'</b> /500m · '+vl.txt.toLowerCase()
+      +(r.res.link?' · <a href="'+r.res.link+'" target="_blank" rel="noopener">view ↗</a>':'')+'</div>';
+  }
+  const l=lastLiftEffort(d);
+  if(l){
+    let t=String(l.text); if(t.length>180) t=t.slice(0,177)+"…";
+    return '<div class="lastfx"><span class="lfx-k">Last time · '+fmtDate(l.date)+'</span>'+esc(t)+'</div>';
+  }
+  return "";
+}
+
 function dayCard(d, opts){
   opts=opts||{};
   const done=dayDone(d);
@@ -883,7 +935,7 @@ function dayCard(d, opts){
         + '<span class="mini">'+(done?"done":d.items.filter(i=>isDone(i.id)).length+"/"+d.items.length)+'</span></span>'
      + '<span class="chev">▶</span>'
    + '</button>'
-   + '<div class="cbody">'+items + ergzoneBtnHTML(d) + resultHTML(d) + logUIHTML(d)
+   + '<div class="cbody">'+items + lastEffortHTML(d) + ergzoneBtnHTML(d) + resultHTML(d) + logUIHTML(d)
      + '<div class="dfoot">'+fuelLine(d.type)+allBtn+'</div>'
    + '</div></div>';
 }
@@ -1081,6 +1133,30 @@ document.body.addEventListener("input", function(e){
 
 render();
 try{ flushUnsynced(); }catch(e){}
+
+/* pull session-log entries from the Sheet so "last time" notes work on any device */
+(function(){
+  window.__planSheetCb = function(rows){
+    try{
+      if(!rows || rows.length < 2) return;
+      const head = rows[0].map(h=>String(h).trim());
+      const idx = n => head.indexOf(n);
+      const seen = new Set(ENTRIES.map(e=>[String(e.date||"").slice(0,10), e.exercise, e.notes].join("|")));
+      let added = 0;
+      rows.slice(1).forEach(r=>{
+        const e = { date:String(r[idx("date")]||"").slice(0,10), exercise:r[idx("exercise")]||"",
+                    notes:r[idx("notes")]||"", ts:r[idx("timestamp")]||"" };
+        const k = [e.date, e.exercise, e.notes].join("|");
+        if(e.notes && !seen.has(k)){ seen.add(k); ENTRIES.push(e); added++; }
+      });
+      if(added) render();
+    }catch(err){}
+  };
+  const s = document.createElement("script");
+  s.src = GAS_URL + "?callback=__planSheetCb&_=" + Date.now();
+  s.onerror = function(){};
+  document.body.appendChild(s);
+})();
 </script>
 </body>
 </html>
