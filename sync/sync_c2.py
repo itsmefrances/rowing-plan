@@ -189,7 +189,18 @@ def score(w, band):
 
 
 def inspect(wid):
-    """Fetch one workout page and print its per-interval splits."""
+    """Fetch one workout page and print its per-interval splits.
+
+    A non-numeric argument is treated as a profile page path (e.g. "pbs",
+    "." for the profile root) and its text lines are dumped instead."""
+    if not str(wid).isdigit():
+        root = BASE.rsplit("/", 1)[0]          # .../profile/<id>
+        path = "" if str(wid) == "." else f"/{wid}"
+        status, page = fetch(root + path)
+        print(f"page {root + path}: HTTP {status}")
+        for ln in strip_tags(page)[:250]:
+            print("  |", ln)
+        return
     status, page = fetch(f"{BASE}/{wid}")
     w = parse_workout(page)
     print(f"workout {wid}: date {w.get('date')}  dist {w.get('dist')}m  time {w.get('time')}  "
@@ -313,6 +324,6 @@ def main():
 
 if __name__ == "__main__":
     if "--inspect" in sys.argv:
-        inspect(int(sys.argv[sys.argv.index("--inspect") + 1]))
+        inspect(sys.argv[sys.argv.index("--inspect") + 1])
     else:
         main()
