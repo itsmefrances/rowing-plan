@@ -74,8 +74,19 @@ with sync_playwright() as p:
     # login attempt (only if credentials provided)
     if USER and CODE:
         try:
-            fields = [f for f in page.query_selector_all("input")
-                      if (f.get_attribute("type") or "text") not in ("hidden", "checkbox", "submit")]
+            # the login form has a Coach/Client toggle; client accounts use
+            # username + access code, so flip to Client first
+            try:
+                page.get_by_text("Client", exact=True).first.click(timeout=5000)
+                page.wait_for_timeout(1500)
+                dump_controls(page, "AFTER CLIENT TOGGLE")
+                dump_text(page, "AFTER CLIENT TOGGLE", limit=60)
+            except Exception as e:
+                print("client-toggle click failed:", scrub(str(e))[:200])
+            fields = [f for f in page.query_selector_all(
+                          "input[type=text], input[type=email], input[type=password], input[type=tel], input[type=number], input:not([type])")
+                      if f.is_visible()]
+            print(f"fillable fields: {len(fields)}")
             if len(fields) >= 2:
                 fields[0].fill(USER); fields[1].fill(CODE)
             elif len(fields) == 1:
@@ -92,7 +103,12 @@ with sync_playwright() as p:
             except Exception:
                 pass
             page.screenshot(path=f"{OUT}/2_after_login.png", full_page=True)
-            dump_text(page, "AFTER LOGIN", limit=350)
+            dump_text(page, "AFTER LOGIN", limit=200)
+            if "/auth/" not in page.url:
+                page.goto(URL, wait_until="networkidle", timeout=60000)
+                page.wait_for_timeout(3000)
+                page.screenshot(path=f"{OUT}/3_training.png", full_page=True)
+                dump_text(page, "TRAINING PAGE", limit=350)
             dump_controls(page, "AFTER LOGIN")
             # try to surface training links
             print("\n----- links containing 'training'/'workout' -----")
