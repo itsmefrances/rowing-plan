@@ -52,11 +52,23 @@ def dump_controls(page, label):
             pass
 
 api_calls = []
+auth_header = {"value": None, "name": None}
+def on_request(req):
+    try:
+        if "hubfit.com/api" in req.url and auth_header["value"] is None:
+            h = req.headers
+            for name in ("authorization", "x-access-token", "token"):
+                if h.get(name):
+                    auth_header["name"] = name
+                    auth_header["value"] = h[name]
+                    break
+    except Exception:
+        pass
 def on_response(resp):
     try:
         ct = resp.headers.get("content-type", "")
         if "json" in ct and len(api_calls) < 60:
-            cap = 4000 if "hubfit.com/api" in resp.url else 400
+            cap = 60000 if "calendar/client/metadata" in resp.url else (4000 if "hubfit.com/api" in resp.url else 400)
             body = resp.text()[:cap]
             api_calls.append((resp.status, resp.url, body))
     except Exception:
@@ -67,6 +79,7 @@ with sync_playwright() as p:
     ctx = browser.new_context(viewport={"width": 430, "height": 1400})
     page = ctx.new_page()
     page.on("response", on_response)
+    page.on("request", on_request)
 
     page.goto(URL, wait_until="networkidle", timeout=60000)
     page.wait_for_timeout(3000)
@@ -112,64 +125,73 @@ with sync_playwright() as p:
                 page.wait_for_timeout(3000)
                 page.screenshot(path=f"{OUT}/3_training.png", full_page=True)
                 dump_text(page, "TRAINING PAGE", limit=350)
-                # talk to the API directly from inside the authenticated page
-                print("\n===== IN-PAGE API PROBE =====")
-                keys = page.evaluate("() => Object.keys(localStorage).concat(Object.keys(sessionStorage).map(k => 'session:'+k))")
-                print("storage keys:", keys)
-                probe = page.evaluate("""async () => {
-                  const cid = '6a194933c0dbc1a3577469cd';
-                  let token = '';
-                  for (const store of [localStorage, sessionStorage])
-                    for (const k of Object.keys(store))
-                      if (/token|auth/i.test(k) && (store.getItem(k)||'').length > 20) token = store.getItem(k);
-                  const hs = token ? [{}, {Authorization: 'Bearer '+token}, {'x-access-token': token}, {token: token}] : [{}];
-                  const get = async (u) => {
-                    for (const h of hs) {
-                      try {
-                        const r = await fetch(u, {headers: h, credentials: 'include'});
-                        const j = await r.json();
-                        if (j && j.success !== false) return {status: r.status, hdr: Object.keys(h).join(',')||'none', body: j};
-                      } catch (e) {}
+                # extract the bearer token from the redux-persist blob too
+                token = page.evaluate("""() => {
+                  try {
+                    const root = JSON.parse(localStorage.getItem('persist:root') || '{}');
+                    for (const k of Object.keys(root)) {
+                      let v = root[k];
+                      try { v = JSON.parse(v); } catch (e) {}
+                      const s = JSON.stringify(v);
+                      const m = s && s.match(/"(?:token|accessToken|authToken)"\\s*:\\s*"([^"]{16,})"/);
+                      if (m) return m[1];
                     }
-                    return {status: 'all-failed', body: null};
-                  };
-                  const out = {};
-                  out.sep = await get(`/api/training/program/calendar/client/metadata?clientId=${cid}&date=2026-09-15`);
-                  // pull a workout id for a detail probe
-                  let wid = null, wdate = null;
-                  const w = (out.sep.body && out.sep.body.workouts) || [];
-                  for (const x of w) if (x.date >= '2026-08-31') { wid = x._id; wdate = x.date; break; }
-                  out.probeTarget = {wid, wdate};
-                  if (wid) {
-                    out.detailA = await get(`/api/training/program/calendar/client/workout?clientId=${cid}&workoutId=${wid}`);
-                    out.detailB = await get(`/api/training/program/workout/${wid}?clientId=${cid}`);
-                    out.detailC = await get(`/api/training/workout/${wid}?clientId=${cid}`);
-                    out.detailD = await get(`/api/training/program/calendar/client/workout/${wid}?clientId=${cid}`);
-                  }
-                  return out;
+                  } catch (e) {}
+                  return null;
                 }""")
-                blob = json.dumps(probe)
-                print(scrub(blob[:9000]))
-                open(f"{OUT}/api_probe.json", "w").write(scrub(blob))
-                # fallback: force-click a tile so its detail request gets sniffed
+                print("\n===== AUTH REPLAY =====")
+                print("sniffed header name:", auth_header["name"], "| have sniffed value:", bool(auth_header["value"]), "| token from persist:", bool(token))
+
+                # build header set from whatever we found
+                hdrs = {}
+                if auth_header["value"]:
+                    hdrs[auth_header["name"]] = auth_header["value"]
+                elif token:
+                    hdrs["Authorization"] = "Bearer " + token
+
+                cid = "6a194933c0dbc1a3577469cd"
+                import urllib.parse
+                def api_get(path):
+                    try:
+                        r = ctx.request.get("https://app.hubfit.com" + path, headers=hdrs, timeout=30000)
+                        return r.status, r.text()
+                    except Exception as e:
+                        return "ERR", scrub(str(e))[:200]
+
+                # full program calendar (every workout: name, date, _id)
+                st, body = api_get(f"/api/training/program/calendar/client/metadata?clientId={cid}&date=2026-09-15")
+                print(f"\n[metadata 2026-09-15] {st}")
+                print(scrub(body)[:20000])
+                open(f"{OUT}/calendar_sept.json", "w").write(scrub(body))
+
+                # pick a September workout id and probe detail endpoints
+                wid = None
                 try:
-                    n_before = len(api_calls)
-                    page.get_by_text("Recovery Workout", exact=False).first.click(timeout=10000, force=True)
-                    page.wait_for_timeout(5000)
-                    page.screenshot(path=f"{OUT}/4_tile.png", full_page=True)
-                    dump_text(page, "AFTER TILE FORCE-CLICK", limit=120)
-                    print(f"  (captured {len(api_calls)-n_before} new API calls after click)")
+                    import json as _j
+                    for w in (_j.loads(body).get("workouts") or []):
+                        if w.get("date","") >= "2026-08-31" and (w.get("totalExercises") or 0) >= 1:
+                            wid = w["_id"]; wdate = w["date"]; wname = w.get("name"); break
                 except Exception as e:
-                    print("force-click failed:", scrub(str(e))[:200])
-            dump_controls(page, "AFTER LOGIN")
-            # try to surface training links
-            print("\n----- links containing 'training'/'workout' -----")
-            for a in page.query_selector_all("a[href]")[:60]:
-                href = a.get_attribute("href") or ""
-                if re.search(r"train|workout|program|session", href, re.I):
-                    print("  ->", scrub(href))
+                    print("parse metadata failed:", scrub(str(e))[:200])
+                print("\ndetail probe target:", wid, wdate if wid else "", wname if wid else "")
+                if wid:
+                    for tmpl in (
+                        f"/api/training/program/calendar/client/workout?clientId={cid}&workoutId={wid}",
+                        f"/api/training/program/calendar/client/workout/{wid}?clientId={cid}",
+                        f"/api/training/program/workout/{wid}?clientId={cid}",
+                        f"/api/training/workout/{wid}?clientId={cid}",
+                        f"/api/training/program/{{}}/workout/{wid}".format("6a194933c0dbc1a357746a0c"),
+                        f"/api/workout/{wid}?clientId={cid}",
+                    ):
+                        st, b = api_get(tmpl)
+                        ok = ('"exercises"' in b or '"interval' in b.lower() or '"sets"' in b) and '"invalidToken"' not in b
+                        print(f"\n[detail {st} {'HIT' if ok else 'miss'}] {tmpl}")
+                        print(scrub(b)[:6000])
+                        if ok:
+                            open(f"{OUT}/workout_detail.json", "w").write(scrub(b))
+                            break
         except Exception as e:
-            print("LOGIN ATTEMPT FAILED:", scrub(str(e))[:300])
+            print("LOGIN/PROBE FAILED:", scrub(str(e))[:400])
     else:
         print("\n(no credentials in env -- landing page recon only)")
 
