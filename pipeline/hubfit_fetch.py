@@ -112,19 +112,55 @@ with sync_playwright() as p:
                 page.wait_for_timeout(3000)
                 page.screenshot(path=f"{OUT}/3_training.png", full_page=True)
                 dump_text(page, "TRAINING PAGE", limit=350)
-                # open a few workout tiles so their detail API calls get captured
-                for tile_name in ("Recovery Workout 1", "Sprint Workout", "Recovery Workout 2"):
-                    try:
-                        n_before = len(api_calls)
-                        page.get_by_text(tile_name, exact=False).first.click(timeout=5000)
-                        page.wait_for_timeout(4000)
-                        page.screenshot(path=f"{OUT}/4_{tile_name.replace(' ','_')}.png", full_page=True)
-                        dump_text(page, f"WORKOUT DETAIL: {tile_name}", limit=120)
-                        print(f"  (captured {len(api_calls)-n_before} new API calls)")
-                        page.go_back(wait_until="networkidle", timeout=30000)
-                        page.wait_for_timeout(2000)
-                    except Exception as e:
-                        print(f"tile click failed ({tile_name}):", scrub(str(e))[:200])
+                # talk to the API directly from inside the authenticated page
+                print("\n===== IN-PAGE API PROBE =====")
+                keys = page.evaluate("() => Object.keys(localStorage).concat(Object.keys(sessionStorage).map(k => 'session:'+k))")
+                print("storage keys:", keys)
+                probe = page.evaluate("""async () => {
+                  const cid = '6a194933c0dbc1a3577469cd';
+                  let token = '';
+                  for (const store of [localStorage, sessionStorage])
+                    for (const k of Object.keys(store))
+                      if (/token|auth/i.test(k) && (store.getItem(k)||'').length > 20) token = store.getItem(k);
+                  const hs = token ? [{}, {Authorization: 'Bearer '+token}, {'x-access-token': token}, {token: token}] : [{}];
+                  const get = async (u) => {
+                    for (const h of hs) {
+                      try {
+                        const r = await fetch(u, {headers: h, credentials: 'include'});
+                        const j = await r.json();
+                        if (j && j.success !== false) return {status: r.status, hdr: Object.keys(h).join(',')||'none', body: j};
+                      } catch (e) {}
+                    }
+                    return {status: 'all-failed', body: null};
+                  };
+                  const out = {};
+                  out.sep = await get(`/api/training/program/calendar/client/metadata?clientId=${cid}&date=2026-09-15`);
+                  // pull a workout id for a detail probe
+                  let wid = null, wdate = null;
+                  const w = (out.sep.body && out.sep.body.workouts) || [];
+                  for (const x of w) if (x.date >= '2026-08-31') { wid = x._id; wdate = x.date; break; }
+                  out.probeTarget = {wid, wdate};
+                  if (wid) {
+                    out.detailA = await get(`/api/training/program/calendar/client/workout?clientId=${cid}&workoutId=${wid}`);
+                    out.detailB = await get(`/api/training/program/workout/${wid}?clientId=${cid}`);
+                    out.detailC = await get(`/api/training/workout/${wid}?clientId=${cid}`);
+                    out.detailD = await get(`/api/training/program/calendar/client/workout/${wid}?clientId=${cid}`);
+                  }
+                  return out;
+                }""")
+                blob = json.dumps(probe)
+                print(scrub(blob[:9000]))
+                open(f"{OUT}/api_probe.json", "w").write(scrub(blob))
+                # fallback: force-click a tile so its detail request gets sniffed
+                try:
+                    n_before = len(api_calls)
+                    page.get_by_text("Recovery Workout", exact=False).first.click(timeout=10000, force=True)
+                    page.wait_for_timeout(5000)
+                    page.screenshot(path=f"{OUT}/4_tile.png", full_page=True)
+                    dump_text(page, "AFTER TILE FORCE-CLICK", limit=120)
+                    print(f"  (captured {len(api_calls)-n_before} new API calls after click)")
+                except Exception as e:
+                    print("force-click failed:", scrub(str(e))[:200])
             dump_controls(page, "AFTER LOGIN")
             # try to surface training links
             print("\n----- links containing 'training'/'workout' -----")
