@@ -22,6 +22,8 @@ def scrub(s):
     for secret in (USER, CODE):
         if secret:
             s = s.replace(secret, "***")
+    s = re.sub(r'"token"\s*:\s*"[^"]*"', '"token":"***"', s)
+    s = re.sub(r'(Authorization[^A-Za-z0-9]{0,4})[A-Za-z0-9._-]{12,}', r"\1***", s)
     return s
 
 def dump_text(page, label, limit=250):
@@ -53,8 +55,9 @@ api_calls = []
 def on_response(resp):
     try:
         ct = resp.headers.get("content-type", "")
-        if "json" in ct and len(api_calls) < 40:
-            body = resp.text()[:1200]
+        if "json" in ct and len(api_calls) < 60:
+            cap = 4000 if "hubfit.com/api" in resp.url else 400
+            body = resp.text()[:cap]
             api_calls.append((resp.status, resp.url, body))
     except Exception:
         pass
@@ -109,6 +112,19 @@ with sync_playwright() as p:
                 page.wait_for_timeout(3000)
                 page.screenshot(path=f"{OUT}/3_training.png", full_page=True)
                 dump_text(page, "TRAINING PAGE", limit=350)
+                # open a few workout tiles so their detail API calls get captured
+                for tile_name in ("Recovery Workout 1", "Sprint Workout", "Recovery Workout 2"):
+                    try:
+                        n_before = len(api_calls)
+                        page.get_by_text(tile_name, exact=False).first.click(timeout=5000)
+                        page.wait_for_timeout(4000)
+                        page.screenshot(path=f"{OUT}/4_{tile_name.replace(' ','_')}.png", full_page=True)
+                        dump_text(page, f"WORKOUT DETAIL: {tile_name}", limit=120)
+                        print(f"  (captured {len(api_calls)-n_before} new API calls)")
+                        page.go_back(wait_until="networkidle", timeout=30000)
+                        page.wait_for_timeout(2000)
+                    except Exception as e:
+                        print(f"tile click failed ({tile_name}):", scrub(str(e))[:200])
             dump_controls(page, "AFTER LOGIN")
             # try to surface training links
             print("\n----- links containing 'training'/'workout' -----")
