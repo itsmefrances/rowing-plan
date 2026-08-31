@@ -220,9 +220,21 @@ def main():
     used_ids = {v["id"] for v in results.values()}
     index = open(INDEX).read()
 
-    bands = dict(re.findall(
-        r'\{"date":"(\d{4}-\d\d-\d\d)","dow":"[^"]+","type":"[^"]+","title":"[^"]*","items":\[\{"t":"row"[^}]*?"pace":"([^"]+)"',
-        index))
+    # Rowing bands derive from the 500m PB via the linear model (source of truth:
+    # https://conkers.eatonrise.com/rowcalc/ ) — 100% = PB, each 1% below = +1s.
+    # Each plan row stores pctLo/pctHi; the band string is computed here so the
+    # sync and the browser agree exactly. A few legacy rows still carry "pace".
+    def row_split(pct):
+        s = round(99.9 + (100 - int(pct))); return f"{s // 60}:{s % 60:02d}"
+    bands = {}
+    for date, lo, hi in re.findall(
+            r'\{"date":"(\d{4}-\d\d-\d\d)","dow":"[^"]+","type":"[^"]+","title":"[^"]*","items":\[\{"t":"row"[^}]*?"pctLo":(\d+),"pctHi":(\d+)',
+            index):
+        bands[date] = f"{row_split(hi)}–{row_split(lo)}"          # fast end first
+    for date, pace in re.findall(                                  # legacy rows (tests)
+            r'\{"date":"(\d{4}-\d\d-\d\d)","dow":"[^"]+","type":"[^"]+","title":"[^"]*","items":\[\{"t":"row"[^}]*?"pace":"([^"]+)"',
+            index):
+        bands.setdefault(date, pace)
     print(f"plan rowing days: {len(bands)}  |  existing results: {len(results)}")
 
     status, listing = fetch(BASE)
