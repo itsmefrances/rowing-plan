@@ -190,6 +190,11 @@ with sync_playwright() as p:
                         if ok:
                             open(f"{OUT}/workout_detail.json", "w").write(scrub(b))
                             break
+        except Exception as e:
+            print("LOGIN/PROBE FAILED:", scrub(str(e))[:400])
+    else:
+        print("\n(no credentials in env -- landing page recon only)")
+
     print("\n===== JSON API TRAFFIC =====")
     for status, url, body in api_calls:
         print(f"\n[{status}] {scrub(url)}")
