@@ -1,0 +1,22 @@
+name: ErgZone recon
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  recon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Install Playwright
+        run: pip install playwright --quiet && python -m playwright install --with-deps chromium
+      - name: Recon
+        env:
+          ERGZONE_TOKEN: ${{ secrets.ERGZONE_TOKEN }}
+        run: python pipeline/ergzone_fetch.py
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with: { name: ergzone-recon, path: recon_out/, retention-days: 3 }
