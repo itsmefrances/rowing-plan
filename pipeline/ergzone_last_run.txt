@@ -1,5 +1,35 @@
 track: Rowfit Workouts
 workouts already in track: 14
 plan: 1 total, 1 to create
-  ! 2026-09-27  Sprint 10×200m  -> {"data": {"workout": null}, "errors": [{"message": "Suggested operator is invalid", "path": ["workout"], "locations": [{"line": 2, "column": 3}]}, {"message": "Suggested pace benchmark group is invalid", "path": ["workout"], "locations": [{"line": 2, "column": 3}]}]}
-first create failed; stopping so the payload can be fixed
+reference workout: Sprint 12×150m 2026-09-20
+{
+ "rest": 150,
+ "spm": 38,
+ "spmMax": 42,
+ "suggestedInterval": null,
+ "suggestedOperator": "+",
+ "suggestedPace": 2.5,
+ "suggestedPaceBenchmarkGroup": "D",
+ "type": "distance",
+ "undefRest": false,
+ "value": 150
+}
+{
+ "trackId": "68afa180-10d1-4ca1-8d3a-dff940e147b2",
+ "title": "Sprint 10×200m",
+ "description": "Power Intervals: 200m x 10. Rest 3 minutes. 38-42 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
+ "workoutType": "row",
+ "status": "published",
+ "hasLeaderboard": true,
+ "publishedAt": "2026-09-27",
+ "intervals": [
+  {
+   "type": "distance",
+   "value": 200,
+   "rest": 180,
+   "spm": 38,
+   "spmMax": 42,
+   "suggestedPace": 2.5,
+   "suggestedInterval": 500,
+   "suggestedOperator": "pace",
+   "suggestedPaceBenchmarkGroup": "r
