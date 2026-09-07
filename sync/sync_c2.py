@@ -138,11 +138,26 @@ def parse_workout(html):
     return out
 
 
+SHAPE_V = 2   # bump to force a re-backfill of every stored shape
+
+
+def work_intervals(w):
+    """The logbook's Intervals table carries a totals row whose distance is the
+    sum of the work rows; it is not an interval and must not be counted."""
+    iv = list(w.get("intervals") or [])
+    if len(iv) >= 3:
+        if abs(iv[-1]["dist"] - sum(x["dist"] for x in iv[:-1])) <= 2:
+            iv = iv[:-1]
+        elif abs(iv[0]["dist"] - sum(x["dist"] for x in iv[1:])) <= 2:
+            iv = iv[1:]
+    return iv
+
+
 def shape_of(w):
     """Canonical work structure, so the site can find a comparable session by
     shape instead of relying on a hand-written note. d = distance reps,
     t = timed reps, m = mixed; key is '<unit><size>x<reps>'."""
-    iv = w.get("intervals") or []
+    iv = work_intervals(w)
     if not iv:
         return None
     n = len(iv)
@@ -267,7 +282,7 @@ def main():
     # self-healing backfill: older entries predate the shape/key fields, and the
     # site matches comparables on key, so fill any that are missing before syncing
     backfilled = 0
-    for date in sorted(k for k, v in results.items() if not v.get("key") and v.get("id")):
+    for date in sorted(k for k, v in results.items() if v.get("v", 0) < SHAPE_V and v.get("id")):
         wid = results[date]["id"]
         try:
             st, page = fetch(f"{BASE}/{wid}")
@@ -280,6 +295,7 @@ def main():
         if sh:
             results[date]["shape"] = sh["shape"]
             results[date]["key"] = sh["key"]
+            results[date]["v"] = SHAPE_V
             backfilled += 1
             print(f"  backfilled {date}: {sh['shape']}  ({sh['key']})")
     if backfilled:
@@ -355,7 +371,7 @@ def main():
             "id": w["id"], "link": w["url"], "dist": w["dist"], "time": w["time"] or "",
             "pace": wp or w.get("pace") or "", "rate": w.get("rate") or 0,
             "band": band, "verdict": verdict, "note": note,
-            "shape": (sh or {}).get("shape", ""), "key": (sh or {}).get("key", ""),
+            "shape": (sh or {}).get("shape", ""), "key": (sh or {}).get("key", ""), "v": SHAPE_V,
         }
         taken.add(w["id"])
         print(f"  + {pd}: id {w['id']}, {w['dist']}m, pace {wp}, verdict {verdict}")
