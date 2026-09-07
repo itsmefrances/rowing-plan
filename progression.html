@@ -1,222 +1,378 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f3f4f7">
-<title>Progression · Recomp Block</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maxes &amp; Progression</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 :root{
-  --bg:#f3f4f7; --panel:#ffffff; --panel2:#eceef2; --line:#e1e4ea;
-  --ink:#1b1e25; --mut:#697080; --faint:#9aa1ad; --acc:#0e9d6c;
-  --squat:#bf7016; --bench:#2d77c7; --dead:#7b46d4;
-  --build:#5b94c8; --deload:#aab0bb; --peak:#d6925a; --taper:#a98fd6; --test:#a87c20;
-  --disp:'Space Grotesk',system-ui,sans-serif;
-  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --ground:#F1F3F5; --surface:#FFF; --surface-2:#E8ECEF;
+  --ink:#14171B; --ink-2:#3C444D; --muted:#69727B;
+  --rule:#D3DAE0; --rule-strong:#B5BFC8;
+  --lift:#9A6510; --lift-soft:#F4E9D5; --lift-ink:#6E4809;
+  --erg:#0C6F6B; --erg-soft:#DBECEB;
+  --test:#B23D0B; --test-soft:#F8E2D7;
+  --f-d:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-m:"IBM Plex Mono",ui-monospace,Menlo,monospace;
 }
-*{box-sizing:border-box; margin:0; padding:0}
-body{font-family:var(--disp); background:var(--bg); color:var(--ink); line-height:1.5; padding:0 0 60px}
-header{background:linear-gradient(180deg,#fff,#f6f7f9); border-bottom:1px solid var(--line); padding:16px}
-.htop{display:flex; align-items:center; justify-content:space-between; gap:12px; max-width:960px; margin:0 auto}
-.brand{font-weight:700; font-size:20px; letter-spacing:-.02em}
-.brand small{font-family:var(--mono); font-weight:500; font-size:12px; color:var(--mut); margin-left:8px}
-.back{font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--mut);
-  text-decoration:none; border:1px solid var(--line); border-radius:9px; padding:8px 12px; background:#fff}
-.back:hover{border-color:var(--acc); color:var(--acc)}
-.wrap{max-width:960px; margin:0 auto; padding:18px 16px}
-.lead{color:var(--mut); font-size:14.5px; margin:2px 0 16px}
-.rail{display:flex; gap:3px; margin:14px 0 6px}
-.seg{flex:1; text-align:center; padding:7px 2px; border-radius:6px; color:#fff; font-family:var(--mono);
-  font-size:10px; font-weight:700; letter-spacing:.02em; min-width:0}
-.seg small{display:block; font-weight:500; font-size:8.5px; opacity:.9; text-transform:uppercase; letter-spacing:.06em}
-.ph-build{background:var(--build)} .ph-deload{background:var(--deload)} .ph-peak{background:var(--peak)}
-.ph-taper{background:var(--taper)} .ph-test{background:var(--test)}
-.legend{display:flex; flex-wrap:wrap; gap:12px; margin:10px 0 4px; font-family:var(--mono); font-size:11.5px; color:var(--mut)}
-.legend span{display:inline-flex; align-items:center; gap:6px}
-.dot{width:11px; height:11px; border-radius:3px; display:inline-block}
-.card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; margin-top:16px;
-  box-shadow:0 1px 2px rgba(20,24,34,.05),0 4px 14px rgba(20,24,34,.04)}
-.card h2{font-size:16px; font-weight:650; margin-bottom:2px}
-.card .sub{font-size:12.5px; color:var(--mut); margin-bottom:12px}
-.chartbox{position:relative; height:300px}
-.arcs{display:grid; grid-template-columns:1fr; gap:10px; margin-top:6px}
-.arc{border-left:4px solid var(--c); background:var(--panel2); border-radius:0 10px 10px 0; padding:9px 12px}
-.arc b{font-size:13.5px} .arc span{display:block; font-size:12.5px; color:var(--mut); margin-top:2px}
-.tablewrap{overflow-x:auto; margin-top:6px; -webkit-overflow-scrolling:touch}
-table{border-collapse:collapse; width:100%; font-family:var(--mono); font-size:12.5px; min-width:520px}
-th,td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); white-space:nowrap}
-th{font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); font-weight:600}
-td.wk{font-weight:700}
-.tag{font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
-  color:#fff; border-radius:99px; padding:2px 7px}
-.cell b{font-weight:700} .cell small{color:var(--mut); font-weight:500}
-.foot{font-size:12px; color:var(--mut); margin-top:16px; font-family:var(--mono); line-height:1.6}
-@media(max-width:560px){ .brand{font-size:17px} .chartbox{height:260px} }
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0F1216; --surface:#161A1F; --surface-2:#1E242B;
+  --ink:#E6EAEE; --ink-2:#B4BDC6; --muted:#8A949E;
+  --rule:#293039; --rule-strong:#39424D;
+  --lift:#D9A03F; --lift-soft:#2D2414; --lift-ink:#EBC078;
+  --erg:#3FB3AC; --erg-soft:#11302F;
+  --test:#E8733C; --test-soft:#33190E;
+}}
+:root[data-theme="dark"]{
+  --ground:#0F1216; --surface:#161A1F; --surface-2:#1E242B;
+  --ink:#E6EAEE; --ink-2:#B4BDC6; --muted:#8A949E;
+  --rule:#293039; --rule-strong:#39424D;
+  --lift:#D9A03F; --lift-soft:#2D2414; --lift-ink:#EBC078;
+  --erg:#3FB3AC; --erg-soft:#11302F;
+  --test:#E8733C; --test-soft:#33190E;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-d);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:900px;margin:0 auto;padding:16px 14px 60px;}
+h1,h2,h3{margin:0;line-height:1.15;text-wrap:balance;}
+h1{font-size:24px;font-weight:700;letter-spacing:-0.015em;}
+h2{font-size:16px;font-weight:700;}
+p{margin:0;}
+.mono{font-family:var(--f-m);font-variant-numeric:tabular-nums;}
+.eyebrow{font-size:10px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;color:var(--muted);}
+header{border-bottom:2px solid var(--rule-strong);padding-bottom:14px;margin-bottom:18px;
+  display:flex;flex-direction:column;gap:6px;}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--erg);text-decoration:none;}
+.back:hover{text-decoration:underline;}
+.panel{background:var(--surface);border:1px solid var(--rule);margin-bottom:16px;}
+.panel-h{padding:10px 13px;background:var(--surface-2);border-bottom:1px solid var(--rule);
+  display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+.panel-b{padding:13px;}
+.mx{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:10px;}
+.mxi{display:flex;flex-direction:column;gap:3px;}
+.mxi label{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+input{font-family:var(--f-m);font-size:14px;padding:6px 8px;background:var(--surface);
+  border:1px solid var(--rule-strong);color:var(--ink);width:100%;border-radius:0;}
+input:focus-visible{outline:2px solid var(--erg);outline-offset:-1px;}
+.charts{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:700px){.charts{grid-template-columns:1fr 1fr;}}
+.card{background:var(--surface);border:1px solid var(--rule);display:flex;flex-direction:column;}
+.card-h{padding:10px 13px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;
+  align-items:baseline;gap:8px;flex-wrap:wrap;}
+.card-h .n{font-size:14.5px;font-weight:700;}
+.card-h .v{font-family:var(--f-m);font-size:12px;color:var(--muted);}
+.card-b{padding:10px 8px 4px;}
+svg.ch{width:100%;height:150px;display:block;}
+.legend{display:flex;gap:12px;padding:0 13px 11px;flex-wrap:wrap;}
+.lg{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);}
+.sw{width:14px;height:2px;display:inline-block;}
+.sw.dot{height:7px;width:7px;border-radius:50%;}
+.tw{overflow-x:auto;}
+table{border-collapse:collapse;width:100%;min-width:460px;font-size:13.5px;}
+th,td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--rule);}
+thead th{font-size:10px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);
+  background:var(--surface-2);white-space:nowrap;}
+tbody tr:last-child td{border-bottom:0;}
+td.num{font-family:var(--f-m);font-variant-numeric:tabular-nums;white-space:nowrap;}
+td.ex{font-weight:600;}
+.note{border-left:3px solid var(--rule-strong);padding:2px 0 2px 13px;color:var(--ink-2);font-size:13.5px;margin-top:12px;}
+.note.w{border-left-color:var(--test);}
 </style>
 </head>
 <body>
-<header><div class="htop">
-  <div class="brand">📈 Progression<small id="cyc">Powerbuilding · Weeks 3–10</small></div>
-  <a class="back" href="index.html">← Plan</a>
-</div></header>
 
 <div class="wrap">
-  <p class="lead">How each main lift is programmed to <b>build, peak, deload and test</b> across the cycle. Top-set numbers only (the heaviest set of the day); weights are computed from your current maxes on the plan page.</p>
+<header>
+  <a class="back" href="#" id="backLink">&larr; Block Console</a>
+  <span class="eyebrow">Sep 7 – Dec 5, 2026</span>
+  <h1>Maxes &amp; Progression</h1>
+  <p style="color:var(--ink-2);max-width:64ch;">Working maxes drive every percentage in the block. Progression charts are built from your actual logged sets — the <span class="mono">recomp-log</span> sheet, Jun 22 onward.</p>
+</header>
 
-  <div class="rail" id="rail"></div>
-  <div class="legend">
-    <span><i class="dot" style="background:var(--squat)"></i>Squat</span>
-    <span><i class="dot" style="background:var(--bench)"></i>Bench</span>
-    <span><i class="dot" style="background:var(--dead)"></i>Deadlift</span>
-    <span style="margin-left:auto"><i class="dot" style="background:var(--build)"></i>build</span>
-    <span><i class="dot" style="background:var(--deload)"></i>deload</span>
-    <span><i class="dot" style="background:var(--peak)"></i>peak</span>
-    <span><i class="dot" style="background:var(--taper)"></i>taper</span>
-    <span><i class="dot" style="background:var(--test)"></i>test</span>
+<div class="panel">
+  <div class="panel-h"><h2>Working maxes</h2><span class="eyebrow">edit to recalculate the block</span></div>
+  <div class="panel-b">
+    <div class="mx" id="mxGrid"></div>
+    <p class="note">Every load in the block is a percentage of these, rounded to 5 lb, and each sits in the middle of a ±2.5% bracket. Change one here and the session pages follow.</p>
   </div>
+</div>
 
-  <div class="card">
-    <h2>Top-set intensity</h2>
-    <div class="sub">% of your 1-rep max — the wave you actually feel. Note the deload dip (Wk 5) and the peak (Wk 8).</div>
-    <div class="chartbox"><canvas id="pctChart"></canvas></div>
+<div class="panel">
+  <div class="panel-h"><h2>Against December targets</h2></div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Lift</th><th class="num">Best logged</th><th class="num">Working max</th><th class="num">Dec target</th><th>Stance</th></tr></thead>
+      <tbody id="targets"></tbody>
+    </table>
   </div>
+</div>
 
-  <div class="card">
-    <h2>Working weight</h2>
-    <div class="sub">Top-set load in lb, from your maxes (Squat <span id="mBs"></span> · Bench <span id="mBench"></span> · Deadlift <span id="mDl"></span>). Point labels show reps.</div>
-    <div class="chartbox"><canvas id="lbChart"></canvas></div>
+<div class="panel">
+  <div class="panel-h"><h2>What progresses, and what deliberately doesn&rsquo;t</h2><span class="eyebrow">three tiers</span></div>
+  <div class="panel-b">
+    <p class="note">You called this right. For a 500m and a 1-minute, peak power is <span class="mono">force &times; velocity</span> &mdash; and past a point the gains come from the velocity end, from rate of force development, not from a bigger 1RM. So load progression is confined to the movements that hold up the force end. The power work progresses in <em>output</em>, where adding weight would actively defeat the purpose. Everything else is held on purpose, because accessory PRs in a peaking block buy hypertrophy you do not need at the cost of Monday sprints.</p>
   </div>
-
-  <div class="card">
-    <h2>The arc of each lift</h2>
-    <div class="arcs">
-      <div class="arc" style="--c:var(--squat)"><b>Back Squat</b><span id="arcS"></span></div>
-      <div class="arc" style="--c:var(--bench)"><b>Bench Press</b><span id="arcB"></span></div>
-      <div class="arc" style="--c:var(--dead)"><b>Deadlift</b><span id="arcD"></span></div>
-    </div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Tier</th><th>Movements</th><th>What increases</th><th>Trigger</th></tr></thead>
+      <tbody>
+        <tr><td class="ex">1 &mdash; Load</td>
+            <td>Squat single &middot; bench single &middot; trap bar &middot; weighted pull-up &middot; front squat</td>
+            <td class="num">lbs on the bar</td>
+            <td>Target RPE met with bar speed intact</td></tr>
+        <tr><td class="ex">2 &mdash; Velocity</td>
+            <td>Speed squat &middot; trap-bar jump &middot; box &amp; broad jump &middot; plyo push-up &middot; sandbag over-shoulder &middot; explosive row / pull-up</td>
+            <td class="num">jump height, bar speed</td>
+            <td>Mat cutoff ends the set &mdash; load stays fixed</td></tr>
+        <tr><td class="ex">3 &mdash; Held</td>
+            <td>Leg press &middot; leg extension &middot; abduction &middot; lat pulldown &middot; hamstring curl &middot; calf &middot; lateral raise &middot; curls &middot; rotary torso &middot; carries</td>
+            <td class="num">nothing, by design</td>
+            <td>Only drift up if a set feels easy at RIR 2</td></tr>
+      </tbody>
+    </table>
   </div>
-
-  <div class="card">
-    <h2>Week by week</h2>
-    <div class="tablewrap"><table id="tbl"></table></div>
+  <div class="panel-b">
+    <p class="note w">The one place this could be wrong: if the Nov 2 1-minute test comes in flat <em>and</em> your jumps have not moved, the limiter is force, not rate &mdash; and Tier 3 should give up volume to feed Tier 1. That is a decision for the Week 8 deload, made on measured data, not now.</p>
   </div>
+</div>
 
-  <p class="foot">Reps shown per top set. Deload week trades intensity for a lighter, higher-rep reset. Test week is AMRAP @ 90% (as-many-reps, capped RPE ~9.5) to gauge your new maxes. Edit your maxes on the <a href="index.html" style="color:var(--acc)">plan page</a> and this recomputes.</p>
+<div class="panel">
+  <div class="panel-h"><h2>Power &amp; readiness</h2><span class="eyebrow">tier 2 — output, not load</span></div>
+  <div class="panel-b">
+    <div class="charts" id="power"></div>
+    <p class="note">These are the numbers Tier 2 actually progresses on. Nothing is plotted yet because the block starts this week &mdash; the dashed line is the December target, and the first points land after Saturday&rsquo;s baseline.</p>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-h"><h2>Progression by exercise</h2><span class="eyebrow">logged sets · Jun–Sep</span></div>
+  <div class="panel-b">
+    <div class="charts" id="charts"></div>
+    <p class="note w">Solid is what you lifted; dashed is what the block prescribes through Dec 1. Top singles and working sets stay separate, because mixing them makes a block look like it is regressing every time a heavy day is followed by a volume day. The squat forecast dips in Block 3 on purpose: speed work at 55-60%, with the weekly single carrying the intensity.</p>
+  </div>
+</div>
+
 </div>
 
 <script>
 "use strict";
-let MAX = {bs:240, fs:180, bench:132.5, ohp:100, dl:280};
-try { const s=JSON.parse(localStorage.getItem("recomp-tracker-2026")); if(s&&s.max){ const OLD={bs:230,dl:270,ohp:95}; for(const k in OLD){ if(s.max[k]===OLD[k]) delete s.max[k]; } MAX=Object.assign(MAX,s.max); } } catch(e){}
-const r5 = x => Math.round(x/5)*5;
-const load = (pct,l) => r5(MAX[l]*pct/100);
+var CONSOLE_URL = "block.html";
 
-const PHASE = {build:"var(--build)", deload:"var(--deload)", peak:"var(--peak)", taper:"var(--taper)", test:"var(--test)"};
-const PHLBL = {build:"Build", deload:"Deload", peak:"Peak", taper:"Taper", test:"Test"};
-const WEEKS = [
-  {pb:"W3", phase:"build",  range:"Jul 13", bs:{pct:89,reps:"1"},    bench:{pct:91,reps:"1"},    dl:{pct:90,reps:"2–4"}},
-  {pb:"W4", phase:"build",  range:"Jul 20", bs:{pct:89,reps:"1"},    bench:{pct:92,reps:"1"},    dl:{pct:93,reps:"1"}},
-  {pb:"W5", phase:"deload", range:"Jul 27", bs:{pct:76,reps:"5"},    bench:{pct:85,reps:"3"},    dl:{pct:85,reps:"3"}},
-  {pb:"W6", phase:"build",  range:"Aug 3",  bs:{pct:89,reps:"1"},    bench:{pct:92,reps:"1"},    dl:{pct:93,reps:"2"}},
-  {pb:"W7", phase:"build",  range:"Aug 10", bs:{pct:91,reps:"1"},    bench:{pct:95,reps:"1"},    dl:{pct:91,reps:"3"}},
-  {pb:"W8", phase:"peak",   range:"Aug 17", bs:{pct:92,reps:"1"},    bench:{pct:95,reps:"1"},    dl:{pct:96,reps:"1"}},
-  {pb:"W9", phase:"taper",  range:"Aug 24", bs:{pct:90,reps:"1"},    bench:{pct:93,reps:"1"},    dl:{pct:90,reps:"1"}},
-  {pb:"W10",phase:"test",   range:"Aug 31", bs:{pct:90,reps:"AMRAP"},bench:{pct:90,reps:"AMRAP"},dl:{pct:90,reps:"AMRAP"}},
+var MAXES = [
+  ["squat","Back squat",230],["front","Front squat",180],["bench","Bench",135],
+  ["ohp","OHP",95],["dl","Deadlift",275],["pull","Pull-up +",50],["bw","Bodyweight",150]
 ];
-const LIFTS = [
-  {key:"bs",    name:"Squat",    css:getVar('--squat')},
-  {key:"bench", name:"Bench",    css:getVar('--bench')},
-  {key:"dl",    name:"Deadlift", css:getVar('--dead')},
-];
-function getVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
-function phaseColor(p){ return getVar(PHASE[p].replace('var(','').replace(')','')); }
 
-// maxes readout
-mBs.textContent = MAX.bs+"lb"; mBench.textContent = MAX.bench+"lb"; mDl.textContent = MAX.dl+"lb";
+/* logged sets from recomp-log — [date, weight, kind]  kind: 'top' single/heavy, 'work' working set */
+var WEEKS=["2026-09-08","2026-09-15","2026-09-22","2026-09-29","2026-10-06","2026-10-13",
+           "2026-10-20","2026-10-27","2026-11-03","2026-11-10","2026-11-17","2026-11-24","2026-12-01"];
 
-// phase rail
-rail.innerHTML = WEEKS.map(w =>
-  `<div class="seg ph-${w.phase}"><small>${PHLBL[w.phase]}</small>${w.pb}</div>`).join("");
-
-try {
-const labels = WEEKS.map(w => w.pb);
-function ds(field){
-  return LIFTS.map(L => ({
-    label: L.name,
-    data: WEEKS.map(w => w[L.key][field==="pct" ? "pct" : "pct"]),
-    _reps: WEEKS.map(w => w[L.key].reps),
-    _lift: L.key,
-    borderColor: L.css, backgroundColor: L.css,
-    pointBackgroundColor: WEEKS.map(w => phaseColor(w.phase)),
-    pointBorderColor: L.css, pointBorderWidth: 2, pointRadius: 5, pointHoverRadius: 7,
-    tension: .3, borderWidth: 2.5,
-  }));
-}
-const gridC = getVar('--line'), tickC = getVar('--mut');
-const commonScales = (yTitle, yFmt, yMin, yMax) => ({
-  x:{ grid:{color:gridC}, ticks:{color:tickC, font:{family:"'JetBrains Mono'", size:11}} },
-  y:{ grid:{color:gridC}, min:yMin, max:yMax, title:{display:true, text:yTitle, color:tickC, font:{family:"'JetBrains Mono'",size:11}},
-      ticks:{color:tickC, font:{family:"'JetBrains Mono'",size:11}, callback:yFmt} },
-});
-Chart.defaults.font.family = "'Space Grotesk'";
-
-// intensity chart (%1RM)
-new Chart(pctChart, {
-  type:"line",
-  data:{ labels, datasets: ds("pct") },
-  options:{ responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{ labels:{color:getVar('--ink'), usePointStyle:true, boxWidth:8} },
-      tooltip:{ callbacks:{ label: c => `${c.dataset.label}: ${c.parsed.y}% × ${c.dataset._reps[c.dataIndex]} · ${PHLBL[WEEKS[c.dataIndex].phase]}` } } },
-    scales: commonScales("% of 1RM", v => v+"%", 65, 100) }
-});
-// load chart (lb) with reps labels
-const repLabel = {
-  id:"repLabel",
-  afterDatasetsDraw(chart){
-    const {ctx} = chart;
-    ctx.save(); ctx.font="600 10px 'JetBrains Mono'"; ctx.textAlign="center";
-    chart.data.datasets.forEach((d,di)=>{
-      const meta = chart.getDatasetMeta(di);
-      meta.data.forEach((pt,i)=>{
-        ctx.fillStyle = d.borderColor;
-        ctx.fillText("×"+d._reps[i], pt.x, pt.y-9);
-      });
-    });
-    ctx.restore();
-  }
+/* solid = logged (recomp-log) · fc = prescribed forecast, null = week skipped
+   Main lifts re-baseline: max 230 -> 240 after Block 1 -> 245 after Block 2 */
+var HISTORY = {
+  "Back squat":{unit:"lb",target:"245-250",max:230,pts:[
+    ["2026-06-22",185,"work"],["2026-06-29",185,"work"],["2026-08-01",175,"work"],
+    ["2026-08-13",205,"work"],["2026-08-13",220,"top"],["2026-08-15",185,"work"],
+    ["2026-08-15",195,"top"],["2026-08-25",215,"top"],["2026-08-31",215,"top"]],
+    fcTop:[205,212,218,null,205,225,205,null,205,232,205,238,200],
+    fcWork:[180,184,190,161,209,214,221,180,135,135,135,135,172]},
+  "Bench":{unit:"lb",target:"142",max:135,pts:[
+    ["2026-06-24",105,"work"],["2026-08-01",110,"work"],["2026-08-15",125,"work"],
+    ["2026-08-15",135,"top"],["2026-08-25",105,"work"],["2026-09-02",115,"work"]],
+    fcTop:[119,122,126,null,128,132,136,null,null,null,null,null,null],
+    fcWork:[101,103,105,101,120,125,129,105,99,99,99,99,null]},
+  "Trap bar deadlift":{unit:"lb",target:"290",max:275,pts:[
+    ["2026-08-06",200,"work"],["2026-08-06",265,"top"],["2026-08-13",205,"work"],
+    ["2026-08-13",255,"top"],["2026-08-25",195,"work"]],
+    fcTop:[null,null,null,null,null,null,null,null,null,null,null,null,null],
+    fcWork:[192,196,200,165,228,228,232,171,218,218,222,222,null]},
+  "OHP":{unit:"lb",target:"100",max:95,pts:[
+    ["2026-06-24",80,"work"],["2026-08-06",75,"work"],["2026-08-13",75,"work"],
+    ["2026-09-02",80,"work"]],
+    fcTop:[null,null,null,null,null,null,null,null,null,null,null,null,null],
+    fcWork:[null,null,null,null,74,76,78,null,null,null,null,null,null]},
+  "Weighted pull-up":{unit:"lb added",target:"+40",max:50,pts:[
+    ["2026-06-24",25,"work"],["2026-07-16",20,"work"],["2026-08-13",30,"work"]],
+    fcTop:[null,null,null,null,null,null,null,null,null,null,null,null,null],
+    fcWork:[27,29,31,27,35,37,39,32,38,40,40,35,null]},
+  "Front squat":{unit:"lb",target:"132 paused",max:180,pts:[
+    ["2026-06-22",135,"work"],["2026-06-29",150,"work"]],
+    fcTop:[null,null,null,null,null,null,null,null,null,null,null,null,null],
+    fcWork:[null,null,null,null,126,129,132,126,null,null,null,null,null]},
+  "Lateral raise":{unit:"lb on stack",target:"held 45-50",max:45,pts:[
+    ["2026-08-04",35,"work"],["2026-08-13",40,"work"],["2026-08-31",45,"work"]],
+    fcTop:[null,null,null,null,null,null,null,null,null,null,null,null,null],
+    fcWork:[45,45,45,45,50,50,50,45,45,45,45,40,null]},
+  "Iso / chest-supported row":{unit:"lb per side",target:"held 75-80",max:75,pts:[
+    ["2026-08-01",60,"work"],["2026-08-04",60,"work"],["2026-08-13",70,"work"],
+    ["2026-09-02",75,"work"]],
+    fcTop:[null,null,null,null,null,null,null,null,null,null,null,null,null],
+    fcWork:[75,75,80,75,80,80,80,75,80,80,80,75,null]},
+  "Hamstring curl":{unit:"lb on stack",target:"held 100-105",max:100,pts:[
+    ["2026-08-01",84,"work"],["2026-08-13",100,"work"]],
+    fcTop:[null,null,null,null,null,null,null,null,null,null,null,null,null],
+    fcWork:[100,100,105,95,105,105,105,100,105,105,105,95,null]},
+  "Calf raise":{unit:"lb",target:"held 155-160",max:155,pts:[
+    ["2026-07-16",110,"work"],["2026-08-06",150,"work"],["2026-08-13",155,"work"]],
+    fcTop:[null,null,null,null,null,null,null,null,null,null,null,null,null],
+    fcWork:[155,155,160,150,160,160,160,150,160,160,160,150,null]}
 };
-new Chart(lbChart, {
-  type:"line",
-  data:{ labels, datasets: LIFTS.map(L => ({
-    label:L.name, data:WEEKS.map(w=>load(w[L.key].pct, L.key)), _reps:WEEKS.map(w=>w[L.key].reps),
-    borderColor:L.css, backgroundColor:L.css,
-    pointBackgroundColor: WEEKS.map(w=>phaseColor(w.phase)), pointBorderColor:L.css, pointBorderWidth:2,
-    pointRadius:5, pointHoverRadius:7, tension:.3, borderWidth:2.5 })) },
-  options:{ responsive:true, maintainAspectRatio:false, layout:{padding:{top:16}},
-    plugins:{ legend:{ labels:{color:getVar('--ink'), usePointStyle:true, boxWidth:8} },
-      tooltip:{ callbacks:{ label: c => `${c.dataset.label}: ${c.parsed.y} lb × ${c.dataset._reps[c.dataIndex]} (${WEEKS[c.dataIndex][LIFTS[c.datasetIndex].key].pct}%)` } } },
-    scales: commonScales("lb", v => v, undefined, undefined) },
-  plugins:[repLabel]
-});
-} catch(e){ console.warn("chart render failed:", e); }
 
-// arcs
-arcS.textContent = `Grinds heavy singles at 89% through the build, backs off to a light 76%×5 on the deload, sharpens to 92% in peak week, then AMRAP @90% to retest (${load(89,'bs')}→${load(92,'bs')} lb top end).`;
-arcB.textContent = `Climbs from 91% to a 95% single at peak, deloads to 85%×3 mid-cycle, tapers to 93%, then AMRAP @90% (${load(91,'bench')}→${load(95,'bench')} lb).`;
-arcD.textContent = `The heaviest mover — top single builds 90%→96% (peak), with a 85%×3 deload reset and lighter 3s along the way, finishing on an AMRAP @90% (${load(90,'dl')}→${load(96,'dl')} lb).`;
+var BEST = {"Back squat":220,"Bench":135,"Trap bar deadlift":265,"OHP":80,"Weighted pull-up":30,"Front squat":150,"Lateral raise":45,"Iso / chest-supported row":75,"Hamstring curl":100,"Calf raise":155};
+var STANCE = {
+  "Back squat":"TIER 1 · single progresses on non-test weeks, max re-baselines",
+  "Bench":"TIER 1 · waves up through Block 2, speed reps after",
+  "Trap bar deadlift":"TIER 1 · RPE-capped, cap rides a rising max",
+  "OHP":"TIER 1 · Block 2 only, max corrected to 100",
+  "Weighted pull-up":"TIER 1 · +2 lb per clean week",
+  "Front squat":"TIER 1 · paused, climbs inside Block 2",
+  "Lateral raise":"TIER 3 · held at RIR 0-1, not chased",
+  "Iso / chest-supported row":"TIER 3 · held, upper-back volume",
+  "Hamstring curl":"TIER 3 · held, tissue quality",
+  "Calf raise":"TIER 3 · held, tissue quality"
+};
 
-// table
-const head = `<tr><th>Week</th><th>Phase</th><th>Squat</th><th>Bench</th><th>Deadlift</th></tr>`;
-const cell = (w,k) => `<td class="cell"><b>${load(w[k].pct,k)}</b> <small>× ${w[k].reps} @ ${w[k].pct}%</small></td>`;
-tbl.innerHTML = head + WEEKS.map(w =>
-  `<tr><td class="wk">${w.pb} <small style="color:var(--mut);font-weight:500">${w.range}</small></td>`+
-  `<td><span class="tag" style="background:${phaseColor(w.phase)}">${PHLBL[w.phase]}</span></td>`+
-  cell(w,"bs")+cell(w,"bench")+cell(w,"dl")+`</tr>`).join("");
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+function dnum(d){var p=d.split("-");return new Date(+p[0],+p[1]-1,+p[2]).getTime();}
+
+function renderMaxes(){
+  var g=document.getElementById("mxGrid");g.textContent="";
+  MAXES.forEach(function(m){
+    var w=el("div","mxi");
+    var l=el("label",null,m[1]);l.htmlFor="mx-"+m[0];
+    var i=document.createElement("input");
+    i.type="number";i.id="mx-"+m[0];i.value=m[2];
+    i.addEventListener("input",function(){ m[2]=Number(i.value)||0; renderTargets(); });
+    w.appendChild(l);w.appendChild(i);g.appendChild(w);
+  });
+}
+
+function renderTargets(){
+  var tb=document.getElementById("targets");tb.textContent="";
+  Object.keys(HISTORY).forEach(function(k){
+    var h=HISTORY[k];
+    var tr=document.createElement("tr");
+    tr.appendChild(el("td","ex",k));
+    tr.appendChild(el("td","num",BEST[k]!=null?BEST[k]+" lb":"—"));
+    tr.appendChild(el("td","num",h.max+" lb"));
+    tr.appendChild(el("td","num",h.target));
+    tr.appendChild(el("td",null,STANCE[k]||""));
+    tb.appendChild(tr);
+  });
+}
+
+function chart(name,h){
+  var W=340,H=160,PL=38,PR=12,PT=12,PB=26;
+  var hx=h.pts.map(function(p){return dnum(p[0]);});
+  var fcAll=[];
+  ["fcTop","fcWork"].forEach(function(k){ (h[k]||[]).forEach(function(v){ if(v!=null) fcAll.push(v); }); });
+  var vals=h.pts.map(function(p){return p[1];}).concat(fcAll,[h.max]);
+  var minY=Math.min.apply(null,vals), maxY=Math.max.apply(null,vals);
+  var padY=(maxY-minY)*0.12||10;
+  minY=Math.floor((minY-padY)/5)*5; maxY=Math.ceil((maxY+padY)/5)*5;
+  var minX=Math.min.apply(null,hx), maxX=dnum(WEEKS[WEEKS.length-1]);
+  var sx=function(v){return PL+(maxX===minX?0.5:(v-minX)/(maxX-minX))*(W-PL-PR);};
+  var sy=function(v){return H-PB-(v-minY)/(maxY-minY)*(H-PT-PB);};
+  var out='<svg class="ch" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+name+' progression and forecast">';
+  [minY,(minY+maxY)/2,maxY].forEach(function(gv){
+    var y=sy(gv);
+    out+='<line x1="'+PL+'" y1="'+y.toFixed(1)+'" x2="'+(W-PR)+'" y2="'+y.toFixed(1)+'" stroke="var(--rule)" stroke-width="1"/>';
+    out+='<text x="'+(PL-6)+'" y="'+(y+3.5).toFixed(1)+'" text-anchor="end" font-size="9" font-family="IBM Plex Mono, monospace" fill="var(--muted)">'+Math.round(gv)+'</text>';
+  });
+  var bx=sx(dnum("2026-09-07"));
+  out+='<line x1="'+bx.toFixed(1)+'" y1="'+PT+'" x2="'+bx.toFixed(1)+'" y2="'+(H-PB)+'" stroke="var(--rule-strong)" stroke-width="1"/>';
+  out+='<text x="'+(bx+3).toFixed(1)+'" y="'+(PT+8)+'" font-size="8" font-family="IBM Plex Mono, monospace" fill="var(--muted)">block</text>';
+  var my=sy(h.max);
+  out+='<line x1="'+PL+'" y1="'+my.toFixed(1)+'" x2="'+(W-PR)+'" y2="'+my.toFixed(1)+'" stroke="var(--test)" stroke-width="1.2" stroke-dasharray="4 3"/>';
+  out+='<text x="'+(W-PR)+'" y="'+(my-4).toFixed(1)+'" text-anchor="end" font-size="8.5" font-family="IBM Plex Mono, monospace" fill="var(--test)">max '+h.max+'</text>';
+  [["work","var(--erg)","fcWork"],["top","var(--lift)","fcTop"]].forEach(function(cfg){
+    var kind=cfg[0], col=cfg[1], fk=cfg[2];
+    var pts=h.pts.filter(function(p){return p[2]===kind;});
+    if(pts.length>1){
+      var d=pts.map(function(p){return sx(dnum(p[0])).toFixed(1)+","+sy(p[1]).toFixed(1);}).join(" ");
+      out+='<polyline fill="none" stroke="'+col+'" stroke-width="2" points="'+d+'"/>';
+    }
+    pts.forEach(function(p){ out+='<circle cx="'+sx(dnum(p[0])).toFixed(1)+'" cy="'+sy(p[1]).toFixed(1)+'" r="3" fill="'+col+'"/>'; });
+    var fc=h[fk]||[], seg=[];
+    if(pts.length) seg.push(sx(dnum(pts[pts.length-1][0])).toFixed(1)+","+sy(pts[pts.length-1][1]).toFixed(1));
+    fc.forEach(function(v,idx){ if(v!=null) seg.push(sx(dnum(WEEKS[idx])).toFixed(1)+","+sy(v).toFixed(1)); });
+    if(seg.length>1){
+      out+='<polyline fill="none" stroke="'+col+'" stroke-width="1.6" stroke-dasharray="4 3" opacity="0.85" points="'+seg.join(" ")+'"/>';
+    }
+    fc.forEach(function(v,idx){
+      if(v==null) return;
+      out+='<circle cx="'+sx(dnum(WEEKS[idx])).toFixed(1)+'" cy="'+sy(v).toFixed(1)+'" r="2" fill="var(--surface)" stroke="'+col+'" stroke-width="1.4"/>';
+    });
+  });
+  out+='<text x="'+PL+'" y="'+(H-7)+'" font-size="9" font-family="IBM Plex Mono, monospace" fill="var(--muted)">'+h.pts[0][0].slice(5).replace("-","/")+'</text>';
+  out+='<text x="'+(W-PR)+'" y="'+(H-7)+'" text-anchor="end" font-size="9" font-family="IBM Plex Mono, monospace" fill="var(--muted)">12/01</text>';
+  return out+'</svg>';
+}
+
+function renderCharts(){
+  var host=document.getElementById("charts");host.textContent="";
+  Object.keys(HISTORY).forEach(function(k){
+    var h=HISTORY[k];
+    var c=el("div","card");
+    var hd=el("div","card-h");
+    hd.appendChild(el("span","n",k));
+    hd.appendChild(el("span","v",h.pts.length+" logged · "+h.unit));
+    c.appendChild(hd);
+    var b=el("div","card-b"); b.innerHTML=chart(k,h); c.appendChild(b);
+    var lg=el("div","legend");
+    function item(cls,col,txt){var w=el("span","lg");var s=el("span","sw dot");s.style.background=col;w.appendChild(s);w.appendChild(el("span",null,txt));return w;}
+    lg.appendChild(item("","var(--lift)","top single"));
+    lg.appendChild(item("","var(--erg)","working sets"));
+    var dd=el("span","lg");var ds=el("span","sw");
+    ds.style.cssText="background:repeating-linear-gradient(90deg,var(--muted) 0 4px,transparent 4px 7px)";
+    dd.appendChild(ds);dd.appendChild(el("span",null,"prescribed"));lg.appendChild(dd);
+    c.appendChild(lg);
+    host.appendChild(c);
+  });
+}
+
+var POWER = {
+  "7-stroke peak":{unit:"W",baseline:540,target:600,cadence:"W1, W4, W8, W12 — Saturday"},
+  "Broad jump":{unit:"cm",baseline:null,target:null,cadence:"every Thursday · +8–10% by Dec"},
+  "CMJ":{unit:"cm",baseline:null,target:null,cadence:"daily readiness · +5% by Dec"}
+};
+function renderPower(){
+  var host=document.getElementById("power"); if(!host) return;
+  host.textContent="";
+  Object.keys(POWER).forEach(function(k){
+    var m=POWER[k];
+    var c=el("div","card");
+    var hd=el("div","card-h");
+    hd.appendChild(el("span","n",k));
+    hd.appendChild(el("span","v", m.baseline ? m.baseline+" → "+m.target+" "+m.unit : "baseline W1"));
+    c.appendChild(hd);
+    var b=el("div","card-b");
+    var W=340,H=110,PL=34,PR=12;
+    var g='<svg class="ch" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+k+' target">';
+    [0.28,0.5,0.72].forEach(function(f){
+      var y=H*f;
+      g+='<line x1="'+PL+'" y1="'+y+'" x2="'+(W-PR)+'" y2="'+y+'" stroke="var(--rule)" stroke-width="1"/>';
+    });
+    if(m.target){
+      g+='<line x1="'+PL+'" y1="'+(H*0.28)+'" x2="'+(W-PR)+'" y2="'+(H*0.28)+'" stroke="var(--test)" stroke-width="1.2" stroke-dasharray="4 3"/>';
+      g+='<text x="'+(W-PR)+'" y="'+(H*0.28-5)+'" text-anchor="end" font-size="9" font-family="IBM Plex Mono, monospace" fill="var(--test)">target '+m.target+'</text>';
+      g+='<line x1="'+PL+'" y1="'+(H*0.72)+'" x2="'+(W-PR)+'" y2="'+(H*0.72)+'" stroke="var(--erg)" stroke-width="1.2"/>';
+      g+='<text x="'+(W-PR)+'" y="'+(H*0.72+13)+'" text-anchor="end" font-size="9" font-family="IBM Plex Mono, monospace" fill="var(--erg)">baseline '+m.baseline+'</text>';
+    } else {
+      g+='<text x="'+(W/2)+'" y="'+(H/2+4)+'" text-anchor="middle" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--muted)">awaiting Week 1 baseline</text>';
+    }
+    g+='</svg>';
+    b.innerHTML=g; c.appendChild(b);
+    var lg=el("div","legend"); lg.appendChild(el("span","lg", m.cadence)); c.appendChild(lg);
+    host.appendChild(c);
+  });
+}
+renderMaxes();renderTargets();renderCharts();renderPower();
+if(CONSOLE_URL){document.getElementById("backLink").href=CONSOLE_URL;}
+else{document.getElementById("backLink").style.display="none";}
 </script>
 </body>
 </html>
