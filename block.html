@@ -254,6 +254,9 @@ svg.spark{width:100%;height:38px;display:block;}
 .c2k{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
 .c2v{font-family:var(--f-m);font-size:13px;color:var(--ink);}
 .c2d{font-family:var(--f-m);font-size:12px;color:var(--ink-2);}
+.c2link{align-self:flex-start;margin-top:5px;font-family:var(--f-d);font-size:12px;
+  font-weight:600;color:var(--erg);text-decoration:none;border-bottom:1px solid var(--erg);}
+.c2link:hover{opacity:.75;}
 .ezlink{align-self:flex-start;font-family:var(--f-d);font-size:12.5px;font-weight:600;
   color:var(--erg);text-decoration:none;border:1px solid var(--erg);padding:6px 10px;}
 .ezlink:hover{background:var(--erg-soft);}
@@ -391,9 +394,34 @@ var C2LOG = [
 ["2026-07-11",5622,"27:00.0","2:08.1",25,117,"VariableInterval"],
 ["2026-06-30",900,"13:02.5","1:41.4",39,126,"VariableInterval"]
 ];
-function c2On(date){
-  for(var i=0;i<C2LOG.length;i++){ if(C2LOG[i][0]===date) return C2LOG[i]; }
+var C2SYNC = null;   /* sync/results.json, refreshed daily at 9am ET by c2sync.yml */
+function c2Link(id){ return "https://log.concept2.com/profile/2198296/log/" + id; }
+/* the sync keys on the erg's own date, which can sit a day off — allow ±1 */
+function syncOn(date){
+  if(!C2SYNC) return null;
+  var d = new Date(date + "T12:00:00");
+  for(var k=-1;k<=1;k++){
+    var t = new Date(d.getTime() + k*86400000);
+    var key = t.getFullYear() + "-" + String(t.getMonth()+1).padStart(2,"0") + "-" + String(t.getDate()).padStart(2,"0");
+    if(C2SYNC[key]) return C2SYNC[key];
+  }
   return null;
+}
+function c2On(date){
+  var live = syncOn(date);
+  if(live) return ["sync", live];
+  for(var i=0;i<C2LOG.length;i++){ if(C2LOG[i][0]===date) return ["snap", C2LOG[i]]; }
+  return null;
+}
+function c2Fields(hit){
+  if(hit[0] === "sync"){
+    var w = hit[1];
+    return { line: w.dist.toLocaleString() + " m work  ·  " + w.time + "  ·  " + w.pace + " /500m  ·  r" + w.rate,
+             pace: w.pace, link: w.link || c2Link(w.id) };
+  }
+  var a = hit[1];
+  return { line: a[1].toLocaleString() + " m  ·  " + a[2] + "  ·  " + a[3] + " /500m  ·  r" + a[4] + "  ·  drag " + a[5],
+           pace: a[3], link: null };
 }
 function paceSec(p){ var a=String(p).split(":"); return a.length===2 ? (+a[0])*60 + parseFloat(a[1]) : NaN; }
 function c2Summary(w){
@@ -437,9 +465,9 @@ function meta(n){ return RXMETA[n] || {sets:3,reps:"",rir:"RIR 2",rest:"1:30",ti
 function M(){ return state.maxes; }
 
 var SESSIONS = {
-"2026-09-07": {kind:"erg", title:"Rowfit — Sprint", chip:"erg", ezId:"7500cb11-a70d-4516-88a2-dec23cf8a5b3",
+"2026-09-07": {kind:"erg", title:"Rowfit — Sprint", chip:"erg", ezId:"7500cb11-a70d-4516-88a2-dec23cf8a5b3", ezUrl:"https://app.erg.zone/w/dQDLEacNRRaIot7CPPilsw",
   raw:"Warm-up: 12 minutes of light rowing. After 7 minutes, perform some intense 10-stroke bursts.\n\nIntervals: 200m x 10 rolling starts. Rest 3 minutes between each interval, 38-40 strokes/minute\nIntensity: 95%-100% of 500m PB\n\nCool-down: 10 minutes of easy rowing.",
-  lo:0.95, hi:1.00, rate:"38–40 s/m", prev:["2026-08-10","2000 m of work at 1:44.3, r37 — the same 10×200m shape"],
+  lo:0.95, hi:1.00, rate:"38–40 s/m", prev:{date:"2026-08-10",id:119336705,shape:"8 × 250m off 3:00",pace:"1:44.3",rate:"36–39",why:"nearest sprint set — same rest, slightly longer reps"},
   ez:{title:"W1 Mon — Sprint 10×200m", intervals:"10 × 200m\nRest 3:00\nRate 38–40",
       desc:"Rolling starts. 95–100% of 500m PB."}},
 
@@ -458,9 +486,9 @@ var SESSIONS = {
    {s:"H", n:"Pallof press", rx:"3 × 10/side", tier:3}
   ]},
 
-"2026-09-09": {kind:"erg", title:"Rowfit — VO₂ max", chip:"erg", ezId:"cf643da7-b4dc-4bd9-ba34-7bcda37e82b3",
+"2026-09-09": {kind:"erg", title:"Rowfit — VO₂ max", chip:"erg", ezId:"cf643da7-b4dc-4bd9-ba34-7bcda37e82b3", ezUrl:"https://app.erg.zone/w/z2Q9p7TcS9m6NHvNo36Csw",
   raw:"Warm-up: 12 minutes of light rowing. After 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 1:20 x 10. 1 min rest.\n30-34 strokes/minute\nIntensity: 75-85% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.",
-  lo:0.75, hi:0.85, rate:"30–34 s/m", prev:["2026-08-12","4007 m in 28:00 at 1:59.8, r29 — closest timed-interval session"],
+  lo:0.75, hi:0.85, rate:"30–34 s/m", prev:{date:"2026-06-19",id:117692606,shape:"10 × 1:20 on / 60s off",pace:"1:58.1",rate:"29–31",why:"identical shape — same reps, same rest"},
   ez:{title:"W1 Wed — VO₂ 10×1:20", intervals:"10 × 1:20\nRest 1:00\nRate 30–34",
       desc:"75–85% of 500m PB."}},
 
@@ -479,7 +507,7 @@ var SESSIONS = {
 
 "2026-09-11": {kind:"erg", title:"Rowfit — Threshold", chip:"erg",
   raw:"Warm-up: 10 minutes of light rowing. After 7 minutes, perform a few intense 10-stroke bursts.\n\nIntervals: 8 x 750m, 26-28 strokes/minute.\nRest 2:30 minutes\nIntensity: 65-77% of your 500m personal best.\n\nCool-down: 10 minutes of calm rowing.",
-  lo:0.65, hi:0.77, rate:"26–28 s/m", prev:["2026-08-22","6000 m at 2:06.8, r27 — same total work"],
+  lo:0.65, hi:0.77, rate:"26–28 s/m", prev:{date:"2026-08-22",id:119766605,shape:"4 × 1500m off 3:00",pace:"2:06.8",rate:"27–28",why:"same 6,000 m of work, longer reps"},
   note:"HubFit lists this on Saturday. Moved to Friday because that's how you run it — which is what frees Saturday for Strength C.",
   ez:{title:"W1 Fri — Threshold 8×750m", intervals:"8 × 750m\nRest 2:30\nRate 26–28",
       desc:"65–77% of 500m PB."}},
@@ -656,18 +684,27 @@ function renderSession(){
   host.appendChild(h);
 
   if(c2){
+    var f = c2Fields(c2);
     var done = el("div","c2box");
     done.appendChild(el("span","c2k","Logged to Concept2 — marked complete automatically"));
-    done.appendChild(el("span","c2v", c2Summary(c2)));
-    if(s.prev){
-      var was = null;
-      for(var q=0;q<C2LOG.length;q++){ if(C2LOG[q][0]===s.prev[0]) was = C2LOG[q]; }
-      if(was){
-        var dlt = paceSec(was[3]) - paceSec(c2[3]);
-        var sign = dlt > 0 ? "faster" : "slower";
-        done.appendChild(el("span","c2d",
-          Math.abs(dlt).toFixed(1) + " s/500m " + sign + " than " + s.prev[0] + " (" + was[3] + ")"));
-      }
+    done.appendChild(el("span","c2v", f.line));
+    if(f.pace && s.kind === "erg" && s.lo){
+      var tb = band(s.lo, s.hi), ps = paceSec(f.pace);
+      var fast = paceSec(tb.paceLo), slow = paceSec(tb.paceHi);
+      if(ps >= fast && ps <= slow) done.appendChild(el("span","c2d","Inside the " + tb.paceLo + " \u2013 " + tb.paceHi + " target."));
+      else if(ps < fast) done.appendChild(el("span","c2d",(fast - ps).toFixed(1) + " s/500m faster than the " + tb.paceLo + " \u2013 " + tb.paceHi + " target."));
+      else done.appendChild(el("span","c2d",(ps - slow).toFixed(1) + " s/500m slower than the " + tb.paceLo + " \u2013 " + tb.paceHi + " target."));
+    }
+    if(s.prev && f.pace){
+      var dlt = paceSec(s.prev.pace) - paceSec(f.pace);
+      done.appendChild(el("span","c2d", Math.abs(dlt).toFixed(1) + " s/500m " +
+        (dlt > 0 ? "faster" : "slower") + " than " + s.prev.shape + " on " + s.prev.date + " (" + s.prev.pace + ")"));
+    }
+    if(f.link){
+      var a1 = document.createElement("a");
+      a1.className = "c2link"; a1.href = f.link; a1.target = "_blank"; a1.rel = "noopener";
+      a1.textContent = "View on Concept2 →";
+      done.appendChild(a1);
     }
     host.appendChild(done);
   }
@@ -733,20 +770,21 @@ function renderSession(){
     pbx.appendChild(pcell("Rate", s.rate, ""));
     b.appendChild(pbx);
     if(s.prev && !c2On(d)){
-      var pv = null;
-      for(var q=0;q<C2LOG.length;q++){ if(C2LOG[q][0]===s.prev[0]) pv = C2LOG[q]; }
-      if(pv){
-        var pb2 = el("div","prevbox");
-        pb2.appendChild(el("span","c2k","Last comparable attempt · " + s.prev[0]));
-        pb2.appendChild(el("span","c2v", c2Summary(pv)));
-        pb2.appendChild(el("span","c2d", s.prev[1]));
-        b.appendChild(pb2);
-      }
+      var pb2 = el("div","prevbox");
+      pb2.appendChild(el("span","c2k","Last comparable attempt · " + s.prev.date));
+      pb2.appendChild(el("span","c2v", s.prev.shape));
+      pb2.appendChild(el("span","c2d", s.prev.pace + " /500m  ·  r" + s.prev.rate + "  ·  " + s.prev.why));
+      var a2 = document.createElement("a");
+      a2.className = "c2link"; a2.href = c2Link(s.prev.id);
+      a2.target = "_blank"; a2.rel = "noopener";
+      a2.textContent = "View on Concept2 →";
+      pb2.appendChild(a2);
+      b.appendChild(pb2);
     }
     if(s.ezId){
       var lk = document.createElement("a");
       lk.className = "ezlink"; lk.target = "_blank"; lk.rel = "noopener";
-      lk.href = "https://admin.erg.zone/workouts/" + s.ezId + "/details";
+      lk.href = s.ezUrl || ("https://admin.erg.zone/workouts/" + s.ezId + "/details");
       lk.textContent = "Open in ErgZone →";
       b.appendChild(lk);
     }
@@ -914,7 +952,7 @@ function pushRow(r){
     rir_rpe:r.rir_rpe, notes:r.notes, source:"block-console"},
     function(res){
       if(res && res.ok === false) setStatus("Sheet rejected the row: " + (res.error || "unknown"));
-      else setStatus("Logged to recomp-log.");
+      else setStatus(sheetStatus());
     },
     function(err){ setStatus("Could not reach the sheet (" + err + "). Nothing was logged."); });
 }
@@ -927,7 +965,7 @@ function loadSheet(){
     SHEET_ROWS = rows.slice(1).map(function(r){
       return { date:String(r[ix.date]||"").slice(0,10), exercise:String(r[ix.exercise]||"") };
     });
-    setStatus(SHEET_ROWS.length + " rows in recomp-log · logging writes straight to the sheet");
+    setStatus(sheetStatus());
     render();
   }, function(err){ setStatus("Could not read the sheet (" + err + ")."); });
 }
@@ -939,8 +977,23 @@ function loggedCount(date, exercise){
   return n;
 }
 function queueSave(){}
+function sheetStatus(){
+  return SHEET_ROWS.length + " rows in recomp-log" +
+    (C2SYNC ? "  ·  logbook synced daily at 9am" : "  ·  logbook snapshot");
+}
+/* Concept2 logbook — refreshed every morning at 9am ET by c2sync.yml */
+function loadC2Sync(){
+  fetch("sync/results.json", {cache:"no-store"}).then(function(r){
+    if(!r.ok) throw new Error(r.status);
+    return r.json();
+  }).then(function(j){
+    C2SYNC = (j && j.results) ? j.results : j;
+    render(); setStatus(sheetStatus());
+  }).catch(function(){ /* snapshot already renders */ });
+}
 render();
 loadSheet();
+loadC2Sync();
 </script>
 </body>
 </html>
