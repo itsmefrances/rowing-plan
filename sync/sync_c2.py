@@ -138,6 +138,33 @@ def parse_workout(html):
     return out
 
 
+def shape_of(w):
+    """Canonical work structure, so the site can find a comparable session by
+    shape instead of relying on a hand-written note. d = distance reps,
+    t = timed reps, m = mixed; key is '<unit><size>x<reps>'."""
+    iv = w.get("intervals") or []
+    if not iv:
+        return None
+    n = len(iv)
+    dists = [x["dist"] for x in iv]
+    times = [round(time_secs(x["time"])) for x in iv]
+    if n == 1:
+        return {"shape": f"{dists[0]:,} m continuous", "key": f"d{dists[0]}x1"}
+    # whichever dimension the coach held constant is the one that was programmed:
+    # 10 x 200m has identical distances and drifting times, 10 x 1:20 the reverse
+    dspread = (max(dists) - min(dists)) / max(1.0, sum(dists) / n)
+    tspread = (max(times) - min(times)) / max(1.0, sum(times) / n)
+    if min(dspread, tspread) > 0.08:
+        return {"shape": f"{n} mixed intervals", "key": f"m0x{n}"}
+    if dspread <= tspread:
+        size = round(sum(dists) / n)
+        return {"shape": f"{n} \u00d7 {size}m", "key": f"d{size}x{n}"}
+    size = round(sum(times) / n)
+    mm, ss = divmod(size, 60)
+    label = f"{mm}:{ss:02d}" if mm else f"{ss}s"
+    return {"shape": f"{n} \u00d7 {label}", "key": f"t{size}x{n}"}
+
+
 def work_pace(w):
     """Average pace across work intervals when available (rest excluded)."""
     iv = w.get("intervals") or []
@@ -237,6 +264,27 @@ def main():
         bands.setdefault(date, pace)
     print(f"plan rowing days: {len(bands)}  |  existing results: {len(results)}")
 
+    # self-healing backfill: older entries predate the shape/key fields, and the
+    # site matches comparables on key, so fill any that are missing before syncing
+    backfilled = 0
+    for date in sorted(k for k, v in results.items() if not v.get("key") and v.get("id")):
+        wid = results[date]["id"]
+        try:
+            st, page = fetch(f"{BASE}/{wid}")
+            if st != 200:
+                continue
+            sh = shape_of(parse_workout(page))
+        except Exception as exc:
+            print(f"  backfill {date}: {exc}")
+            continue
+        if sh:
+            results[date]["shape"] = sh["shape"]
+            results[date]["key"] = sh["key"]
+            backfilled += 1
+            print(f"  backfilled {date}: {sh['shape']}  ({sh['key']})")
+    if backfilled:
+        print(f"backfilled shape/key on {backfilled} entries")
+
     status, listing = fetch(BASE)
     print("list page HTTP", status, "bytes", len(listing))
     ids = []
@@ -293,7 +341,11 @@ def main():
         d = datetime.date.fromisoformat(w["date"])
         late = "" if pd == w["date"] else f" (logged {d.strftime('%b %-d')})"
         rate_txt = f" Rate {w['rate']} s/m." if w.get("rate") else ""
-        if n_iv:
+        sh = shape_of(w)
+        if sh:
+            note = (f"{sh['shape']}{late} — avg work pace {wp} /500m vs "
+                    f"{band} target: {vtxt}.{rate_txt}")
+        elif n_iv:
             note = (f"{n_iv} work intervals{late} — avg work pace {wp} /500m vs "
                     f"{band} target: {vtxt}.{rate_txt}")
         else:
@@ -303,6 +355,7 @@ def main():
             "id": w["id"], "link": w["url"], "dist": w["dist"], "time": w["time"] or "",
             "pace": wp or w.get("pace") or "", "rate": w.get("rate") or 0,
             "band": band, "verdict": verdict, "note": note,
+            "shape": (sh or {}).get("shape", ""), "key": (sh or {}).get("key", ""),
         }
         taken.add(w["id"])
         print(f"  + {pd}: id {w['id']}, {w['dist']}m, pace {wp}, verdict {verdict}")
@@ -311,7 +364,7 @@ def main():
     unmatched = [w["id"] for w in workouts if w["id"] not in taken]
     if unmatched:
         print("not matched to any open plan day (warm-ups / extras):", unmatched)
-    if not added:
+    if not added and not backfilled:
         print("Nothing new to sync.")
         return
 
