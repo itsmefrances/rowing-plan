@@ -86,8 +86,8 @@ def payload(p):
         if p.get("offset") is not None:
             d["suggestedPace"] = p["offset"]
             d["suggestedInterval"] = 500
-            d["suggestedOperator"] = "plus"
-            d["suggestedPaceBenchmarkGroup"] = "500m"
+            d["suggestedOperator"] = "pace"
+            d["suggestedPaceBenchmarkGroup"] = "row"
     return {"trackId": TRACK, "title": p["title"], "description": p["description"],
             "workoutType": "row", "status": "published", "hasLeaderboard": True,
             "publishedAt": p["date"], "intervals": ivs}
