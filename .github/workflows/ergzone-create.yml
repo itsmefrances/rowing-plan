@@ -10,7 +10,7 @@ on:
         default: probe
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   create:
@@ -22,4 +22,14 @@ jobs:
       - name: Create workouts
         env:
           ERGZONE_TOKEN: ${{ secrets.ERGZONE_TOKEN }}
-        run: python pipeline/ergzone_create.py --${{ inputs.mode }}
+        run: |
+          set -o pipefail
+          python pipeline/ergzone_create.py --${{ inputs.mode }} 2>&1 | tee pipeline/ergzone_last_run.txt
+      - name: Commit the run log
+        if: always()
+        run: |
+          git config user.name "ergzone-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pipeline/ergzone_last_run.txt || true
+          git diff --cached --quiet || git commit -m "ErgZone run log (${{ inputs.mode }})"
+          git push || true
