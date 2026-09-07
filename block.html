@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Block Console — Week 1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1300,10 +1303,36 @@ function loadC2Sync(){
     render(); setStatus(sheetStatus());
   }).catch(function(){ /* snapshot already renders */ });
 }
+/* Fresh on every open. The three loaders below used to run once at boot, so a tab
+   left open — or the home-screen icon on iOS, which resumes instead of reloading —
+   kept showing the day it was opened on. Re-pull whenever the page becomes visible,
+   and if the calendar day rolled over while it sat in the background, follow the
+   block to the current week and re-mark today. */
+var loadedDay = todayISO(), lastRefresh = 0;
+
+function refreshAll(force){
+  var dayChanged = todayISO() !== loadedDay;
+  /* a quick tab flick shouldn't re-hit the sheet; a new day always should */
+  if(!force && !dayChanged && Date.now() - lastRefresh < 30000) return;
+  lastRefresh = Date.now();
+  if(dayChanged){
+    loadedDay = todayISO();
+    setWeek(activeWeek());
+  }
+  loadBlockPlan();
+  loadSheet();
+  loadC2Sync();
+}
+
+document.addEventListener("visibilitychange", function(){
+  if(document.visibilityState === "visible") refreshAll(false);
+});
+window.addEventListener("pageshow", function(e){
+  if(e.persisted) refreshAll(true);   /* back/forward cache restore — always stale */
+});
+
 setWeek(activeWeek());
-loadBlockPlan();
-loadSheet();
-loadC2Sync();
+refreshAll(true);
 </script>
 </body>
 </html>
