@@ -1,5 +1,37 @@
 track: Rowfit Workouts
 workouts already in track: 14
-plan: 1 total, 1 to create
-  + 2026-09-27  Sprint 10×200m  -> a94d732e-e377-49fc-8610-affbfce6a31a
-created 1 workout(s)
+plan: 33 total, 33 to create
+  + 2026-09-27  VO₂ 8×500m  -> a05bc794-be23-4cac-9438-35f5e8eed4fe
+  + 2026-09-27  Threshold 2×15min  -> 55a34dae-227b-409c-a2e8-611a42ba449a
+  + 2026-10-04  Sprint 5×300m  -> bfb8ff53-7b05-4aae-992a-c25a2ba0373c
+  + 2026-10-04  VO₂ 6×3min  -> 59c80a7f-b72f-43c8-9a74-cf7d5386e865
+  + 2026-10-04  Threshold 7×4min  -> f8091e89-b44c-4ac1-8f4c-05e7019308b0
+  + 2026-10-11  TEST — 400m + 5×100m  -> 327476a1-100b-4bd4-b29c-9d28ef3e5dbe
+  + 2026-10-11  VO₂ 12×1:00  -> 5d7f3d8e-d1ed-4cb5-b58f-371b9c0dac54
+  + 2026-10-11  Threshold 2×15min  -> 11a53417-e29e-4ffd-893f-5720d8e42d9a
+  + 2026-10-18  Sprint 5×200m + 5×150m  -> b7433e5a-3e85-4f9a-8abb-44e20d8a8d4b
+  + 2026-10-18  TEST — 2000m (r26 cap) + 4×250m  -> 24505423-a479-4e89-b02d-5b08e0015072
+  + 2026-10-18  Threshold 8×4min  -> a358ea5a-49a5-4bc1-92e2-8d0ae9d23f7f
+  + 2026-10-25  TEST — 450m + 5×100m  -> bff8d6a5-90da-4f6c-9aad-826e8226298f
+  + 2026-10-25  VO₂ 10×400m  -> a85901ed-e647-4403-ac06-f091636fe3e4
+  + 2026-10-25  Threshold 6×1500m  -> 5025137a-6f38-458d-b82f-a55179d758d4
+  + 2026-11-01  Sprint 12×30s  -> e961a2ed-9421-4b2b-a6b6-7c8dab954f5f
+  + 2026-11-01  VO₂ 1250-1000-750-500  -> 00288481-e82e-4c79-8da4-ce7233f5a945
+  + 2026-11-01  Threshold 8×4min  -> 97434956-1859-4968-9b9e-14384aed651b
+  + 2026-11-08  TEST — 1-Minute max + 5×100m  -> a78b2bde-eb41-43aa-ac1b-d209991dfe12
+  + 2026-11-08  VO₂ 4×4min  -> e031b65c-e4e0-41a4-bad6-cce0060b3479
+  + 2026-11-08  Threshold 8×1000m  -> 7eeed784-6e0d-4189-b6c7-f3e6569175c7
+  + 2026-11-15  Sprint 10×200m  -> 56377f9b-af94-4df4-91cc-dd8b65243e26
+  + 2026-11-15  TEST — 2000m (r28 cap) + 4×250m  -> f986f601-6729-40f6-8aab-86bf4fc69ced
+  + 2026-11-15  Threshold 5000m  -> a976e22a-80f9-414f-b90e-8b436fe4efd5
+  + 2026-11-22  TEST — 500m  -> fa6b2e39-0e6a-4327-ab36-fa069f80c481
+  + 2026-11-22  VO₂ 6×500m  -> dd388c5e-90cf-49bb-987c-ac2abe8f6910
+  + 2026-11-22  Threshold 5×1500m  -> 9428c806-6a52-48b4-b335-3e1950d9da61
+  + 2026-11-29  Sprint 4×250m race starts  -> 0d887c98-d3c3-4fac-8b64-d6589c2df407
+  + 2026-11-29  TEST — 2000m  -> 7f5f4b06-5ace-4ba8-b461-ff79fd842113
+  + 2026-11-29  Threshold 6×1000m  -> 9e0d2bf2-9ecd-4248-b73d-9bee0649e697
+  + 2026-12-06  Sprint 3×250m race starts  -> 271862a7-fe65-4fa8-b674-2e45ed28c036
+  + 2026-12-06  VO₂ 4×500m  -> 56836ffe-dc44-4e9d-9302-d32f5a3ead47
+  + 2026-12-06  RACE — BRIC Virtual 500m  -> 465e6e9e-6635-4a91-905a-9824af3dcbfe
+  + 2026-12-06  RACE — BRIC Virtual 2000m  -> 95dc15ba-51b0-4cdc-b07f-bff0d880538a
+created 33 workout(s)
