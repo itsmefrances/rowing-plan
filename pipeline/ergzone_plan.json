@@ -1,1 +1,738 @@
-[{"date":"2026-09-27","title":"VO₂ 8×500m","description":"Interval Training: 8 x 500m. Rest 2:00. 28-32 s/m. Intensity is set to the middle of the band: your own 500m PB +22.5s/500m. Full Rowfit band is 75–80% of 500m PB.","offset":22.5,"groups":[{"type":"distance","value":500,"count":8,"rest":120,"spm":28,"spmMax":32}]},{"date":"2026-09-27","title":"Threshold 2×15min","description":"Interval Training: 15 min x 2. Rest 5 min. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +31.5s/500m. Full Rowfit band is 62–75% of 500m PB.","offset":31.5,"groups":[{"type":"time","value":900,"count":2,"rest":300,"spm":26,"spmMax":28}]},{"date":"2026-10-04","title":"Sprint 5×300m","description":"Interval Training: 5x300m at 90-95% with 5 minutes rest, 38-40 s/m. Intensity is set to the middle of the band: your own 500m PB +7.5s/500m. Full Rowfit band is 90–95% of 500m PB.","offset":7.5,"groups":[{"type":"distance","value":300,"count":5,"rest":300,"spm":38,"spmMax":40}]},{"date":"2026-10-04","title":"VO₂ 6×3min","description":"Interval training: 6 x 3 min. Rest 3:00. 28-32 s/m. Intensity is set to the middle of the band: your own 500m PB +25.0s/500m. Full Rowfit band is 70–80% of 500m PB.","offset":25.0,"groups":[{"type":"time","value":180,"count":6,"rest":180,"spm":28,"spmMax":32}]},{"date":"2026-10-04","title":"Threshold 7×4min","description":"Intervals: 7 x 4min. 26-28 s/m, rest 3 minutes. Intensity is set to the middle of the band: your own 500m PB +32.5s/500m. Full Rowfit band is 65–70% of 500m PB.","offset":32.5,"groups":[{"type":"time","value":240,"count":7,"rest":180,"spm":26,"spmMax":28}]},{"date":"2026-10-11","title":"TEST — 400m + 5×100m","description":"400m Test from race start. Rest 10 min. Then 5 x 100m, rest 4:00, 42+ s/m, 100+% of 500m PB. Test piece — maximal effort, no capped target.","offset":null,"groups":[{"type":"distance","value":400,"count":1,"rest":600,"notes":"rate max"},{"type":"distance","value":100,"count":5,"rest":240,"spm":42,"notes":"rate 42+ s/m"}]},{"date":"2026-10-11","title":"VO₂ 12×1:00","description":"Interval Training: 12 x 1:00 with 1:00 rest. 30-34 s/m. Intensity is set to the middle of the band: your own 500m PB +22.5s/500m. Full Rowfit band is 75–80% of 500m PB.","offset":22.5,"groups":[{"type":"time","value":60,"count":12,"rest":60,"spm":30,"spmMax":34}]},{"date":"2026-10-11","title":"Threshold 2×15min","description":"Interval Training: 15 min x 2. Rest 5 min. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +31.5s/500m. Full Rowfit band is 62–75% of 500m PB.","offset":31.5,"groups":[{"type":"time","value":900,"count":2,"rest":300,"spm":26,"spmMax":28}]},{"date":"2026-10-18","title":"Sprint 5×200m + 5×150m","description":"200m x 5 at 95%, 40 s/m, 3 min rest. Then 150m x 5 at 100%, 42 s/m, 2 min rest. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.","offset":2.5,"groups":[{"type":"distance","value":200,"count":5,"rest":180,"spm":40},{"type":"distance","value":150,"count":5,"rest":120,"spm":42}]},{"date":"2026-10-18","title":"TEST — 2000m (r26 cap) + 4×250m","description":"2000m Test, max rate 26 s/m. Rest 10 min. Then 4 x 250m at 2k race pace and rate, rest 2 min. Test piece — maximal effort, no capped target.","offset":null,"groups":[{"type":"distance","value":2000,"count":1,"rest":600,"notes":"rate ≤26"},{"type":"distance","value":250,"count":4,"rest":120,"notes":"rate 2k rate"}]},{"date":"2026-10-18","title":"Threshold 8×4min","description":"Interval Training: 8 x 4 minutes. Rest 3 minutes. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.","offset":30.0,"groups":[{"type":"time","value":240,"count":8,"rest":180,"spm":26,"spmMax":28}]},{"date":"2026-10-25","title":"TEST — 450m + 5×100m","description":"450m Test from dead stop. Rest 10 min. Then 5 x 100m maximum effort, rest 3 min. Test piece — maximal effort, no capped target.","offset":null,"groups":[{"type":"distance","value":450,"count":1,"rest":600,"notes":"rate max"},{"type":"distance","value":100,"count":5,"rest":180,"notes":"rate max"}]},{"date":"2026-10-25","title":"VO₂ 10×400m","description":"Interval Training: 400m x 10. Rest 1:30. 28-34 s/m. Intensity is set to the middle of the band: your own 500m PB +25.0s/500m. Full Rowfit band is 70–80% of 500m PB.","offset":25.0,"groups":[{"type":"distance","value":400,"count":10,"rest":90,"spm":28,"spmMax":34}]},{"date":"2026-10-25","title":"Threshold 6×1500m","description":"Intervals: 6 x 1500m. Rest 3 minutes. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.","offset":30.0,"groups":[{"type":"distance","value":1500,"count":6,"rest":180,"spm":26,"spmMax":28}]},{"date":"2026-11-01","title":"Sprint 12×30s","description":"Interval training: 12 x 30 sec. Rest 4:00. 40-44 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.","offset":2.5,"groups":[{"type":"time","value":30,"count":12,"rest":240,"spm":40,"spmMax":44}]},{"date":"2026-11-01","title":"VO₂ 1250-1000-750-500","description":"Interval training: 1250m, 1000m, 750m, 500m. Rest 4 minutes. 30-34 s/m. Intensity is set to the middle of the band: your own 500m PB +24.0s/500m. Full Rowfit band is 72–80% of 500m PB.","offset":24.0,"groups":[{"type":"distance","value":1250,"count":1,"rest":240,"spm":30,"spmMax":34},{"type":"distance","value":1000,"count":1,"rest":240,"spm":30,"spmMax":34},{"type":"distance","value":750,"count":1,"rest":240,"spm":30,"spmMax":34},{"type":"distance","value":500,"count":1,"rest":240,"spm":30,"spmMax":34}]},{"date":"2026-11-01","title":"Threshold 8×4min","description":"Interval Training: 8 x 4 minutes. Rest 3 minutes. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.","offset":30.0,"groups":[{"type":"time","value":240,"count":8,"rest":180,"spm":26,"spmMax":28}]},{"date":"2026-11-08","title":"TEST — 1-Minute max + 5×100m","description":"1 Minute Test from race start. Then 5 x 100m with standing start, rest 3 min, 45+ s/m, 100+% of 500m PB. Test piece — maximal effort, no capped target.","offset":null,"groups":[{"type":"time","value":60,"count":1,"rest":600,"notes":"rate max"},{"type":"distance","value":100,"count":5,"rest":180,"spm":45,"notes":"rate 45+ s/m"}]},{"date":"2026-11-08","title":"VO₂ 4×4min","description":"Interval training: 4 x 4 min. Rest 3:30. 28-32 s/m. Intensity is set to the middle of the band: your own 500m PB +25.0s/500m. Full Rowfit band is 70–80% of 500m PB.","offset":25.0,"groups":[{"type":"time","value":240,"count":4,"rest":210,"spm":28,"spmMax":32}]},{"date":"2026-11-08","title":"Threshold 8×1000m","description":"Interval Training: 8 x 1000 meters. Rest 3:00. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.","offset":30.0,"groups":[{"type":"distance","value":1000,"count":8,"rest":180,"spm":26,"spmMax":28}]},{"date":"2026-11-15","title":"Sprint 10×200m","description":"Power Intervals: 200m x 10. Rest 4 minutes. 40-44 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.","offset":2.5,"groups":[{"type":"distance","value":200,"count":10,"rest":240,"spm":40,"spmMax":44}]},{"date":"2026-11-15","title":"TEST — 2000m (r28 cap) + 4×250m","description":"2000m Test, max rate 28 s/m. Rest 10 min. Then 4 x 250m at 2k race pace and rate, rest 2 min. Test piece — maximal effort, no capped target.","offset":null,"groups":[{"type":"distance","value":2000,"count":1,"rest":600,"notes":"rate ≤28"},{"type":"distance","value":250,"count":4,"rest":120,"notes":"rate 2k rate"}]},{"date":"2026-11-15","title":"Threshold 5000m","description":"Single Distance: 5000m. 26-30 s/m. Intensity is set to the middle of the band: your own 500m PB +31.5s/500m. Full Rowfit band is 62–75% of 500m PB.","offset":31.5,"groups":[{"type":"distance","value":5000,"count":1,"rest":null,"spm":26,"spmMax":30}]},{"date":"2026-11-22","title":"TEST — 500m","description":"500m Test from race signal. Start strong and controlled, settle to race pace, lift the final 150m. Test piece — maximal effort, no capped target.","offset":null,"groups":[{"type":"distance","value":500,"count":1,"rest":null,"notes":"rate max"}]},{"date":"2026-11-22","title":"VO₂ 6×500m","description":"Interval Training: 6 x 500m. Rest 2 minutes. 32-34 s/m. Intensity is set to the middle of the band: your own 500m PB +22.5s/500m. Full Rowfit band is 75–80% of 500m PB.","offset":22.5,"groups":[{"type":"distance","value":500,"count":6,"rest":120,"spm":32,"spmMax":34}]},{"date":"2026-11-22","title":"Threshold 5×1500m","description":"Interval Training: 5 x 1500m at 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.","offset":30.0,"groups":[{"type":"distance","value":1500,"count":5,"rest":180,"spm":26,"spmMax":28}]},{"date":"2026-11-29","title":"Sprint 4×250m race starts","description":"Set up a 250m race on the PM for each piece to practise starting on the signal. 4 x 250m, rest 4:00, 42+ s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.","offset":2.5,"groups":[{"type":"distance","value":250,"count":4,"rest":240,"spm":42,"notes":"rate 42+ s/m"}]},{"date":"2026-11-29","title":"TEST — 2000m","description":"2000m Test. Start strong but controlled, rate 30+, build the final 500m, everything in the last 250m. Test piece — maximal effort, no capped target.","offset":null,"groups":[{"type":"distance","value":2000,"count":1,"rest":null,"spm":30,"notes":"rate 30+ s/m"}]},{"date":"2026-11-29","title":"Threshold 6×1000m","description":"Interval Training: 6 x 1000 meters. Rest 3:00. 28-30 s/m. Intensity is set to the middle of the band: your own 500m PB +27.5s/500m. Full Rowfit band is 70–75% of 500m PB.","offset":27.5,"groups":[{"type":"distance","value":1000,"count":6,"rest":180,"spm":28,"spmMax":30}]},{"date":"2026-12-06","title":"Sprint 3×250m race starts","description":"3 x 250m from the race signal. Rest 4:00. 42+ s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.","offset":2.5,"groups":[{"type":"distance","value":250,"count":3,"rest":240,"spm":42,"notes":"rate 42+ s/m"}]},{"date":"2026-12-06","title":"VO₂ 4×500m","description":"Interval Training: 4 x 500m. Rest 2 minutes. 32-34 s/m. Intensity is set to the middle of the band: your own 500m PB +22.5s/500m. Full Rowfit band is 75–80% of 500m PB.","offset":22.5,"groups":[{"type":"distance","value":500,"count":4,"rest":120,"spm":32,"spmMax":34}]},{"date":"2026-12-06","title":"RACE — BRIC Virtual 500m","description":"BRIC Virtual Race 500m. 15 min warm-up, 2 x 10 strokes at race pace, rest 4-5 min, then race. Record time, pace, avg watts, rate. Test piece — maximal effort, no capped target.","offset":null,"groups":[{"type":"distance","value":500,"count":1,"rest":null,"notes":"rate race"}]},{"date":"2026-12-06","title":"RACE — BRIC Virtual 2000m","description":"BRIC Virtual Race 2000m. 15 min warm-up, 2 x 20 strokes at race pace, rest 4 min, then race. Record time, pace, avg watts, rate. Test piece — maximal effort, no capped target.","offset":null,"groups":[{"type":"distance","value":2000,"count":1,"rest":null,"notes":"rate race"}]}]
+[
+ {
+  "date": "2026-09-07",
+  "title": "Sprint 10×200m",
+  "description": "Intervals: 200m x 10 rolling starts. Rest 3 minutes, 38-40 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
+  "offset": 2.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 200,
+    "count": 10,
+    "rest": 180,
+    "spm": 38,
+    "spmMax": 40
+   }
+  ],
+  "skip": true,
+  "wid": "7500cb11-a70d-4516-88a2-dec23cf8a5b3"
+ },
+ {
+  "date": "2026-09-09",
+  "title": "VO₂ 10×1:20",
+  "description": "Interval Training: 1:20 x 10. 1 min rest. 30-34 s/m. Intensity is set to the middle of the band: your own 500m PB +20.0s/500m. Full Rowfit band is 75–85% of 500m PB.",
+  "offset": 20.0,
+  "groups": [
+   {
+    "type": "time",
+    "value": 80,
+    "count": 10,
+    "rest": 60,
+    "spm": 30,
+    "spmMax": 34
+   }
+  ],
+  "wid": "cf643da7-b4dc-4bd9-ba34-7bcda37e82b3"
+ },
+ {
+  "date": "2026-09-11",
+  "title": "Threshold 8×750m",
+  "description": "Intervals: 8 x 750m, 26-28 s/m. Rest 2:30. Intensity is set to the middle of the band: your own 500m PB +29.0s/500m. Full Rowfit band is 65–77% of 500m PB.",
+  "offset": 29.0,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 750,
+    "count": 8,
+    "rest": 150,
+    "spm": 26,
+    "spmMax": 28
+   }
+  ]
+ },
+ {
+  "date": "2026-09-14",
+  "title": "Sprint 12×150m",
+  "description": "Power Intervals: 150m x 12, 2:30 rest. 38-42 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
+  "offset": 2.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 150,
+    "count": 12,
+    "rest": 150,
+    "spm": 38,
+    "spmMax": 42
+   }
+  ]
+ },
+ {
+  "date": "2026-09-16",
+  "title": "VO₂ 10×1:30",
+  "description": "Interval Training: 1:30 x 10. 1:20 rest. 30-34 s/m. Intensity is set to the middle of the band: your own 500m PB +20.0s/500m. Full Rowfit band is 75–85% of 500m PB.",
+  "offset": 20.0,
+  "groups": [
+   {
+    "type": "time",
+    "value": 90,
+    "count": 10,
+    "rest": 80,
+    "spm": 30,
+    "spmMax": 34
+   }
+  ]
+ },
+ {
+  "date": "2026-09-18",
+  "title": "Threshold 7×4min",
+  "description": "Intervals: 7 x 4min. 26-28 s/m, rest 3 minutes. Intensity is set to the middle of the band: your own 500m PB +32.5s/500m. Full Rowfit band is 65–70% of 500m PB.",
+  "offset": 32.5,
+  "groups": [
+   {
+    "type": "time",
+    "value": 240,
+    "count": 7,
+    "rest": 180,
+    "spm": 26,
+    "spmMax": 28
+   }
+  ]
+ },
+ {
+  "date": "2026-09-21",
+  "title": "Sprint 10×200m",
+  "description": "Power Intervals: 200m x 10. Rest 3 minutes. 38-42 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
+  "offset": 2.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 200,
+    "count": 10,
+    "rest": 180,
+    "spm": 38,
+    "spmMax": 42
+   }
+  ],
+  "wid": "a94d732e-e377-49fc-8610-affbfce6a31a"
+ },
+ {
+  "date": "2026-09-23",
+  "title": "VO₂ 8×500m",
+  "description": "Interval Training: 8 x 500m. Rest 2:00. 28-32 s/m. Intensity is set to the middle of the band: your own 500m PB +22.5s/500m. Full Rowfit band is 75–80% of 500m PB.",
+  "offset": 22.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 500,
+    "count": 8,
+    "rest": 120,
+    "spm": 28,
+    "spmMax": 32
+   }
+  ],
+  "wid": "a05bc794-be23-4cac-9438-35f5e8eed4fe"
+ },
+ {
+  "date": "2026-09-25",
+  "title": "Threshold 2×15min",
+  "description": "Interval Training: 15 min x 2. Rest 5 min. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +31.5s/500m. Full Rowfit band is 62–75% of 500m PB.",
+  "offset": 31.5,
+  "groups": [
+   {
+    "type": "time",
+    "value": 900,
+    "count": 2,
+    "rest": 300,
+    "spm": 26,
+    "spmMax": 28
+   }
+  ],
+  "wid": "55a34dae-227b-409c-a2e8-611a42ba449a"
+ },
+ {
+  "date": "2026-09-28",
+  "title": "Sprint 5×300m",
+  "description": "Interval Training: 5x300m at 90-95% with 5 minutes rest, 38-40 s/m. Intensity is set to the middle of the band: your own 500m PB +7.5s/500m. Full Rowfit band is 90–95% of 500m PB.",
+  "offset": 7.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 300,
+    "count": 5,
+    "rest": 300,
+    "spm": 38,
+    "spmMax": 40
+   }
+  ],
+  "wid": "bfb8ff53-7b05-4aae-992a-c25a2ba0373c"
+ },
+ {
+  "date": "2026-09-30",
+  "title": "VO₂ 6×3min",
+  "description": "Interval training: 6 x 3 min. Rest 3:00. 28-32 s/m. Intensity is set to the middle of the band: your own 500m PB +25.0s/500m. Full Rowfit band is 70–80% of 500m PB.",
+  "offset": 25.0,
+  "groups": [
+   {
+    "type": "time",
+    "value": 180,
+    "count": 6,
+    "rest": 180,
+    "spm": 28,
+    "spmMax": 32
+   }
+  ],
+  "wid": "59c80a7f-b72f-43c8-9a74-cf7d5386e865"
+ },
+ {
+  "date": "2026-10-02",
+  "title": "Threshold 7×4min",
+  "description": "Intervals: 7 x 4min. 26-28 s/m, rest 3 minutes. Intensity is set to the middle of the band: your own 500m PB +32.5s/500m. Full Rowfit band is 65–70% of 500m PB.",
+  "offset": 32.5,
+  "groups": [
+   {
+    "type": "time",
+    "value": 240,
+    "count": 7,
+    "rest": 180,
+    "spm": 26,
+    "spmMax": 28
+   }
+  ],
+  "wid": "f8091e89-b44c-4ac1-8f4c-05e7019308b0"
+ },
+ {
+  "date": "2026-10-05",
+  "title": "TEST — 400m + 5×100m",
+  "description": "400m Test from race start. Rest 10 min. Then 5 x 100m, rest 4:00, 42+ s/m, 100+% of 500m PB. Test piece — maximal effort, no capped target.",
+  "offset": null,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 400,
+    "count": 1,
+    "rest": 600,
+    "notes": "rate max"
+   },
+   {
+    "type": "distance",
+    "value": 100,
+    "count": 5,
+    "rest": 240,
+    "spm": 42,
+    "notes": "rate 42+ s/m"
+   }
+  ],
+  "wid": "327476a1-100b-4bd4-b29c-9d28ef3e5dbe"
+ },
+ {
+  "date": "2026-10-07",
+  "title": "VO₂ 12×1:00",
+  "description": "Interval Training: 12 x 1:00 with 1:00 rest. 30-34 s/m. Intensity is set to the middle of the band: your own 500m PB +22.5s/500m. Full Rowfit band is 75–80% of 500m PB.",
+  "offset": 22.5,
+  "groups": [
+   {
+    "type": "time",
+    "value": 60,
+    "count": 12,
+    "rest": 60,
+    "spm": 30,
+    "spmMax": 34
+   }
+  ],
+  "wid": "5d7f3d8e-d1ed-4cb5-b58f-371b9c0dac54"
+ },
+ {
+  "date": "2026-10-09",
+  "title": "Threshold 2×15min",
+  "description": "Interval Training: 15 min x 2. Rest 5 min. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +31.5s/500m. Full Rowfit band is 62–75% of 500m PB.",
+  "offset": 31.5,
+  "groups": [
+   {
+    "type": "time",
+    "value": 900,
+    "count": 2,
+    "rest": 300,
+    "spm": 26,
+    "spmMax": 28
+   }
+  ],
+  "wid": "11a53417-e29e-4ffd-893f-5720d8e42d9a"
+ },
+ {
+  "date": "2026-10-12",
+  "title": "Sprint 5×200m + 5×150m",
+  "description": "200m x 5 at 95%, 40 s/m, 3 min rest. Then 150m x 5 at 100%, 42 s/m, 2 min rest. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
+  "offset": 2.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 200,
+    "count": 5,
+    "rest": 180,
+    "spm": 40
+   },
+   {
+    "type": "distance",
+    "value": 150,
+    "count": 5,
+    "rest": 120,
+    "spm": 42
+   }
+  ],
+  "wid": "b7433e5a-3e85-4f9a-8abb-44e20d8a8d4b"
+ },
+ {
+  "date": "2026-10-14",
+  "title": "TEST — 2000m (r26 cap) + 4×250m",
+  "description": "2000m Test, max rate 26 s/m. Rest 10 min. Then 4 x 250m at 2k race pace and rate, rest 2 min. Test piece — maximal effort, no capped target.",
+  "offset": null,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 2000,
+    "count": 1,
+    "rest": 600,
+    "notes": "rate ≤26"
+   },
+   {
+    "type": "distance",
+    "value": 250,
+    "count": 4,
+    "rest": 120,
+    "notes": "rate 2k rate"
+   }
+  ],
+  "wid": "24505423-a479-4e89-b02d-5b08e0015072"
+ },
+ {
+  "date": "2026-10-16",
+  "title": "Threshold 8×4min",
+  "description": "Interval Training: 8 x 4 minutes. Rest 3 minutes. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.",
+  "offset": 30.0,
+  "groups": [
+   {
+    "type": "time",
+    "value": 240,
+    "count": 8,
+    "rest": 180,
+    "spm": 26,
+    "spmMax": 28
+   }
+  ],
+  "wid": "a358ea5a-49a5-4bc1-92e2-8d0ae9d23f7f"
+ },
+ {
+  "date": "2026-10-19",
+  "title": "TEST — 450m + 5×100m",
+  "description": "450m Test from dead stop. Rest 10 min. Then 5 x 100m maximum effort, rest 3 min. Test piece — maximal effort, no capped target.",
+  "offset": null,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 450,
+    "count": 1,
+    "rest": 600,
+    "notes": "rate max"
+   },
+   {
+    "type": "distance",
+    "value": 100,
+    "count": 5,
+    "rest": 180,
+    "notes": "rate max"
+   }
+  ],
+  "wid": "bff8d6a5-90da-4f6c-9aad-826e8226298f"
+ },
+ {
+  "date": "2026-10-21",
+  "title": "VO₂ 10×400m",
+  "description": "Interval Training: 400m x 10. Rest 1:30. 28-34 s/m. Intensity is set to the middle of the band: your own 500m PB +25.0s/500m. Full Rowfit band is 70–80% of 500m PB.",
+  "offset": 25.0,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 400,
+    "count": 10,
+    "rest": 90,
+    "spm": 28,
+    "spmMax": 34
+   }
+  ],
+  "wid": "a85901ed-e647-4403-ac06-f091636fe3e4"
+ },
+ {
+  "date": "2026-10-23",
+  "title": "Threshold 6×1500m",
+  "description": "Intervals: 6 x 1500m. Rest 3 minutes. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.",
+  "offset": 30.0,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 1500,
+    "count": 6,
+    "rest": 180,
+    "spm": 26,
+    "spmMax": 28
+   }
+  ],
+  "wid": "5025137a-6f38-458d-b82f-a55179d758d4"
+ },
+ {
+  "date": "2026-10-26",
+  "title": "Sprint 12×30s",
+  "description": "Interval training: 12 x 30 sec. Rest 4:00. 40-44 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
+  "offset": 2.5,
+  "groups": [
+   {
+    "type": "time",
+    "value": 30,
+    "count": 12,
+    "rest": 240,
+    "spm": 40,
+    "spmMax": 44
+   }
+  ],
+  "wid": "e961a2ed-9421-4b2b-a6b6-7c8dab954f5f"
+ },
+ {
+  "date": "2026-10-28",
+  "title": "VO₂ 1250-1000-750-500",
+  "description": "Interval training: 1250m, 1000m, 750m, 500m. Rest 4 minutes. 30-34 s/m. Intensity is set to the middle of the band: your own 500m PB +24.0s/500m. Full Rowfit band is 72–80% of 500m PB.",
+  "offset": 24.0,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 1250,
+    "count": 1,
+    "rest": 240,
+    "spm": 30,
+    "spmMax": 34
+   },
+   {
+    "type": "distance",
+    "value": 1000,
+    "count": 1,
+    "rest": 240,
+    "spm": 30,
+    "spmMax": 34
+   },
+   {
+    "type": "distance",
+    "value": 750,
+    "count": 1,
+    "rest": 240,
+    "spm": 30,
+    "spmMax": 34
+   },
+   {
+    "type": "distance",
+    "value": 500,
+    "count": 1,
+    "rest": 240,
+    "spm": 30,
+    "spmMax": 34
+   }
+  ],
+  "wid": "00288481-e82e-4c79-8da4-ce7233f5a945"
+ },
+ {
+  "date": "2026-10-30",
+  "title": "Threshold 8×4min",
+  "description": "Interval Training: 8 x 4 minutes. Rest 3 minutes. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.",
+  "offset": 30.0,
+  "groups": [
+   {
+    "type": "time",
+    "value": 240,
+    "count": 8,
+    "rest": 180,
+    "spm": 26,
+    "spmMax": 28
+   }
+  ],
+  "wid": "97434956-1859-4968-9b9e-14384aed651b"
+ },
+ {
+  "date": "2026-11-02",
+  "title": "TEST — 1-Minute max + 5×100m",
+  "description": "1 Minute Test from race start. Then 5 x 100m with standing start, rest 3 min, 45+ s/m, 100+% of 500m PB. Test piece — maximal effort, no capped target.",
+  "offset": null,
+  "groups": [
+   {
+    "type": "time",
+    "value": 60,
+    "count": 1,
+    "rest": 600,
+    "notes": "rate max"
+   },
+   {
+    "type": "distance",
+    "value": 100,
+    "count": 5,
+    "rest": 180,
+    "spm": 45,
+    "notes": "rate 45+ s/m"
+   }
+  ],
+  "wid": "a78b2bde-eb41-43aa-ac1b-d209991dfe12"
+ },
+ {
+  "date": "2026-11-04",
+  "title": "VO₂ 4×4min",
+  "description": "Interval training: 4 x 4 min. Rest 3:30. 28-32 s/m. Intensity is set to the middle of the band: your own 500m PB +25.0s/500m. Full Rowfit band is 70–80% of 500m PB.",
+  "offset": 25.0,
+  "groups": [
+   {
+    "type": "time",
+    "value": 240,
+    "count": 4,
+    "rest": 210,
+    "spm": 28,
+    "spmMax": 32
+   }
+  ],
+  "wid": "e031b65c-e4e0-41a4-bad6-cce0060b3479"
+ },
+ {
+  "date": "2026-11-06",
+  "title": "Threshold 8×1000m",
+  "description": "Interval Training: 8 x 1000 meters. Rest 3:00. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.",
+  "offset": 30.0,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 1000,
+    "count": 8,
+    "rest": 180,
+    "spm": 26,
+    "spmMax": 28
+   }
+  ],
+  "wid": "7eeed784-6e0d-4189-b6c7-f3e6569175c7"
+ },
+ {
+  "date": "2026-11-09",
+  "title": "Sprint 10×200m",
+  "description": "Power Intervals: 200m x 10. Rest 4 minutes. 40-44 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
+  "offset": 2.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 200,
+    "count": 10,
+    "rest": 240,
+    "spm": 40,
+    "spmMax": 44
+   }
+  ],
+  "wid": "56377f9b-af94-4df4-91cc-dd8b65243e26"
+ },
+ {
+  "date": "2026-11-11",
+  "title": "TEST — 2000m (r28 cap) + 4×250m",
+  "description": "2000m Test, max rate 28 s/m. Rest 10 min. Then 4 x 250m at 2k race pace and rate, rest 2 min. Test piece — maximal effort, no capped target.",
+  "offset": null,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 2000,
+    "count": 1,
+    "rest": 600,
+    "notes": "rate ≤28"
+   },
+   {
+    "type": "distance",
+    "value": 250,
+    "count": 4,
+    "rest": 120,
+    "notes": "rate 2k rate"
+   }
+  ],
+  "wid": "f986f601-6729-40f6-8aab-86bf4fc69ced"
+ },
+ {
+  "date": "2026-11-13",
+  "title": "Threshold 5000m",
+  "description": "Single Distance: 5000m. 26-30 s/m. Intensity is set to the middle of the band: your own 500m PB +31.5s/500m. Full Rowfit band is 62–75% of 500m PB.",
+  "offset": 31.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 5000,
+    "count": 1,
+    "rest": null,
+    "spm": 26,
+    "spmMax": 30
+   }
+  ],
+  "wid": "a976e22a-80f9-414f-b90e-8b436fe4efd5"
+ },
+ {
+  "date": "2026-11-16",
+  "title": "TEST — 500m",
+  "description": "500m Test from race signal. Start strong and controlled, settle to race pace, lift the final 150m. Test piece — maximal effort, no capped target.",
+  "offset": null,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 500,
+    "count": 1,
+    "rest": null,
+    "notes": "rate max"
+   }
+  ],
+  "wid": "fa6b2e39-0e6a-4327-ab36-fa069f80c481"
+ },
+ {
+  "date": "2026-11-18",
+  "title": "VO₂ 6×500m",
+  "description": "Interval Training: 6 x 500m. Rest 2 minutes. 32-34 s/m. Intensity is set to the middle of the band: your own 500m PB +22.5s/500m. Full Rowfit band is 75–80% of 500m PB.",
+  "offset": 22.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 500,
+    "count": 6,
+    "rest": 120,
+    "spm": 32,
+    "spmMax": 34
+   }
+  ],
+  "wid": "dd388c5e-90cf-49bb-987c-ac2abe8f6910"
+ },
+ {
+  "date": "2026-11-20",
+  "title": "Threshold 5×1500m",
+  "description": "Interval Training: 5 x 1500m at 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.",
+  "offset": 30.0,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 1500,
+    "count": 5,
+    "rest": 180,
+    "spm": 26,
+    "spmMax": 28
+   }
+  ],
+  "wid": "9428c806-6a52-48b4-b335-3e1950d9da61"
+ },
+ {
+  "date": "2026-11-23",
+  "title": "Sprint 4×250m race starts",
+  "description": "Set up a 250m race on the PM for each piece to practise starting on the signal. 4 x 250m, rest 4:00, 42+ s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
+  "offset": 2.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 250,
+    "count": 4,
+    "rest": 240,
+    "spm": 42,
+    "notes": "rate 42+ s/m"
+   }
+  ],
+  "wid": "0d887c98-d3c3-4fac-8b64-d6589c2df407"
+ },
+ {
+  "date": "2026-11-25",
+  "title": "TEST — 2000m",
+  "description": "2000m Test. Start strong but controlled, rate 30+, build the final 500m, everything in the last 250m. Test piece — maximal effort, no capped target.",
+  "offset": null,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 2000,
+    "count": 1,
+    "rest": null,
+    "spm": 30,
+    "notes": "rate 30+ s/m"
+   }
+  ],
+  "wid": "7f5f4b06-5ace-4ba8-b461-ff79fd842113"
+ },
+ {
+  "date": "2026-11-27",
+  "title": "Threshold 6×1000m",
+  "description": "Interval Training: 6 x 1000 meters. Rest 3:00. 28-30 s/m. Intensity is set to the middle of the band: your own 500m PB +27.5s/500m. Full Rowfit band is 70–75% of 500m PB.",
+  "offset": 27.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 1000,
+    "count": 6,
+    "rest": 180,
+    "spm": 28,
+    "spmMax": 30
+   }
+  ],
+  "wid": "9e0d2bf2-9ecd-4248-b73d-9bee0649e697"
+ },
+ {
+  "date": "2026-11-30",
+  "title": "Sprint 3×250m race starts",
+  "description": "3 x 250m from the race signal. Rest 4:00. 42+ s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
+  "offset": 2.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 250,
+    "count": 3,
+    "rest": 240,
+    "spm": 42,
+    "notes": "rate 42+ s/m"
+   }
+  ],
+  "wid": "271862a7-fe65-4fa8-b674-2e45ed28c036"
+ },
+ {
+  "date": "2026-12-02",
+  "title": "VO₂ 4×500m",
+  "description": "Interval Training: 4 x 500m. Rest 2 minutes. 32-34 s/m. Intensity is set to the middle of the band: your own 500m PB +22.5s/500m. Full Rowfit band is 75–80% of 500m PB.",
+  "offset": 22.5,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 500,
+    "count": 4,
+    "rest": 120,
+    "spm": 32,
+    "spmMax": 34
+   }
+  ],
+  "wid": "56836ffe-dc44-4e9d-9302-d32f5a3ead47"
+ },
+ {
+  "date": "2026-12-05",
+  "title": "RACE — BRIC Virtual 500m",
+  "description": "BRIC Virtual Race 500m. 15 min warm-up, 2 x 10 strokes at race pace, rest 4-5 min, then race. Record time, pace, avg watts, rate. Test piece — maximal effort, no capped target.",
+  "offset": null,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 500,
+    "count": 1,
+    "rest": null,
+    "notes": "rate race"
+   }
+  ],
+  "wid": "465e6e9e-6635-4a91-905a-9824af3dcbfe"
+ },
+ {
+  "date": "2026-12-06",
+  "title": "RACE — BRIC Virtual 2000m",
+  "description": "BRIC Virtual Race 2000m. 15 min warm-up, 2 x 20 strokes at race pace, rest 4 min, then race. Record time, pace, avg watts, rate. Test piece — maximal effort, no capped target.",
+  "offset": null,
+  "groups": [
+   {
+    "type": "distance",
+    "value": 2000,
+    "count": 1,
+    "rest": null,
+    "notes": "rate race"
+   }
+  ],
+  "wid": "95dc15ba-51b0-4cdc-b07f-bff0d880538a"
+ }
+]
