@@ -209,6 +209,31 @@ svg.spark{width:100%;height:38px;display:block;}
 .note{border-left:3px solid var(--rule-strong);padding:2px 0 2px 13px;color:var(--ink-2);font-size:13px;}
 .note.w{border-left-color:var(--test);}
 .status{font-family:var(--f-m);font-size:11px;color:var(--muted);}
+.weeknav{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.weeknav button{font-family:var(--f-d);font-size:13px;font-weight:600;line-height:1;
+  background:var(--surface);color:var(--ink);border:1px solid var(--rule-strong);
+  padding:7px 10px;cursor:pointer;min-width:34px;}
+.weeknav button:disabled{opacity:.35;cursor:default;}
+.weeknav button:focus-visible{outline:2px solid var(--erg);outline-offset:1px;}
+.weeknav select{font-family:var(--f-m);font-size:13px;padding:6px 8px;
+  background:var(--surface);color:var(--ink);border:1px solid var(--rule-strong);border-radius:0;
+  max-width:min(62vw,260px);}
+.weeknav .wnow{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:7px 9px;}
+.arow{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:9px 0;border-bottom:1px solid var(--rule);}
+.arow:last-child{border-bottom:0;}
+.arow .al{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.arow .aw{font-size:13.5px;font-weight:600;}
+.arow .as{font-family:var(--f-m);font-size:11.5px;color:var(--muted);}
+.arow button{font-family:var(--f-d);font-size:12px;font-weight:600;color:var(--erg);
+  background:none;border:1px solid var(--erg);padding:5px 9px;cursor:pointer;white-space:nowrap;}
+.arow button:hover{background:var(--erg-soft);}
+.nopub{padding:13px;display:flex;flex-direction:column;gap:6px;}
+.prog{display:flex;flex-direction:column;gap:2px;padding:8px 10px;
+  background:var(--surface-2);border-left:3px solid var(--lift);}
+.prog .pk{font-size:9.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
+.prog .pv{font-family:var(--f-m);font-size:12.5px;color:var(--ink);}
+.prog .pd{font-family:var(--f-m);font-size:12px;color:var(--lift-ink);}
 .maxlink{font-family:var(--f-d);font-size:12.5px;font-weight:600;color:var(--erg);text-decoration:none;
   border:1px solid var(--erg);padding:5px 9px;white-space:nowrap;}
 .maxlink:hover{background:var(--erg-soft);}
@@ -272,8 +297,14 @@ svg.spark{width:100%;height:38px;display:block;}
 <header>
   <div class="hrow">
     <div class="stack-s">
-      <span class="eyebrow">Sample · Week 1 of 13 · Sep 7 – 13</span>
+      <span class="eyebrow" id="wEyebrow">Week 1 of 13</span>
       <h1>Block Console</h1>
+      <div class="weeknav">
+        <button type="button" id="wPrev" aria-label="Previous week">&lsaquo;</button>
+        <select id="wSel" aria-label="Choose a week"></select>
+        <button type="button" id="wNext" aria-label="Next week">&rsaquo;</button>
+        <button type="button" id="wNow" class="wnow">This week</button>
+      </div>
     </div>
     <div class="stack-s" style="align-items:flex-end;">
       <a class="maxlink" id="maxesLink" href="progression.html" target="_blank" rel="noopener">Maxes &amp; Progression &rarr;</a>
@@ -289,9 +320,16 @@ svg.spark{width:100%;height:38px;display:block;}
   </div>
 </header>
 
-<div class="days" id="days" role="tablist" aria-label="Days of week 1"></div>
+<div class="days" id="days" role="tablist" aria-label="Days of the selected week"></div>
 
 <div class="panel" id="sessionPanel"></div>
+
+<section class="panel" id="archivePanel" hidden>
+  <button class="panel-h" type="button" data-toggle="archiveBody" aria-expanded="false">
+    <span>Archive &mdash; weeks already run</span><span class="caret" aria-hidden="true">+</span>
+  </button>
+  <div class="panel-b" id="archiveBody" hidden></div>
+</section>
 
 
 
@@ -304,14 +342,36 @@ svg.spark{width:100%;height:38px;display:block;}
 
 /* ---------- constants ---------- */
 var WEEK = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-var DATES = ["2026-09-07","2026-09-08","2026-09-09","2026-09-10","2026-09-11","2026-09-12","2026-09-13"];
-var SUNDAY = "2026-09-13";
+var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var BLOCK_W1 = "2026-09-07";   /* Monday of week 1 */
+var BLOCK_N  = 13;
+function ymd(dt){ return dt.getFullYear() + "-" + String(dt.getMonth()+1).padStart(2,"0") + "-" + String(dt.getDate()).padStart(2,"0"); }
+function addDays(iso, n){ var d = new Date(iso + "T12:00:00"); d.setDate(d.getDate() + n); return ymd(d); }
+function todayISO(){ return ymd(new Date()); }
+function weekStart(n){ return addDays(BLOCK_W1, (n-1)*7); }
+function datesFor(n){ var s = weekStart(n), a = []; for(var i=0;i<7;i++) a.push(addDays(s,i)); return a; }
+function fmtDay(iso){ return MON[Number(iso.slice(5,7))-1] + " " + Number(iso.slice(8)); }
+function weekLabel(n){ return fmtDay(weekStart(n)) + " \u2013 " + fmtDay(addDays(weekStart(n),6)); }
+function weekOf(iso){
+  var diff = Math.round((new Date(iso+"T12:00:00") - new Date(BLOCK_W1+"T12:00:00")) / 86400000);
+  return Math.floor(diff / 7) + 1;
+}
+/* the block week runs Mon-Sun. Saturday night it closes: from Sunday morning
+   the console opens on the week ahead, and the week just run moves to Archive. */
+function activeWeek(){
+  var t = todayISO(), w = weekOf(t);
+  if(new Date(t + "T12:00:00").getDay() === 0) w += 1;
+  return Math.min(BLOCK_N, Math.max(1, w));
+}
+var DATES = datesFor(activeWeek());
+var SUNDAY = DATES[6];
 
 var state = {
   conv: "pace",
   pb: 99.9,          /* 500m PB in seconds — 1:39.9 */
   maxes: {squat:230, front:180, bench:135, ohp:95, dl:275, pull:50, bw:150},
   baseline: {cmj:0, broad:0, peak7:540},
+  week: activeWeek(),
   sel: 0,
   log: {},
   rows: [],          /* sheet-shaped rows awaiting sync */
@@ -354,11 +414,19 @@ function el(tag, cls, txt){
   if(txt != null) e.textContent = txt;
   return e;
 }
-function todayIdx(){
-  var t = new Date();
-  var iso = t.getFullYear() + "-" + String(t.getMonth()+1).padStart(2,"0") + "-" + String(t.getDate()).padStart(2,"0");
-  var i = DATES.indexOf(iso);
-  return i < 0 ? 0 : i;
+function todayIdx(){ return DATES.indexOf(todayISO()); }
+function setWeek(n){
+  state.week = Math.min(BLOCK_N, Math.max(1, n));
+  DATES = datesFor(state.week);
+  SUNDAY = DATES[6];
+  var i = DATES.indexOf(todayISO());
+  state.sel = i < 0 ? 0 : i;
+  render();
+}
+function weekHasPlan(n){
+  var ds = datesFor(n);
+  for(var i=0;i<7;i++){ if(SESSIONS[ds[i]]) return true; }
+  return false;
 }
 function logFor(d){
   if(!state.log[d]) state.log[d] = {done:false, cmj:["","",""], entries:{}};
@@ -413,6 +481,36 @@ function c2On(date){
   for(var i=0;i<C2LOG.length;i++){ if(C2LOG[i][0]===date) return ["snap", C2LOG[i]]; }
   return null;
 }
+/* the comparable is found in the live logbook every time the page loads, so a
+   session repeated in week 7 is measured against week 1, not a baked snapshot */
+function keyParts(k){
+  var m = /^([dt])(\d+)x(\d+)$/.exec(String(k || ""));
+  return m ? {u:m[1], size:+m[2], reps:+m[3]} : null;
+}
+function comparableFor(date, s){
+  if(!C2SYNC || !s || !s.key) return null;
+  var want = keyParts(s.key);
+  if(!want) return null;
+  var best = null, bestScore = 0, bestDate = "";
+  Object.keys(C2SYNC).forEach(function(dt){
+    if(dt.charAt(0) !== "2" || dt >= date) return;
+    var w = C2SYNC[dt];
+    if(!w || !w.key || !w.pace) return;
+    var got = keyParts(w.key);
+    if(!got || got.u !== want.u) return;
+    var sc;
+    if(got.size === want.size && got.reps === want.reps) sc = 100;
+    else {
+      var vw = got.size * got.reps, vt = want.size * want.reps;
+      sc = 40 + 30 * (Math.min(vw,vt)/Math.max(vw,vt)) + 20 * (Math.min(got.size,want.size)/Math.max(got.size,want.size));
+    }
+    if(sc > bestScore || (sc === bestScore && dt > bestDate)){
+      bestScore = sc; bestDate = dt;
+      best = {date:dt, w:w, exact: sc >= 100};
+    }
+  });
+  return best;
+}
 function c2Fields(hit){
   if(hit[0] === "sync"){
     var w = hit[1];
@@ -461,13 +559,75 @@ var RXMETA = {
 };
 function meta(n){ return RXMETA[n] || {sets:3,reps:"",rir:"RIR 2",rest:"1:30",tier:3}; }
 
+/* ---------- double progression, read back out of recomp-log ----------
+   Hit every prescribed rep at RIR 2 or easier and the load steps up: +5 lb
+   upper, +10 lb lower. Reps there but heavy, or reps missed, and it holds.
+   Whatever you actually lifted becomes the base, so beating the sheet once
+   carries forward for the rest of the block. Tier 3 accessories stay put. */
+var UPPER_LIFTS = {"Bench":1,"Heavy bench single":1,"OHP":1,"DB shoulder press":1,
+  "Weighted pull-up":1,"Incline DB press":1,"Chest-supported row":1,
+  "Lat pulldown, neutral grip":1,"Ring row, feet elevated":1};
+function stepFor(n){ return UPPER_LIFTS[n] ? 5 : 10; }
+function firstNum(v){ var m = /(\d+(?:\.\d+)?)/.exec(String(v == null ? "" : v)); return m ? parseFloat(m[1]) : 0; }
+function rirNum(v){ var m = /(-?\d+)/.exec(String(v || "")); return m ? parseInt(m[1],10) : null; }
+function lastEffort(name, before){
+  var got = [];
+  for(var i=0;i<SHEET_ROWS.length;i++){
+    var r = SHEET_ROWS[i];
+    if(r.exercise === name && r.date && r.date < before && r.weight > 0) got.push(r);
+  }
+  if(!got.length) return null;
+  var last = got[0].date;
+  got.forEach(function(r){ if(r.date > last) last = r.date; });
+  var sets = got.filter(function(r){ return r.date === last; })
+                .sort(function(a,b){ return (a.set_num||0) - (b.set_num||0); });
+  return {date:last, sets:sets};
+}
+function progress(name, prescribed, before){
+  var m = meta(name);
+  if(m.tier === 3) return null;
+  var le = lastEffort(name, before);
+  if(!le) return null;
+  var top = typeof m.reps === "number" ? m.reps : null;
+  var heaviest = 0, allHit = !!top, easy = true, rirTxt = "";
+  le.sets.forEach(function(z){
+    if(z.weight > heaviest) heaviest = z.weight;
+    if(top && z.reps < top) allHit = false;
+    var rv = rirNum(z.rir);
+    if(rv !== null && rv < 2) easy = false;
+    if(!rirTxt && z.rir) rirTxt = z.rir;
+  });
+  var line = le.sets.map(function(z){ return z.weight + " \u00d7 " + z.reps; }).join("   ") +
+             (rirTxt ? "   \u00b7   " + rirTxt : "");
+  var base = Math.max(heaviest, prescribed || 0), next = base, verdict;
+  if(allHit && easy){
+    next = base + stepFor(name);
+    verdict = "Prescribed " + prescribed + " lb \u2192 try " + next + " lb  \u00b7  every set at " + top + " reps, " + (rirTxt || "RIR 2+");
+  } else if(allHit){
+    verdict = "Hold " + base + " lb  \u00b7  reps were there but it was heavy";
+  } else if(top){
+    next = prescribed || base;
+    verdict = "Hold " + next + " lb  \u00b7  missed a rep target last time";
+  } else {
+    verdict = heaviest > (prescribed || 0)
+      ? "Prescribed " + prescribed + " lb  \u00b7  you were at " + heaviest + " lb"
+      : "Prescribed " + prescribed + " lb";
+  }
+  return {date:le.date, line:line, verdict:verdict, next:next};
+}
+function suggestFor(x, d){
+  var base = x.load ? x.load() : "";
+  var pg = progress(x.n, firstNum(base), d);
+  return pg && pg.next ? pg.next : base;
+}
+
 /* ---------- the week ---------- */
 function M(){ return state.maxes; }
 
 var SESSIONS = {
 "2026-09-07": {kind:"erg", title:"Rowfit — Sprint", chip:"erg", ezId:"7500cb11-a70d-4516-88a2-dec23cf8a5b3", ezUrl:"https://app.erg.zone/w/dQDLEacNRRaIot7CPPilsw",
   raw:"Warm-up: 12 minutes of light rowing. After 7 minutes, perform some intense 10-stroke bursts.\n\nIntervals: 200m x 10 rolling starts. Rest 3 minutes between each interval, 38-40 strokes/minute\nIntensity: 95%-100% of 500m PB\n\nCool-down: 10 minutes of easy rowing.",
-  lo:0.95, hi:1.00, rate:"38–40 s/m", prev:{date:"2026-08-10",id:119336705,shape:"8 × 250m off 3:00",pace:"1:44.3",rate:"36–39",why:"nearest sprint set — same rest, slightly longer reps"},
+  key:"d200x10", lo:0.95, hi:1.00, rate:"38–40 s/m", prev:{date:"2026-08-10",id:119336705,shape:"8 × 250m off 3:00",pace:"1:44.3",rate:"36–39",why:"nearest sprint set — same rest, slightly longer reps"},
   ez:{title:"W1 Mon — Sprint 10×200m", intervals:"10 × 200m\nRest 3:00\nRate 38–40",
       desc:"Rolling starts. 95–100% of 500m PB."}},
 
@@ -488,7 +648,7 @@ var SESSIONS = {
 
 "2026-09-09": {kind:"erg", title:"Rowfit — VO₂ max", chip:"erg", ezId:"cf643da7-b4dc-4bd9-ba34-7bcda37e82b3", ezUrl:"https://app.erg.zone/w/z2Q9p7TcS9m6NHvNo36Csw",
   raw:"Warm-up: 12 minutes of light rowing. After 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 1:20 x 10. 1 min rest.\n30-34 strokes/minute\nIntensity: 75-85% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.",
-  lo:0.75, hi:0.85, rate:"30–34 s/m", prev:{date:"2026-06-19",id:117692606,shape:"10 × 1:20 on / 60s off",pace:"1:58.1",rate:"29–31",why:"identical shape — same reps, same rest"},
+  key:"t80x10", lo:0.75, hi:0.85, rate:"30–34 s/m", prev:{date:"2026-06-19",id:117692606,shape:"10 × 1:20 on / 60s off",pace:"1:58.1",rate:"29–31",why:"identical shape — same reps, same rest"},
   ez:{title:"W1 Wed — VO₂ 10×1:20", intervals:"10 × 1:20\nRest 1:00\nRate 30–34",
       desc:"75–85% of 500m PB."}},
 
@@ -507,7 +667,7 @@ var SESSIONS = {
 
 "2026-09-11": {kind:"erg", title:"Rowfit — Threshold", chip:"erg",
   raw:"Warm-up: 10 minutes of light rowing. After 7 minutes, perform a few intense 10-stroke bursts.\n\nIntervals: 8 x 750m, 26-28 strokes/minute.\nRest 2:30 minutes\nIntensity: 65-77% of your 500m personal best.\n\nCool-down: 10 minutes of calm rowing.",
-  lo:0.65, hi:0.77, rate:"26–28 s/m", prev:{date:"2026-08-22",id:119766605,shape:"4 × 1500m off 3:00",pace:"2:06.8",rate:"27–28",why:"same 6,000 m of work, longer reps"},
+  key:"d750x8", lo:0.65, hi:0.77, rate:"26–28 s/m", prev:{date:"2026-08-22",id:119766605,shape:"4 × 1500m off 3:00",pace:"2:06.8",rate:"27–28",why:"same 6,000 m of work, longer reps"},
   note:"HubFit lists this on Saturday. Moved to Friday because that's how you run it — which is what frees Saturday for Strength C.",
   ez:{title:"W1 Fri — Threshold 8×750m", intervals:"8 × 750m\nRest 2:30\nRate 26–28",
       desc:"65–77% of 500m PB."}},
@@ -566,7 +726,7 @@ function openLog(d, x, m, startAt){
       var g = el("div","setgrid");
       g.appendChild(el("span","sn", "Set " + (k+1)));
       var f = {};
-      [["reps", m.reps],["weight", x.load ? x.load() : ""],["rir", m.rir]].forEach(function(fd){
+      [["reps", m.reps],["weight", suggestFor(x, d)],["rir", m.rir]].forEach(function(fd){
         var inp = document.createElement("input");
         inp.type = "text";
         inp.value = fd[1] == null ? "" : String(fd[1]);
@@ -649,7 +809,7 @@ function renderDays(){
   host.textContent = "";
   var ti = todayIdx();
   DATES.forEach(function(d, i){
-    var s = SESSIONS[d];
+    var s = SESSIONS[d] || {kind:"none"};
     var b = el("button","dbtn");
     b.type = "button"; b.setAttribute("role","tab");
     b.setAttribute("aria-selected", i === state.sel ? "true" : "false");
@@ -668,6 +828,8 @@ function renderSession(){
   var host = document.getElementById("sessionPanel");
   host.textContent = "";
   var d = DATES[state.sel], s = SESSIONS[d], lg = logFor(d);
+  var pub = !!s;
+  if(!pub) s = {kind:"none", title:"Not published yet", chip:null};
 
   var c2 = c2On(d);
   if(c2 && !lg.done){ lg.done = true; queueSave(); }
@@ -756,6 +918,12 @@ function renderSession(){
     host.appendChild(nb);
   }
 
+  if(!pub){
+    var np = el("div","nopub");
+    np.appendChild(el("p","note","Week " + state.week + " hasn't been written yet. Anything you row on this date still appears above once it reaches your Concept2 logbook."));
+    host.appendChild(np);
+  }
+
   if(s.kind === "erg"){
     var b = el("div"); b.style.padding = "13px";
     b.appendChild(el("pre","erg-txt", s.raw));
@@ -770,12 +938,23 @@ function renderSession(){
     pbx.appendChild(pcell("Rate", s.rate, ""));
     b.appendChild(pbx);
     if(s.prev && !c2On(d)){
+      var cmp = comparableFor(d, s);
       var pb2 = el("div","prevbox");
-      pb2.appendChild(el("span","c2k","Last comparable attempt · " + s.prev.date));
-      pb2.appendChild(el("span","c2v", s.prev.shape));
-      pb2.appendChild(el("span","c2d", s.prev.pace + " /500m  ·  r" + s.prev.rate + "  ·  " + s.prev.why));
+      var pDate, pShape, pPace, pRate, pWhy, pLink;
+      if(cmp){
+        pDate = cmp.date; pShape = cmp.w.shape || (cmp.w.dist + " m");
+        pPace = cmp.w.pace; pRate = cmp.w.rate;
+        pWhy = cmp.exact ? "same shape, straight from your logbook" : "nearest match by work volume";
+        pLink = cmp.w.link || c2Link(cmp.w.id);
+      } else {
+        pDate = s.prev.date; pShape = s.prev.shape; pPace = s.prev.pace;
+        pRate = s.prev.rate; pWhy = s.prev.why; pLink = c2Link(s.prev.id);
+      }
+      pb2.appendChild(el("span","c2k","Last comparable attempt · " + pDate));
+      pb2.appendChild(el("span","c2v", pShape));
+      pb2.appendChild(el("span","c2d", pPace + " /500m  ·  r" + pRate + "  ·  " + pWhy));
       var a2 = document.createElement("a");
-      a2.className = "c2link"; a2.href = c2Link(s.prev.id);
+      a2.className = "c2link"; a2.href = pLink;
       a2.target = "_blank"; a2.rel = "noopener";
       a2.textContent = "View on Concept2 →";
       pb2.appendChild(a2);
@@ -815,6 +994,15 @@ function renderSession(){
       if(cut) m.appendChild(el("span","cutflag","Cut by the readiness gate"));
       top2.appendChild(m);
       row.appendChild(top2);
+
+      var pg = progress(x.n, firstNum(x.load ? x.load() : 0), d);
+      if(pg){
+        var pr = el("div","prog");
+        pr.appendChild(el("span","pk","Last time \u00b7 " + fmtDay(pg.date)));
+        pr.appendChild(el("span","pv", pg.line));
+        pr.appendChild(el("span","pd", pg.verdict));
+        row.appendChild(pr);
+      }
 
       var key = "e" + i;
       var m = meta(x.n);
@@ -903,7 +1091,75 @@ function renderMaxes(){
 
 
 
-function render(){ renderDays(); renderSession(); }
+function renderWeekNav(){
+  var sel = document.getElementById("wSel");
+  if(sel.options.length !== BLOCK_N){
+    sel.textContent = "";
+    for(var n=1;n<=BLOCK_N;n++){
+      var o = document.createElement("option");
+      o.value = String(n);
+      o.textContent = "Week " + n + "  \u00b7  " + weekLabel(n);
+      sel.appendChild(o);
+    }
+  }
+  sel.value = String(state.week);
+  var aw = activeWeek();
+  document.getElementById("wEyebrow").textContent =
+    "Week " + state.week + " of " + BLOCK_N +
+    (state.week === aw ? "  \u00b7  this week" : state.week < aw ? "  \u00b7  already run" : "  \u00b7  ahead");
+  document.getElementById("wPrev").disabled = state.week <= 1;
+  document.getElementById("wNext").disabled = state.week >= BLOCK_N;
+  document.getElementById("wNow").disabled = state.week === aw;
+}
+
+function weekResults(n){
+  var ds = datesFor(n), rows = 0, done = 0, paces = [], lifts = 0;
+  ds.forEach(function(d){
+    var s = SESSIONS[d];
+    if(s && s.kind === "erg"){
+      rows++;
+      var hit = c2On(d);
+      if(hit){ done++; paces.push(c2Fields(hit).pace); }
+    }
+    if(s && s.kind === "lift"){
+      for(var i=0;i<SHEET_ROWS.length;i++){ if(SHEET_ROWS[i].date === d){ lifts++; break; } }
+    }
+  });
+  return {rows:rows, done:done, paces:paces, lifts:lifts};
+}
+
+function renderArchive(){
+  var panel = document.getElementById("archivePanel");
+  var body = document.getElementById("archiveBody");
+  var aw = activeWeek(), any = false;
+  body.textContent = "";
+  for(var n=1;n<aw;n++){
+    if(!weekHasPlan(n)) continue;
+    any = true;
+    var r = weekResults(n);
+    var row = el("div","arow");
+    var l = el("div","al");
+    l.appendChild(el("span","aw","Week " + n + "  \u00b7  " + weekLabel(n)));
+    var bits = [r.done + " of " + r.rows + " rows logged"];
+    if(r.paces.length) bits.push(r.paces.join("  /  "));
+    if(r.lifts) bits.push(r.lifts + " lift day" + (r.lifts > 1 ? "s" : "") + " logged");
+    l.appendChild(el("span","as", bits.join("  \u00b7  ")));
+    row.appendChild(l);
+    var go = document.createElement("button");
+    go.type = "button"; go.textContent = "Open";
+    (function(k){ go.addEventListener("click", function(){ setWeek(k); window.scrollTo({top:0, behavior:"smooth"}); }); })(n);
+    row.appendChild(go);
+    body.appendChild(row);
+  }
+  panel.hidden = !any;
+}
+
+function render(){ renderWeekNav(); renderDays(); renderSession(); renderArchive(); }
+
+document.getElementById("wPrev").addEventListener("click", function(){ setWeek(state.week - 1); });
+document.getElementById("wNext").addEventListener("click", function(){ setWeek(state.week + 1); });
+document.getElementById("wNow").addEventListener("click", function(){ setWeek(activeWeek()); });
+document.getElementById("wSel").addEventListener("change", function(){ setWeek(Number(this.value)); });
 
 /* ---------- panels ---------- */
 document.querySelectorAll("[data-toggle]").forEach(function(btn){
@@ -963,7 +1219,9 @@ function loadSheet(){
     var head = rows[0] || [], ix = {};
     head.forEach(function(h,k){ ix[String(h)] = k; });
     SHEET_ROWS = rows.slice(1).map(function(r){
-      return { date:String(r[ix.date]||"").slice(0,10), exercise:String(r[ix.exercise]||"") };
+      return { date:String(r[ix.date]||"").slice(0,10), exercise:String(r[ix.exercise]||""),
+               set_num:Number(r[ix.set_num])||0, reps:Number(r[ix.reps])||0,
+               weight:parseFloat(r[ix.weight])||0, rir:String(r[ix.rir_rpe]||"") };
     });
     setStatus(sheetStatus());
     render();
@@ -991,7 +1249,7 @@ function loadC2Sync(){
     render(); setStatus(sheetStatus());
   }).catch(function(){ /* snapshot already renders */ });
 }
-render();
+setWeek(activeWeek());
 loadSheet();
 loadC2Sync();
 </script>
