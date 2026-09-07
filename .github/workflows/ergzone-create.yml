@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "probe | dry | apply"
+        description: "probe | dry | apply | index"
         type: choice
-        options: [probe, dry, apply]
+        options: [probe, dry, apply, index]
         default: probe
 
 permissions:
