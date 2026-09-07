@@ -102,6 +102,8 @@ def main():
         mode = "dry"
     if "--apply" in sys.argv:
         mode = "apply"
+    if "--index" in sys.argv:
+        mode = "index"
 
     who = pick_prefix()
     print("track:", who or "NOT REACHED - value rejected or query shape wrong")
@@ -113,6 +115,17 @@ def main():
     print("workouts already in track:", len(have))
     todo = [p for p in plan if (p["date"], p["title"]) not in have]
     print("plan: %d total, %d to create" % (len(plan), len(todo)))
+
+    if mode == "index":
+        q = "query T($id: ID!){ track(id:$id){ workouts { id title publishedAt lookupKey intervalsLength } } }"
+        r = call(q, {"id": TRACK}, prefix=PREFIX)
+        ws = sorted((r.get("data", {}).get("track", {}) or {}).get("workouts") or [],
+                    key=lambda w: ((w.get("publishedAt") or ""), w.get("title") or ""))
+        for w in ws:
+            print("%s | %s | %s | %s | %s" % ((w.get("publishedAt") or "")[:10], w.get("title"),
+                                              w.get("lookupKey"), w.get("intervalsLength"), w.get("id")))
+        print("total", len(ws))
+        return
 
     if mode == "probe":
         q = ("query T($id: ID!){ track(id:$id){ workouts { id title publishedAt "
