@@ -1,0 +1,25 @@
+name: ErgZone create workouts
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "probe | dry | apply"
+        type: choice
+        options: [probe, dry, apply]
+        default: probe
+
+permissions:
+  contents: read
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Create workouts
+        env:
+          ERGZONE_TOKEN: ${{ secrets.ERGZONE_TOKEN }}
+        run: python pipeline/ergzone_create.py --${{ inputs.mode }}
