@@ -113,7 +113,19 @@ def main():
     print("plan: %d total, %d to create" % (len(plan), len(todo)))
 
     if mode == "probe":
-        print(json.dumps(payload(todo[0]) if todo else {}, indent=1, ensure_ascii=False)[:1400])
+        q = ("query T($id: ID!){ track(id:$id){ workouts { id title publishedAt "
+             "intervals { type value rest undefRest spm spmMax suggestedPace "
+             "suggestedPaceBenchmarkGroup suggestedOperator suggestedInterval } } } }")
+        r = call(q, {"id": TRACK}, prefix=PREFIX)
+        for w in (r.get("data", {}).get("track", {}) or {}).get("workouts") or []:
+            ivs = w.get("intervals") or []
+            if ivs and ivs[0].get("suggestedPace") is not None:
+                print("reference workout:", w["title"], w.get("publishedAt"))
+                print(json.dumps(ivs[0], indent=1, ensure_ascii=False))
+                break
+        else:
+            print("no existing workout carries a suggested pace")
+        print(json.dumps(payload(todo[0]) if todo else {}, indent=1, ensure_ascii=False)[:600])
         return
     if mode == "dry":
         for p in todo:
