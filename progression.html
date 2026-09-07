@@ -89,7 +89,7 @@ td.ex{font-weight:600;}
   <a class="back" href="#" id="backLink">&larr; Block Console</a>
   <span class="eyebrow">Sep 7 – Dec 5, 2026</span>
   <h1>Maxes &amp; Progression</h1>
-  <p style="color:var(--ink-2);max-width:64ch;">Working maxes drive every percentage in the block. Progression charts are built from your actual logged sets — the <span class="mono">recomp-log</span> sheet, Jun 22 onward.</p>
+  <p style="color:var(--ink-2);max-width:64ch;">Working maxes drive every percentage in the block. Progression charts cover <strong>this block only</strong>, Sep 7 – Dec 5, built from your logged sets in the <span class="mono">recomp-log</span> sheet. Earlier training is not plotted — it is carried in as the working max, the dashed red line on every chart.</p>
 </header>
 
 <div class="panel">
@@ -104,7 +104,7 @@ td.ex{font-weight:600;}
   <div class="panel-h"><h2>Against December targets</h2></div>
   <div class="tw">
     <table>
-      <thead><tr><th>Lift</th><th class="num">Best logged</th><th class="num">Working max</th><th class="num">Dec target</th><th>Stance</th></tr></thead>
+      <thead><tr><th>Lift</th><th class="num">Best before block</th><th class="num">Working max</th><th class="num">Dec target</th><th>Stance</th></tr></thead>
       <tbody id="targets"></tbody>
     </table>
   </div>
@@ -148,7 +148,7 @@ td.ex{font-weight:600;}
 </div>
 
 <div class="panel">
-  <div class="panel-h"><h2>Progression by exercise</h2><span class="eyebrow">logged sets · Jun–Sep</span></div>
+  <div class="panel-h"><h2>Progression by exercise</h2><span class="eyebrow">this block · Sep 7 – Dec 5</span></div>
   <div class="panel-b">
     <div class="charts" id="charts"></div>
     <p class="note w">Solid is what you lifted; dashed is what the block prescribes through Dec 1. Top singles and working sets stay separate, because mixing them makes a block look like it is regressing every time a heavy day is followed by a volume day. The squat forecast dips in Block 3 on purpose: speed work at 55-60%, with the weekly single carrying the intensity.</p>
@@ -237,6 +237,13 @@ var STANCE = {
 
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
 function dnum(d){var p=d.split("-");return new Date(+p[0],+p[1]-1,+p[2]).getTime();}
+/* the charts show THIS block only. Anything logged before Sep 7 stays out of the
+   plot — it survives as the dashed max line, which is the working max carried in. */
+var BLOCK_FROM = "2026-09-07", BLOCK_TO = "2026-12-05";
+function blockPts(h){
+  var a = dnum(BLOCK_FROM), b = dnum(BLOCK_TO);
+  return (h.pts || []).filter(function(p){ var t = dnum(p[0]); return t >= a && t <= b; });
+}
 
 function renderMaxes(){
   var g=document.getElementById("mxGrid");g.textContent="";
@@ -266,14 +273,14 @@ function renderTargets(){
 
 function chart(name,h){
   var W=340,H=160,PL=38,PR=12,PT=12,PB=26;
-  var hx=h.pts.map(function(p){return dnum(p[0]);});
+  var inBlock=blockPts(h);
   var fcAll=[];
   ["fcTop","fcWork"].forEach(function(k){ (h[k]||[]).forEach(function(v){ if(v!=null) fcAll.push(v); }); });
-  var vals=h.pts.map(function(p){return p[1];}).concat(fcAll,[h.max]);
+  var vals=inBlock.map(function(p){return p[1];}).concat(fcAll,[h.max]);
   var minY=Math.min.apply(null,vals), maxY=Math.max.apply(null,vals);
   var padY=(maxY-minY)*0.12||10;
   minY=Math.floor((minY-padY)/5)*5; maxY=Math.ceil((maxY+padY)/5)*5;
-  var minX=Math.min.apply(null,hx), maxX=dnum(WEEKS[WEEKS.length-1]);
+  var minX=dnum(BLOCK_FROM), maxX=dnum(BLOCK_TO);
   var sx=function(v){return PL+(maxX===minX?0.5:(v-minX)/(maxX-minX))*(W-PL-PR);};
   var sy=function(v){return H-PB-(v-minY)/(maxY-minY)*(H-PT-PB);};
   var out='<svg class="ch" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+name+' progression and forecast">';
@@ -282,15 +289,12 @@ function chart(name,h){
     out+='<line x1="'+PL+'" y1="'+y.toFixed(1)+'" x2="'+(W-PR)+'" y2="'+y.toFixed(1)+'" stroke="var(--rule)" stroke-width="1"/>';
     out+='<text x="'+(PL-6)+'" y="'+(y+3.5).toFixed(1)+'" text-anchor="end" font-size="9" font-family="IBM Plex Mono, monospace" fill="var(--muted)">'+Math.round(gv)+'</text>';
   });
-  var bx=sx(dnum("2026-09-07"));
-  out+='<line x1="'+bx.toFixed(1)+'" y1="'+PT+'" x2="'+bx.toFixed(1)+'" y2="'+(H-PB)+'" stroke="var(--rule-strong)" stroke-width="1"/>';
-  out+='<text x="'+(bx+3).toFixed(1)+'" y="'+(PT+8)+'" font-size="8" font-family="IBM Plex Mono, monospace" fill="var(--muted)">block</text>';
   var my=sy(h.max);
   out+='<line x1="'+PL+'" y1="'+my.toFixed(1)+'" x2="'+(W-PR)+'" y2="'+my.toFixed(1)+'" stroke="var(--test)" stroke-width="1.2" stroke-dasharray="4 3"/>';
-  out+='<text x="'+(W-PR)+'" y="'+(my-4).toFixed(1)+'" text-anchor="end" font-size="8.5" font-family="IBM Plex Mono, monospace" fill="var(--test)">max '+h.max+'</text>';
+  out+='<text x="'+(W-PR)+'" y="'+(my-4).toFixed(1)+'" text-anchor="end" font-size="8.5" font-family="IBM Plex Mono, monospace" fill="var(--test)">max '+h.max+' (carried in)</text>';
   [["work","var(--erg)","fcWork"],["top","var(--lift)","fcTop"]].forEach(function(cfg){
     var kind=cfg[0], col=cfg[1], fk=cfg[2];
-    var pts=h.pts.filter(function(p){return p[2]===kind;});
+    var pts=inBlock.filter(function(p){return p[2]===kind;});
     if(pts.length>1){
       var d=pts.map(function(p){return sx(dnum(p[0])).toFixed(1)+","+sy(p[1]).toFixed(1);}).join(" ");
       out+='<polyline fill="none" stroke="'+col+'" stroke-width="2" points="'+d+'"/>';
@@ -298,17 +302,25 @@ function chart(name,h){
     pts.forEach(function(p){ out+='<circle cx="'+sx(dnum(p[0])).toFixed(1)+'" cy="'+sy(p[1]).toFixed(1)+'" r="3" fill="'+col+'"/>'; });
     var fc=h[fk]||[], seg=[];
     if(pts.length) seg.push(sx(dnum(pts[pts.length-1][0])).toFixed(1)+","+sy(pts[pts.length-1][1]).toFixed(1));
-    fc.forEach(function(v,idx){ if(v!=null) seg.push(sx(dnum(WEEKS[idx])).toFixed(1)+","+sy(v).toFixed(1)); });
+    fc.forEach(function(v,idx){
+      if(v==null) return;
+      var t=dnum(WEEKS[idx]);
+      if(t<minX||t>maxX) return;
+      seg.push(sx(t).toFixed(1)+","+sy(v).toFixed(1));
+    });
     if(seg.length>1){
       out+='<polyline fill="none" stroke="'+col+'" stroke-width="1.6" stroke-dasharray="4 3" opacity="0.85" points="'+seg.join(" ")+'"/>';
     }
     fc.forEach(function(v,idx){
       if(v==null) return;
-      out+='<circle cx="'+sx(dnum(WEEKS[idx])).toFixed(1)+'" cy="'+sy(v).toFixed(1)+'" r="2" fill="var(--surface)" stroke="'+col+'" stroke-width="1.4"/>';
+      var t=dnum(WEEKS[idx]);
+      if(t<minX||t>maxX) return;
+      out+='<circle cx="'+sx(t).toFixed(1)+'" cy="'+sy(v).toFixed(1)+'" r="2" fill="var(--surface)" stroke="'+col+'" stroke-width="1.4"/>';
     });
   });
-  out+='<text x="'+PL+'" y="'+(H-7)+'" font-size="9" font-family="IBM Plex Mono, monospace" fill="var(--muted)">'+h.pts[0][0].slice(5).replace("-","/")+'</text>';
-  out+='<text x="'+(W-PR)+'" y="'+(H-7)+'" text-anchor="end" font-size="9" font-family="IBM Plex Mono, monospace" fill="var(--muted)">12/01</text>';
+  out+='<text x="'+PL+'" y="'+(H-7)+'" font-size="9" font-family="IBM Plex Mono, monospace" fill="var(--muted)">09/07</text>';
+  out+='<text x="'+((PL+W-PR)/2).toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle" font-size="9" font-family="IBM Plex Mono, monospace" fill="var(--muted)">week 7</text>';
+  out+='<text x="'+(W-PR)+'" y="'+(H-7)+'" text-anchor="end" font-size="9" font-family="IBM Plex Mono, monospace" fill="var(--muted)">12/05</text>';
   return out+'</svg>';
 }
 
@@ -319,7 +331,8 @@ function renderCharts(){
     var c=el("div","card");
     var hd=el("div","card-h");
     hd.appendChild(el("span","n",k));
-    hd.appendChild(el("span","v",h.pts.length+" logged · "+h.unit));
+    var nb=blockPts(h).length;
+    hd.appendChild(el("span","v",(nb ? nb+" logged this block" : "nothing logged yet")+" · "+h.unit));
     c.appendChild(hd);
     var b=el("div","card-b"); b.innerHTML=chart(k,h); c.appendChild(b);
     var lg=el("div","legend");
