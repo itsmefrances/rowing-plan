@@ -84,10 +84,12 @@ def payload(p):
     ivs = expand(p)
     for d in ivs:
         if p.get("offset") is not None:
+            # values copied off a workout built by hand in the admin UI:
+            # benchmark group "D" (the 500m distance benchmark), operator "+",
+            # and the offset in seconds. suggestedInterval stays unset.
             d["suggestedPace"] = p["offset"]
-            d["suggestedInterval"] = 500
-            d["suggestedOperator"] = "pace"
-            d["suggestedPaceBenchmarkGroup"] = "row"
+            d["suggestedOperator"] = "+"
+            d["suggestedPaceBenchmarkGroup"] = "D"
     return {"trackId": TRACK, "title": p["title"], "description": p["description"],
             "workoutType": "row", "status": "published", "hasLeaderboard": True,
             "publishedAt": p["date"], "intervals": ivs}
