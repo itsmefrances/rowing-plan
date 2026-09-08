@@ -79,6 +79,24 @@ td.wk{font-family:var(--f-m);font-size:11.5px;color:var(--muted);white-space:now
 .testrow{background:var(--test-soft) !important;}
 .testrow .piece{color:var(--test-ink);}
 
+/* the shape of a training week */
+.weekstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+@media(max-width:880px){.weekstrip{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:460px){.weekstrip{grid-template-columns:1fr;}}
+.dayc{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--rule-strong);
+  padding:9px 10px;display:flex;flex-direction:column;gap:3px;}
+.dayc .dn{font-family:var(--f-m);font-size:10px;font-weight:600;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--muted);}
+.dayc .dk{font-size:9.5px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;}
+.dayc .dt{font-size:13px;font-weight:700;line-height:1.25;}
+.dayc .dd{font-size:11.5px;color:var(--ink-2);line-height:1.35;}
+.dayc.erg{border-top-color:var(--erg);}
+.dayc.erg .dk{color:var(--erg-ink);}
+.dayc.lift{border-top-color:var(--lift);}
+.dayc.lift .dk{color:var(--lift-ink);}
+.dayc.rest{border-top-color:var(--rule-strong);background:var(--surface-2);}
+.dayc.rest .dk{color:var(--muted);}
+
 /* erg sessions — the actual prescriptions */
 .wkblock{margin-bottom:14px;}
 .wkhead{display:flex;align-items:baseline;gap:9px;margin-bottom:7px;}
@@ -96,6 +114,17 @@ td.wk{font-family:var(--f-m);font-size:11.5px;color:var(--muted);white-space:now
 .sess.tst{border-left-color:var(--test);}
 .sess.tst .lane{color:var(--test-ink);}
 .sess.empty{border-left-color:var(--rule-strong);opacity:.55;}
+.sess.lft{border-left-color:var(--lift);}
+.sess.lft .lane{color:var(--lift-ink);}
+.sess.rst{border-left-color:var(--rule-strong);background:var(--surface-2);}
+.sess.rst .lane{color:var(--muted);}
+ul.mini{list-style:none;margin:7px 0 0;padding:0;}
+ul.mini li{padding:5px 0;border-bottom:1px solid var(--rule);}
+ul.mini li:last-child{border-bottom:0;}
+ul.mini .mn{font-size:12.5px;font-weight:600;line-height:1.3;}
+ul.mini .mr{font-family:var(--f-m);font-size:11px;color:var(--ink-2);}
+ul.mini .ml{font-family:var(--f-m);font-size:11px;color:var(--lift-ink);font-weight:600;}
+.weekgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:11px;}
 
 /* strength day templates */
 .day h3{color:var(--lift-ink);}
@@ -146,23 +175,30 @@ footer{margin-top:38px;padding-top:13px;border-top:1px solid var(--rule);
 
 <section>
   <div class="shead">
-    <h2>Erg programming</h2>
-    <span class="note">Mon sprint · Wed VO₂ · Fri threshold — committed, never moved for strength</span>
+    <h2>The training week</h2>
+    <span class="note">The repeating shape — test weeks, races and the taper vary; see week by week</span>
+  </div>
+  <div class="weekstrip" id="weekShape"></div>
+  <p class="lede" style="margin-top:12px;">
+    The three erg sessions are fixed points — they are never moved or dropped to accommodate
+    a lift. Strength sits on the days between them, so a hard erg session is never run on
+    the back of a heavy leg day. Sunday is full rest.
+  </p>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>Week by week</h2>
+    <span class="note">Every programmed day, erg and strength, in order</span>
   </div>
   <div id="ergWeeks"></div>
   <div class="legend">
     <span><strong>Target</strong> is the middle of the Rowfit band — the pace actually programmed.</span>
     <span><strong>Band</strong> is the full permitted range, off a 1:39.9 500 m PB.</span>
+    <span>Tier-3 work is summarised as optional accessories.</span>
   </div>
 </section>
 
-<section>
-  <div class="shead">
-    <h2>Strength programming</h2>
-    <span class="note">Day templates per phase — loads shown as % of training max</span>
-  </div>
-  <div id="strength"></div>
-</section>
 
 <section>
   <div class="shead">
@@ -208,7 +244,7 @@ function addDays(iso, n){
 function weekOf(iso){
   return Math.floor((new Date(iso+"T12:00:00") - new Date(BLOCK_W1+"T12:00:00")) / 86400000 / 7) + 1;
 }
-function fmtDay(iso){ return Number(iso.slice(8)) + " " + MON[Number(iso.slice(5,7))-1]; }
+function fmtDay(iso){ return MON[Number(iso.slice(5,7))-1] + " " + Number(iso.slice(8)); }
 function el(t, c, txt){
   var n = document.createElement(t);
   if(c) n.className = c;
@@ -234,13 +270,6 @@ function shortTitle(t){
   s = s.replace(/^(Sprint|VO₂ max|VO₂|Threshold|TEST|RACE)\s*/, "");
   s = s.replace(/^[—–-]\s*/, "");        /* "RACE — BRIC 500m" left a stray dash */
   return s || String(t);
-}
-/* Lane by weekday, not by title: Mon sprint, Wed VO₂, Fri threshold. A test
-   piece replaces whichever session it falls on, so keying off the title put
-   tests in the wrong column and blanked a real one. -1 is a race or extra. */
-function ergLane(dt){
-  var wd = new Date(dt + "T12:00:00").getDay();
-  return wd === 1 ? 0 : wd === 3 ? 1 : wd === 5 ? 2 : -1;
 }
 function loadSpec(x){
   if(x.load != null) return String(x.load);
@@ -298,8 +327,61 @@ function renderPhases(plan){
   });
 }
 
+/* ---------- the shape of a training week ---------- */
+var WDNAME = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+var DAYNOTE = {
+  "Sprint":    "Maximal intent, full recovery between reps. Quality over volume.",
+  "VO₂":       "The aerobic ceiling — shorter rest, sustained high rate.",
+  "Threshold": "Longer intervals at controlled pace. The aerobic base of the block.",
+  "A":         "Squat pattern and vertical power. Carries the readiness gate.",
+  "B":         "Hinge and pull — the heaviest posterior work of the week.",
+  "C":         "Press, upper pump and bracing. The lightest of the three.",
+  "Rest":      "No erg, no lifting."
+};
+function ergLaneName(t){
+  if(/sprint/i.test(t)) return "Sprint";
+  if(/vo₂|vo2/i.test(t)) return "VO₂";
+  if(/threshold/i.test(t)) return "Threshold";
+  return "Test";
+}
+
+function renderWeekShape(plan){
+  var host = document.getElementById("weekShape");
+  var byWd = [[],[],[],[],[],[],[]];
+  Object.keys(plan).forEach(function(dt){
+    var wd = (new Date(dt + "T12:00:00").getDay() + 6) % 7;   /* 0 = Monday */
+    byWd[wd].push(plan[dt]);
+  });
+
+  byWd.forEach(function(list, i){
+    /* whatever appears most on this weekday is the shape of the week; tests and
+       races displace a session without changing the pattern */
+    var tally = {}, meta = {};
+    list.forEach(function(s){
+      var k, kind, label;
+      if(s.kind === "lift"){ kind = "lift"; label = s.title.replace(/^Strength\s*/, ""); }
+      else if(s.kind === "erg"){ kind = "erg"; label = ergLaneName(s.title); }
+      else { kind = "rest"; label = "Rest"; }
+      k = kind + ":" + label;
+      tally[k] = (tally[k] || 0) + 1;
+      meta[k] = {kind:kind, label:label};
+    });
+    var best = null, bn = 0;
+    Object.keys(tally).forEach(function(k){ if(tally[k] > bn){ bn = tally[k]; best = k; } });
+    if(!best) return;
+    var m = meta[best];
+
+    var c = el("div","dayc " + m.kind);
+    c.appendChild(el("div","dn", WDNAME[i]));
+    c.appendChild(el("div","dk", m.kind === "erg" ? "Erg" : m.kind === "lift" ? "Strength" : "Rest"));
+    c.appendChild(el("div","dt", m.label));
+    var noteKey = m.kind === "lift" ? m.label.charAt(0) : m.label;
+    if(DAYNOTE[noteKey]) c.appendChild(el("div","dd", DAYNOTE[noteKey]));
+    host.appendChild(c);
+  });
+}
+
 /* ---------- erg sessions, week by week, with the full prescription ---------- */
-var LANE = ["Sprint", "VO₂ max", "Threshold / endurance"];
 
 /* The stored description ends with a sentence restating the band in prose.
    The coach gets the band as a pace below, so drop the boilerplate. */
@@ -313,10 +395,12 @@ function targetPace(lo, hi){
   return fmtSec(paceAt((lo + hi) / 2));
 }
 
-function sessionCard(dt, s, laneName){
-  var isTest = /TEST|RACE/i.test(s.title || "");
+function sessionCard(dt, s, dayLabel){
+  var t = s.title || "";
+  var isTest = /TEST|RACE/i.test(t);
   var c = el("div","card sess" + (isTest ? " tst" : ""));
-  c.appendChild(el("div","lane", laneName + (dt ? " · " + fmtDay(dt) : "")));
+  c.appendChild(el("div","lane", dayLabel + " · " +
+    (/RACE/i.test(t) ? "Race" : isTest ? "Test" : ergLaneName(t))));
   c.appendChild(el("div","st", shortTitle(s.title)));
 
   var rx = prescription(s.raw);
@@ -335,102 +419,74 @@ function sessionCard(dt, s, laneName){
   return c;
 }
 
+var WDSHORT = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+/* a strength day, summarised: the lifts that matter, accessories as a count */
+function liftCard(dt, s, dayLabel){
+  var c = el("div","card sess lft");
+  c.appendChild(el("div","lane", dayLabel + " · Strength"));
+  c.appendChild(el("div","st", (s.title || "").replace(/^Strength\s*/, "")));
+
+  var main = (s.ex || []).filter(function(x){ return x.tier !== 3; });
+  var acc  = (s.ex || []).filter(function(x){ return x.tier === 3; });
+
+  var ul = el("ul","mini");
+  main.forEach(function(x){
+    var li = document.createElement("li");
+    var nm = el("div","mn");
+    if(x.star) nm.appendChild(el("span","star","★ "));
+    nm.appendChild(document.createTextNode(x.n));
+    if(x.star) nm.appendChild(el("span","pill hm","hallmark"));
+    else if(x.tier === 2 && !x.test) nm.appendChild(el("span","pill pw","power"));
+    li.appendChild(nm);
+    if(x.rx) li.appendChild(el("div","mr", x.rx));
+    var ls = loadSpec(x);
+    if(ls) li.appendChild(el("div","ml", ls));
+    ul.appendChild(li);
+  });
+  c.appendChild(ul);
+  if(acc.length) c.appendChild(el("div","acc",
+    "+ " + acc.length + " optional accessories — pumps, isolation and bracing, at the athlete's discretion."));
+  return c;
+}
+
+function restCard(dayLabel, s){
+  var c = el("div","card sess rst");
+  c.appendChild(el("div","lane", dayLabel + " · Rest"));
+  c.appendChild(el("div","st", (s && s.title) || "Rest"));
+  c.appendChild(el("div","rx","No erg, no lifting."));
+  return c;
+}
+
+/* One block per week, every day in order, so the interleave of erg and
+   strength is visible rather than having to be reconstructed from two lists. */
 function renderErg(plan){
   var host = document.getElementById("ergWeeks");
   for(var w = 1; w <= BLOCK_N; w++){
-    var lanes = [null, null, null], extra = [];
-    Object.keys(plan).sort().forEach(function(dt){
-      if(weekOf(dt) !== w) return;
-      var s = plan[dt];
-      if(s.kind !== "erg") return;
-      var i = ergLane(dt);
-      if(i < 0 || lanes[i]) extra.push({dt:dt, s:s});   /* races and extras */
-      else lanes[i] = {dt:dt, s:s};
-    });
-    if(!lanes[0] && !lanes[1] && !lanes[2] && !extra.length) continue;
+    var start = addDays(BLOCK_W1, (w-1)*7);
+    var days = [];
+    for(var k = 0; k < 7; k++){
+      var dt = addDays(start, k);
+      if(plan[dt]) days.push({dt:dt, s:plan[dt], wd:WDSHORT[k]});
+    }
+    if(!days.length) continue;
 
     var blk = el("div","wkblock");
     var hd = el("div","wkhead");
-    hd.appendChild(el("span","wn", "Week " + w));
-    hd.appendChild(el("span","wd", fmtDay(addDays(BLOCK_W1, (w-1)*7)) +
-      " – " + fmtDay(addDays(BLOCK_W1, (w-1)*7 + 6))));
+    hd.appendChild(el("span","wn", "Week " + w + " :"));
+    hd.appendChild(el("span","wd", fmtDay(start) + " – " + fmtDay(addDays(start, 6))));
     blk.appendChild(hd);
 
-    var g = el("div","grid g3");
-    lanes.forEach(function(L, i){
-      if(L) g.appendChild(sessionCard(L.dt, L.s, LANE[i]));
-      else {
-        var c = el("div","card sess empty");
-        c.appendChild(el("div","lane", LANE[i]));
-        c.appendChild(el("div","rx","Not programmed this week."));
-        g.appendChild(c);
-      }
-    });
-    extra.forEach(function(E){
-      g.appendChild(sessionCard(E.dt, E.s, /RACE/i.test(E.s.title || "") ? "Race" : "Additional"));
+    var g = el("div","weekgrid");
+    days.forEach(function(D){
+      var label = D.wd.toUpperCase() + " · " + fmtDay(D.dt);
+      if(D.s.kind === "erg")       g.appendChild(sessionCard(D.dt, D.s, label));
+      else if(D.s.kind === "lift") g.appendChild(liftCard(D.dt, D.s, label));
+      else                         g.appendChild(restCard(label, D.s));
     });
     blk.appendChild(g);
     host.appendChild(blk);
   }
-}
-
-/* ---------- strength day templates, one set per phase ---------- */
-function renderStrength(plan){
-  var host = document.getElementById("strength");
-  PHASES.forEach(function(ph){
-    /* take the first full week of the phase as the representative template */
-    var days = {}, fromWk = null;
-    Object.keys(plan).sort().forEach(function(dt){
-      var w = weekOf(dt); if(w < ph.wks[0] || w > ph.wks[1]) return;
-      var s = plan[dt]; if(s.kind !== "lift") return;
-      if(!days[s.title]){ days[s.title] = s; if(fromWk === null) fromWk = w; }
-    });
-    var titles = Object.keys(days);
-    if(!titles.length) return;
-
-    var wrap = el("div"); wrap.style.marginBottom = "22px";
-    var h = el("div","shead");
-    h.style.borderBottom = "0"; h.style.marginBottom = "9px"; h.style.paddingBottom = "0";
-    h.appendChild(el("h3", null, ph.n + " · " + ph.name));
-    h.appendChild(el("span","note", ph.wks[0] === ph.wks[1]
-      ? "week " + ph.wks[0]
-      : "weeks " + ph.wks[0] + "–" + ph.wks[1] +
-        "  ·  structure shown from week " + fromWk + "; loads ramp weekly — see progression below"));
-    wrap.appendChild(h);
-
-    var g = el("div","grid g3");
-    titles.forEach(function(t){
-      var s = days[t];
-      var c = el("div","card day");
-      c.appendChild(el("h3", null, t.replace(/^Strength\s*/, "")));
-
-      var main = (s.ex || []).filter(function(x){ return x.tier !== 3; });
-      var acc  = (s.ex || []).filter(function(x){ return x.tier === 3; });
-      c.appendChild(el("div","dsub", main.length + " main · " +
-        (acc.length ? acc.length + " optional accessories" : "no accessories")));
-
-      var ul = el("ul","lifts");
-      main.forEach(function(x){
-        var li = document.createElement("li");
-        var nm = el("div","ln");
-        if(x.star){ nm.appendChild(el("span","star","★ ")); }
-        nm.appendChild(document.createTextNode(x.n));
-        if(x.star) nm.appendChild(el("span","pill hm","hallmark"));
-        else if(x.tier === 2 && !x.test) nm.appendChild(el("span","pill pw","power"));
-        li.appendChild(nm);
-        if(x.rx) li.appendChild(el("div","lrx", x.rx));
-        var ls = loadSpec(x);
-        if(ls) li.appendChild(el("div","lload", ls));
-        ul.appendChild(li);
-      });
-      c.appendChild(ul);
-      if(acc.length) c.appendChild(el("div","acc",
-        "Plus optional accessories — pumps, isolation and bracing work, held at the athlete's discretion."));
-      g.appendChild(c);
-    });
-    wrap.appendChild(g);
-    host.appendChild(wrap);
-  });
 }
 
 /* ---------- main lift progression ---------- */
@@ -496,8 +552,8 @@ fetch("block-plan.json", {cache:"no-store"})
     document.getElementById("range").textContent =
       fmtDay(ds[0]) + " – " + fmtDay(ds[ds.length-1]) + " 2026  ·  " + BLOCK_N + " weeks";
     renderPhases(plan);
+    renderWeekShape(plan);
     renderErg(plan);
-    renderStrength(plan);
     renderProg(plan);
     renderTests(plan);
     document.getElementById("foot").textContent =
