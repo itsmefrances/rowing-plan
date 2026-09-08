@@ -1300,7 +1300,7 @@ function pushRow(r){
   setStatus("Writing to recomp-log…");
   jsonp({write:1, date:r.date, day_type:r.day_type, exercise:r.exercise,
     prescribed:r.prescribed, set_num:r.set_num, reps:r.reps, weight:r.weight,
-    rir_rpe:r.rir_rpe, notes:r.notes, source:"block-console"},
+    height:r.height || "", rir_rpe:r.rir_rpe, notes:r.notes, source:"block-console"},
     function(res){
       if(res && res.ok === false) setStatus("Sheet rejected the row: " + (res.error || "unknown"));
       else setStatus(sheetStatus());
