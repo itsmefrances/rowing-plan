@@ -244,6 +244,15 @@ svg.spark{width:100%;height:38px;display:block;}
 .prog .pk{font-size:9.5px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
 .prog .pv{font-family:var(--f-m);font-size:12.5px;color:var(--ink);}
 .prog .pd{font-family:var(--f-m);font-size:12px;color:var(--lift-ink);}
+.subline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 10px;
+  border-top:1px dashed var(--rule);}
+.subsel{font-family:var(--f-d);font-size:12.5px;color:var(--ink);background:var(--surface);
+  border:1px solid var(--rule);padding:4px 6px;max-width:100%;}
+.subint{font-size:11px;color:var(--muted);}
+.subprev{font-family:var(--f-m);font-size:11.5px;color:var(--lift-ink);
+  padding:0 10px 7px;}
+.exsub{font-family:var(--f-m);font-size:12px;color:var(--lift-ink);}
+.ex.folded .subline,.ex.folded .subprev{display:none;}
 .maxlink{font-family:var(--f-d);font-size:12.5px;font-weight:600;color:var(--erg);text-decoration:none;
   border:1px solid var(--erg);padding:5px 9px;white-space:nowrap;}
 .maxlink:hover{background:var(--erg-soft);}
@@ -389,6 +398,7 @@ var state = {
   sel: 0,
   log: {},
   fold: {},          /* date|exercise → collapsed to the title, set by hand only */
+  sub: {},           /* date|exercise → what she swapped that slot for */
   rows: [],          /* sheet-shaped rows awaiting sync */
   metrics: {peak7:[], broad:[], cmj:[]}
 };
@@ -832,12 +842,104 @@ function openLog(d, x, m, startAt){
 var DAYTYPE = {"2026-09-07":"sprint","2026-09-08":"lower","2026-09-09":"vo2",
                "2026-09-10":"lower","2026-09-11":"endurance","2026-09-12":"upper","2026-09-13":"rest"};
 
+/* ---------- accessory substitutions ----------
+   A tier-3 slot exists for an intent, not for a particular machine. Each slot
+   maps to an intent; each intent carries the alternatives that satisfy it, so a
+   busy rack or a hotel gym doesn't cost the session. The swap is written into
+   the log — exercise column takes the substitute, notes carry "sub for <slot>"
+   — so next week's card can say what actually happened. */
+var INTENT = {
+  hipabd: ["Glute medius · frontal-plane hip stability",
+    ["Seated hip abduction machine (upright)","Standing cable abduction","Banded lateral walk","Side plank, top-leg abduction"]],
+  quad: ["Quad volume at low systemic cost",
+    ["Leg press","Hack squat","Leg extension","Bulgarian split squat","Sissy squat"]],
+  ham: ["Knee-flexion / posterior volume",
+    ["Seated leg curl","Lying leg curl","Kneeling leg curl","Nordic curl","45° back extension"]],
+  glute: ["Hip extension at short muscle length",
+    ["Hip thrust machine","Barbell hip thrust","Glute bridge","Cable pull-through","45° back extension"]],
+  hrow: ["Horizontal pull · mid-back",
+    ["Chest-supported row","Plate-loaded row","Seated cable row","Ring row, feet elevated","One-arm DB row"]],
+  vpull: ["Vertical pull · lats",
+    ["Lat pulldown, neutral grip","Wide-grip pulldown","Ring pull-up","Assisted pull-up","Straight-arm pulldown"]],
+  press: ["Vertical press · shoulders",
+    ["DB shoulder press","Machine shoulder press","Landmine press","Seated barbell press"]],
+  hpress: ["Horizontal press volume",
+    ["Incline DB press","Machine chest press","Pec deck","Weighted push-up"]],
+  delt: ["Delt and arm volume",
+    ["Cable lateral raise","DB lateral raise","Machine lateral raise","Rear-delt fly","Face pull"]],
+  antirot: ["Anti-rotation · trunk bracing",
+    ["Rotary torso machine","Pallof press","Landmine rotation","Cable chop","Side plank"]],
+  antiext: ["Anti-extension · trunk bracing",
+    ["Ab wheel","Ring rollout","Cable crunch","Weighted dead bug","Hollow hold","L-sit"]],
+  carry: ["Loaded carry · bracing under load",
+    ["Suitcase carry","Front rack carry","Farmer carry","Sandbag front carry","Sandbag bear hug hold"]],
+  jump: ["Lower-body plyometric · max intent",
+    ["Box jump, step down","Broad jump","Trap bar jump","Hurdle hop","Depth drop to stick"]],
+  plyoup: ["Upper-body plyometric",
+    ["Plyo push-up","Explosive ring push-up","Medball chest pass","Banded speed press"]],
+  throw: ["Rotational power",
+    ["Medball rotational throw","Landmine rotation, explosive","Cable chop, fast"]]
+};
+var SUBS = {
+  "Cable abduction":"hipabd",
+  "Leg press":"quad", "Leg press or hack squat":"quad", "Leg extension":"quad",
+  "Leg extension · abduction":"quad",
+  "Hip thrust":"glute",
+  "Chest-supported row":"hrow", "Plate-loaded row":"hrow", "Ring row, feet elevated":"hrow",
+  "Lat pulldown, neutral grip":"vpull", "Ring pull-up":"vpull", "Ring pull-up, explosive":"vpull",
+  "Pulldown · lateral · rear delt":"vpull",
+  "DB shoulder press":"press",
+  "Incline DB press":"hpress",
+  "Cable lateral · rear delt":"delt",
+  "Lateral raise · EZ curl · OH extension":"delt",
+  "Lateral raise · EZ curl · skullcrusher":"delt",
+  "Lateral raise · curl · extension":"delt",
+  "Rotary torso":"antirot", "Pallof press":"antirot",
+  "Rotary torso · Pallof iso":"antirot", "Landmine rotation · rotary torso":"antirot",
+  "Ab wheel · rotary torso":"antiext", "Weighted dead bug · cable crunch":"antiext",
+  "Ring rollout · braced hollow hold":"antiext", "Ab wheel · catch-position iso":"antiext",
+  "L-sit on parallettes":"antiext",
+  "Suitcase carry":"carry", "Front rack carry":"carry", "Sandbag front carry":"carry",
+  "Sandbag bear hug hold":"carry", "L-sit · sandbag carry heavy":"carry",
+  "Box jump, step down":"jump", "Trap bar jump":"jump",
+  "Plyo push-up":"plyoup", "Explosive ring push-up":"plyoup",
+  "Medball rotational throw":"throw"
+};
+function subIntent(n){ var k = SUBS[n]; return k ? INTENT[k] : null; }
+/* state.sub isn't persisted, so a reload mid-session falls back to whatever
+   today's already-logged rows say she swapped it for. */
+function subFor(d, x){
+  var k = d + "|" + x.n;
+  if(state.sub[k] != null) return state.sub[k];
+  var tag = "sub for " + x.n;
+  for(var i = 0; i < SHEET_ROWS.length; i++){
+    var r = SHEET_ROWS[i];
+    if(r.date === d && r.notes && r.notes.indexOf(tag) >= 0) return r.exercise;
+  }
+  return "";
+}
+function effName(d, x){ return subFor(d, x) || x.n; }
+/* the most recent earlier date on which this slot was swapped */
+function priorSub(name, before){
+  var tag = "sub for " + name, hit = null;
+  for(var i = 0; i < SHEET_ROWS.length; i++){
+    var r = SHEET_ROWS[i];
+    if(!r.notes || r.notes.indexOf(tag) < 0) continue;
+    if(!r.date || r.date >= before) continue;
+    if(!hit || r.date > hit.date) hit = {date:r.date, name:r.exercise};
+  }
+  return hit;
+}
+
 function logSet(d, x, setNum, st){
-  var row = { date:d, day_type:DAYTYPE[d]||"", exercise:x.n,
+  var sub = subFor(d, x), nm = sub || x.n;
+  var note = st.notes || "";
+  if(sub) note = (note ? note + " · " : "") + "sub for " + x.n;
+  var row = { date:d, day_type:DAYTYPE[d]||"", exercise:nm,
     prescribed:(x.load ? x.load()+" lb · " : "")+x.rx, set_num:setNum,
     reps:st.reps||"", weight:st.weight||"", height:st.height||"",
-    rir_rpe:st.rir||"", notes:st.notes||"" };
-  SHEET_ROWS.push({date:d, exercise:x.n});
+    rir_rpe:st.rir||"", notes:note };
+  SHEET_ROWS.push({date:d, exercise:nm, notes:note});
   pushRow(row);
 }
 
@@ -1090,6 +1192,8 @@ function renderSession(){
       top2.appendChild(el("span","slot", x.s));
       var m = el("div","ex-main");
       m.appendChild(el("span","exname", x.n));
+      var curSub = subFor(d, x);
+      if(curSub) m.appendChild(el("span","exsub", "→ " + curSub));
       if(x.load) m.appendChild(el("span","exload", x.load() + " lb"));
       m.appendChild(el("span","exrx", x.rx));
       var mm = metaFor(x);
@@ -1124,13 +1228,41 @@ function renderSession(){
         row.appendChild(pr);
       }
 
+      var sbi = subIntent(x.n);
+      if(sbi){
+        var sw = el("div","subline");
+        var sel = document.createElement("select");
+        sel.className = "subsel";
+        sel.setAttribute("aria-label", "Swap " + x.n + " for an alternative");
+        var alts = sbi[1].slice();
+        if(alts.indexOf(x.n) < 0) alts.unshift(x.n);
+        alts.forEach(function(o){
+          var op = document.createElement("option");
+          op.value = (o === x.n) ? "" : o;
+          op.textContent = (o === x.n) ? "As written — " + o : o;
+          if(op.value === curSub) op.selected = true;
+          sel.appendChild(op);
+        });
+        sel.addEventListener("change", function(){
+          if(sel.value) state.sub[d + "|" + x.n] = sel.value;
+          else delete state.sub[d + "|" + x.n];
+          renderSession();
+        });
+        sw.appendChild(sel);
+        sw.appendChild(el("span","subint", sbi[0]));
+        row.appendChild(sw);
+        var ps = priorSub(x.n, d);
+        if(ps) row.appendChild(el("div","subprev",
+          "Last time · " + fmtDay(ps.date) + " — you did " + ps.name + " instead"));
+      }
+
       var key = "e" + i;
       var m = metaFor(x);
-      var done = loggedCount(d, x.n);
+      var done = loggedCount(d, effName(d, x));
       var bar = el("div","logline");
       var add = document.createElement("button");
       add.className = "addbtn"; add.type = "button"; add.textContent = "+";
-      add.setAttribute("aria-label","Log a set of " + x.n);
+      add.setAttribute("aria-label","Log a set of " + effName(d, x));
       add.addEventListener("click", function(){ openLog(d, x, m, done + 1); });
       bar.appendChild(add);
       bar.appendChild(el("span","logged", done
@@ -1341,7 +1473,8 @@ function loadSheet(){
     SHEET_ROWS = rows.slice(1).map(function(r){
       return { date:String(r[ix.date]||"").slice(0,10), exercise:String(r[ix.exercise]||""),
                set_num:Number(r[ix.set_num])||0, reps:Number(r[ix.reps])||0,
-               weight:parseFloat(r[ix.weight])||0, rir:String(r[ix.rir_rpe]||"") };
+               weight:parseFloat(r[ix.weight])||0, rir:String(r[ix.rir_rpe]||""),
+               notes:String(r[ix.notes]||"") };
     });
     setStatus(sheetStatus());
     render();
