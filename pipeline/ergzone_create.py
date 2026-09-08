@@ -59,7 +59,7 @@ def pick_prefix():
 
 
 def track_workouts():
-    q = "query T($id: ID!){ track(id:$id){ workouts { id title publishedAt } } }"
+    q = "query T($id: ID!){ track(id:$id){ workouts(limit:200) { id title publishedAt } } }"
     r = call(q, {"id": TRACK})
     if not r.get("data") or not r["data"].get("track"):
         print("  could not list track workouts:", json.dumps(r)[:400])
@@ -196,7 +196,7 @@ def main():
           % (len(plan), sum(1 for p in plan if not p.get("wid")), len(todo)))
 
     if mode == "index":
-        q = ("query T($id: ID!){ track(id:$id){ workouts { id title publishedAt "
+        q = ("query T($id: ID!){ track(id:$id){ workouts(limit:200) { id title publishedAt "
              "lookupKey intervalsLength } } }")
         r = call(q, {"id": TRACK})
         ws = sorted((r.get("data", {}).get("track", {}) or {}).get("workouts") or [],
@@ -208,7 +208,7 @@ def main():
         return
 
     if mode == "probe":
-        q = ("query T($id: ID!){ track(id:$id){ workouts { id title publishedAt "
+        q = ("query T($id: ID!){ track(id:$id){ workouts(limit:200) { id title publishedAt "
              "intervals { type value rest undefRest spm spmMax suggestedPace "
              "suggestedPaceBenchmarkGroup suggestedOperator suggestedInterval } } } }")
         r = call(q, {"id": TRACK})
