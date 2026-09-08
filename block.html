@@ -608,7 +608,10 @@ function lastEffort(name, before){
   var got = [];
   for(var i=0;i<SHEET_ROWS.length;i++){
     var r = SHEET_ROWS[i];
-    if(r.exercise === name && r.date && r.date < before && r.weight > 0) got.push(r);
+    /* a box jump has a height and no load; a machine set may be reps only.
+       Anything with a number in it is a set worth comparing against. */
+    if(r.exercise === name && r.date && r.date < before &&
+       (r.weight > 0 || r.height > 0 || r.reps > 0)) got.push(r);
   }
   if(!got.length) return null;
   var last = got[0].date;
@@ -617,23 +620,57 @@ function lastEffort(name, before){
                 .sort(function(a,b){ return (a.set_num||0) - (b.set_num||0); });
   return {date:last, sets:sets};
 }
+/* She works down as often as up - a first set too heavy, then two at the load
+   that was right. Double progression should read the load she settled on, so
+   take the most frequent weight and break ties on the last set. */
+function workingLoad(sets){
+  var n = {}, best = 0, bestN = 0;
+  sets.forEach(function(z){ if(z.weight > 0) n[z.weight] = (n[z.weight] || 0) + 1; });
+  for(var k = sets.length - 1; k >= 0; k--){
+    var w = sets[k].weight;
+    if(w > 0 && n[w] > bestN){ bestN = n[w]; best = w; }
+  }
+  return best;
+}
 function progress(name, prescribed, before){
   var m = meta(name);
-  if(m.tier === 3) return null;
   var le = lastEffort(name, before);
+  /* if the slot was swapped last time, the rows are under the substitute's
+     name - follow the swap so the card still has something to show */
+  var alias = "";
+  if(!le){
+    var ps = priorSub(name, before);
+    if(ps){ alias = ps.name; le = lastEffort(ps.name, before); }
+  }
   if(!le) return null;
   var top = typeof m.reps === "number" ? m.reps : null;
-  var heaviest = 0, allHit = !!top, easy = true, rirTxt = "";
+  var heaviest = workingLoad(le.sets), tallest = 0, allHit = !!top, easy = true, rirTxt = "";
   le.sets.forEach(function(z){
-    if(z.weight > heaviest) heaviest = z.weight;
+    if(z.height > tallest) tallest = z.height;
     if(top && z.reps < top) allHit = false;
     var rv = rirNum(z.rir);
     if(rv !== null && rv < 2) easy = false;
     if(!rirTxt && z.rir) rirTxt = z.rir;
   });
-  var line = le.sets.map(function(z){ return z.weight + " \u00d7 " + z.reps; }).join("   ") +
-             (rirTxt ? "   \u00b7   " + rirTxt : "");
+  var line = le.sets.map(function(z){
+    var t = z.weight > 0 ? z.weight + " \u00d7 " + z.reps : z.reps + " reps";
+    if(z.height > 0) t += " @ " + z.height + "\u2033";
+    return t;
+  }).join("   ") + (rirTxt ? "   \u00b7   " + rirTxt : "");
   var base = Math.max(heaviest, prescribed || 0), next = base, verdict;
+
+  /* nothing was loaded - a jump, a carry, a hold. Report the number that
+     actually moves rather than inventing a weight to add. */
+  if(!base){
+    return {date:le.date, alias:alias, line:line, next:null,
+      verdict: tallest ? "Best " + tallest + "\u2033 \u2014 beat it"
+                       : "Match it, or add a rep"};
+  }
+  /* tier 3 is volume, not progression - show what she did and leave it there */
+  if(m.tier === 3){
+    return {date:le.date, alias:alias, line:line, next:heaviest || null,
+      verdict: "Accessory \u00b7 match " + heaviest + " lb or add a rep"};
+  }
   if(allHit && easy){
     next = base + stepFor(name);
     verdict = "Prescribed " + prescribed + " lb \u2192 try " + next + " lb  \u00b7  every set at " + top + " reps, " + (rirTxt || "RIR 2+");
@@ -647,7 +684,7 @@ function progress(name, prescribed, before){
       ? "Prescribed " + prescribed + " lb  \u00b7  you were at " + heaviest + " lb"
       : "Prescribed " + prescribed + " lb";
   }
-  return {date:le.date, line:line, verdict:verdict, next:next};
+  return {date:le.date, alias:alias, line:line, verdict:verdict, next:next};
 }
 function suggestFor(x, d){
   var base = x.load ? x.load() : "";
@@ -850,21 +887,21 @@ var DAYTYPE = {"2026-09-07":"sprint","2026-09-08":"lower","2026-09-09":"vo2",
    — so next week's card can say what actually happened. */
 var INTENT = {
   hipabd: ["Glute medius · frontal-plane hip stability",
-    ["Seated hip abduction machine (upright)","Standing cable abduction","Banded lateral walk","Side plank, top-leg abduction"]],
+    ["Booty Builder abduction machine","Seated hip abduction machine (upright)","Standing cable abduction","Banded lateral walk","Side plank, top-leg abduction"]],
   quad: ["Quad volume at low systemic cost",
-    ["Leg press","Hack squat","Leg extension","Bulgarian split squat","Sissy squat"]],
+    ["Leg press","Hack squat","Pendulum squat","Belt squat","V-squat / plate-loaded squat machine","Leg extension","Bulgarian split squat","Sissy squat"]],
   ham: ["Knee-flexion / posterior volume",
-    ["Seated leg curl","Lying leg curl","Kneeling leg curl","Nordic curl","45° back extension"]],
+    ["Seated leg curl","Lying leg curl","Kneeling leg curl","Standing single-leg curl","Glute-ham raise (GHD)","Reverse hyper","Nordic curl","45° back extension"]],
   glute: ["Hip extension at short muscle length",
-    ["Hip thrust machine","Barbell hip thrust","Glute bridge","Cable pull-through","45° back extension"]],
+    ["Booty Builder hip thrust machine","Hip thrust machine","Barbell hip thrust","Glute kickback machine","Cable kickback","Glute bridge","Cable pull-through","Reverse hyper","45° back extension"]],
   hrow: ["Horizontal pull · mid-back",
-    ["Chest-supported row","Plate-loaded row","Seated cable row","Ring row, feet elevated","One-arm DB row"]],
+    ["Chest-supported row","Hammer Strength iso-lateral row","Plate-loaded row","Seated cable row","Ring row, feet elevated","One-arm DB row"]],
   vpull: ["Vertical pull · lats",
     ["Lat pulldown, neutral grip","Wide-grip pulldown","Ring pull-up","Assisted pull-up","Straight-arm pulldown"]],
   press: ["Vertical press · shoulders",
-    ["DB shoulder press","Machine shoulder press","Landmine press","Seated barbell press"]],
+    ["DB shoulder press","Machine shoulder press","Hammer Strength iso-lateral shoulder press","Landmine press","Seated barbell press"]],
   hpress: ["Horizontal press volume",
-    ["Incline DB press","Machine chest press","Pec deck","Weighted push-up"]],
+    ["Incline DB press","Machine chest press","Hammer Strength iso-lateral chest press","Pec deck","Weighted push-up"]],
   delt: ["Delt and arm volume",
     ["Cable lateral raise","DB lateral raise","Machine lateral raise","Rear-delt fly","Face pull"]],
   antirot: ["Anti-rotation · trunk bracing",
@@ -939,7 +976,9 @@ function logSet(d, x, setNum, st){
     prescribed:(x.load ? x.load()+" lb · " : "")+x.rx, set_num:setNum,
     reps:st.reps||"", weight:st.weight||"", height:st.height||"",
     rir_rpe:st.rir||"", notes:note };
-  SHEET_ROWS.push({date:d, exercise:nm, notes:note});
+  SHEET_ROWS.push({date:d, exercise:nm, notes:note, reps:Number(st.reps)||0,
+                   weight:parseFloat(st.weight)||0, height:parseFloat(st.height)||0,
+                   set_num:setNum, rir:st.rir||""});
   pushRow(row);
 }
 
@@ -1222,7 +1261,8 @@ function renderSession(){
       var pg = progress(x.n, firstNum(x.load ? x.load() : 0), d);
       if(pg){
         var pr = el("div","prog");
-        pr.appendChild(el("span","pk","Last time \u00b7 " + fmtDay(pg.date)));
+        pr.appendChild(el("span","pk","Last time \u00b7 " + fmtDay(pg.date) +
+          (pg.alias && !subIntent(x.n) ? "  \u00b7  " + pg.alias : "")));
         pr.appendChild(el("span","pv", pg.line));
         pr.appendChild(el("span","pd", pg.verdict));
         row.appendChild(pr);
@@ -1474,7 +1514,7 @@ function loadSheet(){
       return { date:String(r[ix.date]||"").slice(0,10), exercise:String(r[ix.exercise]||""),
                set_num:Number(r[ix.set_num])||0, reps:Number(r[ix.reps])||0,
                weight:parseFloat(r[ix.weight])||0, rir:String(r[ix.rir_rpe]||""),
-               notes:String(r[ix.notes]||"") };
+               height:parseFloat(r[ix.height])||0, notes:String(r[ix.notes]||"") };
     });
     setStatus(sheetStatus());
     render();
