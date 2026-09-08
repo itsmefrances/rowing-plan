@@ -1,738 +1,821 @@
 [
- {
-  "date": "2026-09-07",
-  "title": "Sprint 10×200m",
-  "description": "Intervals: 200m x 10 rolling starts. Rest 3 minutes, 38-40 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
-  "offset": 2.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 200,
-    "count": 10,
-    "rest": 180,
-    "spm": 38,
-    "spmMax": 40
-   }
-  ],
-  "skip": true,
-  "wid": "7500cb11-a70d-4516-88a2-dec23cf8a5b3"
- },
- {
-  "date": "2026-09-06",
-  "title": "VO₂ 10×1:20",
-  "description": "Interval Training: 1:20 x 10. 1 min rest. 30-34 s/m. Intensity is set to the middle of the band: your own 500m PB +20.0s/500m. Full Rowfit band is 75–85% of 500m PB.",
-  "offset": 20.0,
-  "groups": [
-   {
-    "type": "time",
-    "value": 80,
-    "count": 10,
-    "rest": 60,
-    "spm": 30,
-    "spmMax": 34
-   }
-  ],
-  "wid": "cf643da7-b4dc-4bd9-ba34-7bcda37e82b3"
- },
- {
-  "date": "2026-09-06",
-  "title": "Threshold 8×750m",
-  "description": "Intervals: 8 x 750m, 26-28 s/m. Rest 2:30. Intensity is set to the middle of the band: your own 500m PB +29.0s/500m. Full Rowfit band is 65–77% of 500m PB.",
-  "offset": 29.0,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 750,
-    "count": 8,
-    "rest": 150,
-    "spm": 26,
-    "spmMax": 28
-   }
-  ]
- },
- {
-  "date": "2026-09-13",
-  "title": "Sprint 12×150m",
-  "description": "Power Intervals: 150m x 12, 2:30 rest. 38-42 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
-  "offset": 2.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 150,
-    "count": 12,
-    "rest": 150,
-    "spm": 38,
-    "spmMax": 42
-   }
-  ]
- },
- {
-  "date": "2026-09-13",
-  "title": "VO₂ 10×1:30",
-  "description": "Interval Training: 1:30 x 10. 1:20 rest. 30-34 s/m. Intensity is set to the middle of the band: your own 500m PB +20.0s/500m. Full Rowfit band is 75–85% of 500m PB.",
-  "offset": 20.0,
-  "groups": [
-   {
-    "type": "time",
-    "value": 90,
-    "count": 10,
-    "rest": 80,
-    "spm": 30,
-    "spmMax": 34
-   }
-  ]
- },
- {
-  "date": "2026-09-13",
-  "title": "Threshold 7×4min",
-  "description": "Intervals: 7 x 4min. 26-28 s/m, rest 3 minutes. Intensity is set to the middle of the band: your own 500m PB +32.5s/500m. Full Rowfit band is 65–70% of 500m PB.",
-  "offset": 32.5,
-  "groups": [
-   {
-    "type": "time",
-    "value": 240,
-    "count": 7,
-    "rest": 180,
-    "spm": 26,
-    "spmMax": 28
-   }
-  ]
- },
- {
-  "date": "2026-09-20",
-  "title": "Sprint 10×200m",
-  "description": "Power Intervals: 200m x 10. Rest 3 minutes. 38-42 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
-  "offset": 2.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 200,
-    "count": 10,
-    "rest": 180,
-    "spm": 38,
-    "spmMax": 42
-   }
-  ],
-  "wid": "a94d732e-e377-49fc-8610-affbfce6a31a"
- },
- {
-  "date": "2026-09-20",
-  "title": "VO₂ 8×500m",
-  "description": "Interval Training: 8 x 500m. Rest 2:00. 28-32 s/m. Intensity is set to the middle of the band: your own 500m PB +22.5s/500m. Full Rowfit band is 75–80% of 500m PB.",
-  "offset": 22.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 500,
-    "count": 8,
-    "rest": 120,
-    "spm": 28,
-    "spmMax": 32
-   }
-  ],
-  "wid": "a05bc794-be23-4cac-9438-35f5e8eed4fe"
- },
- {
-  "date": "2026-09-20",
-  "title": "Threshold 2×15min",
-  "description": "Interval Training: 15 min x 2. Rest 5 min. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +31.5s/500m. Full Rowfit band is 62–75% of 500m PB.",
-  "offset": 31.5,
-  "groups": [
-   {
-    "type": "time",
-    "value": 900,
-    "count": 2,
-    "rest": 300,
-    "spm": 26,
-    "spmMax": 28
-   }
-  ],
-  "wid": "55a34dae-227b-409c-a2e8-611a42ba449a"
- },
- {
-  "date": "2026-09-27",
-  "title": "Sprint 5×300m",
-  "description": "Interval Training: 5x300m at 90-95% with 5 minutes rest, 38-40 s/m. Intensity is set to the middle of the band: your own 500m PB +7.5s/500m. Full Rowfit band is 90–95% of 500m PB.",
-  "offset": 7.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 300,
-    "count": 5,
-    "rest": 300,
-    "spm": 38,
-    "spmMax": 40
-   }
-  ],
-  "wid": "bfb8ff53-7b05-4aae-992a-c25a2ba0373c"
- },
- {
-  "date": "2026-09-27",
-  "title": "VO₂ 6×3min",
-  "description": "Interval training: 6 x 3 min. Rest 3:00. 28-32 s/m. Intensity is set to the middle of the band: your own 500m PB +25.0s/500m. Full Rowfit band is 70–80% of 500m PB.",
-  "offset": 25.0,
-  "groups": [
-   {
-    "type": "time",
-    "value": 180,
-    "count": 6,
-    "rest": 180,
-    "spm": 28,
-    "spmMax": 32
-   }
-  ],
-  "wid": "59c80a7f-b72f-43c8-9a74-cf7d5386e865"
- },
- {
-  "date": "2026-09-27",
-  "title": "Threshold 7×4min",
-  "description": "Intervals: 7 x 4min. 26-28 s/m, rest 3 minutes. Intensity is set to the middle of the band: your own 500m PB +32.5s/500m. Full Rowfit band is 65–70% of 500m PB.",
-  "offset": 32.5,
-  "groups": [
-   {
-    "type": "time",
-    "value": 240,
-    "count": 7,
-    "rest": 180,
-    "spm": 26,
-    "spmMax": 28
-   }
-  ],
-  "wid": "f8091e89-b44c-4ac1-8f4c-05e7019308b0"
- },
- {
-  "date": "2026-10-04",
-  "title": "TEST — 400m + 5×100m",
-  "description": "400m Test from race start. Rest 10 min. Then 5 x 100m, rest 4:00, 42+ s/m, 100+% of 500m PB. Test piece — maximal effort, no capped target.",
-  "offset": null,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 400,
-    "count": 1,
-    "rest": 600,
-    "notes": "rate max"
-   },
-   {
-    "type": "distance",
-    "value": 100,
-    "count": 5,
-    "rest": 240,
-    "spm": 42,
-    "notes": "rate 42+ s/m"
-   }
-  ],
-  "wid": "327476a1-100b-4bd4-b29c-9d28ef3e5dbe"
- },
- {
-  "date": "2026-10-04",
-  "title": "VO₂ 12×1:00",
-  "description": "Interval Training: 12 x 1:00 with 1:00 rest. 30-34 s/m. Intensity is set to the middle of the band: your own 500m PB +22.5s/500m. Full Rowfit band is 75–80% of 500m PB.",
-  "offset": 22.5,
-  "groups": [
-   {
-    "type": "time",
-    "value": 60,
-    "count": 12,
-    "rest": 60,
-    "spm": 30,
-    "spmMax": 34
-   }
-  ],
-  "wid": "5d7f3d8e-d1ed-4cb5-b58f-371b9c0dac54"
- },
- {
-  "date": "2026-10-04",
-  "title": "Threshold 2×15min",
-  "description": "Interval Training: 15 min x 2. Rest 5 min. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +31.5s/500m. Full Rowfit band is 62–75% of 500m PB.",
-  "offset": 31.5,
-  "groups": [
-   {
-    "type": "time",
-    "value": 900,
-    "count": 2,
-    "rest": 300,
-    "spm": 26,
-    "spmMax": 28
-   }
-  ],
-  "wid": "11a53417-e29e-4ffd-893f-5720d8e42d9a"
- },
- {
-  "date": "2026-10-11",
-  "title": "Sprint 5×200m + 5×150m",
-  "description": "200m x 5 at 95%, 40 s/m, 3 min rest. Then 150m x 5 at 100%, 42 s/m, 2 min rest. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
-  "offset": 2.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 200,
-    "count": 5,
-    "rest": 180,
-    "spm": 40
-   },
-   {
-    "type": "distance",
-    "value": 150,
-    "count": 5,
-    "rest": 120,
-    "spm": 42
-   }
-  ],
-  "wid": "b7433e5a-3e85-4f9a-8abb-44e20d8a8d4b"
- },
- {
-  "date": "2026-10-11",
-  "title": "TEST — 2000m (r26 cap) + 4×250m",
-  "description": "2000m Test, max rate 26 s/m. Rest 10 min. Then 4 x 250m at 2k race pace and rate, rest 2 min. Test piece — maximal effort, no capped target.",
-  "offset": null,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 2000,
-    "count": 1,
-    "rest": 600,
-    "notes": "rate ≤26"
-   },
-   {
-    "type": "distance",
-    "value": 250,
-    "count": 4,
-    "rest": 120,
-    "notes": "rate 2k rate"
-   }
-  ],
-  "wid": "24505423-a479-4e89-b02d-5b08e0015072"
- },
- {
-  "date": "2026-10-11",
-  "title": "Threshold 8×4min",
-  "description": "Interval Training: 8 x 4 minutes. Rest 3 minutes. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.",
-  "offset": 30.0,
-  "groups": [
-   {
-    "type": "time",
-    "value": 240,
-    "count": 8,
-    "rest": 180,
-    "spm": 26,
-    "spmMax": 28
-   }
-  ],
-  "wid": "a358ea5a-49a5-4bc1-92e2-8d0ae9d23f7f"
- },
- {
-  "date": "2026-10-18",
-  "title": "TEST — 450m + 5×100m",
-  "description": "450m Test from dead stop. Rest 10 min. Then 5 x 100m maximum effort, rest 3 min. Test piece — maximal effort, no capped target.",
-  "offset": null,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 450,
-    "count": 1,
-    "rest": 600,
-    "notes": "rate max"
-   },
-   {
-    "type": "distance",
-    "value": 100,
-    "count": 5,
-    "rest": 180,
-    "notes": "rate max"
-   }
-  ],
-  "wid": "bff8d6a5-90da-4f6c-9aad-826e8226298f"
- },
- {
-  "date": "2026-10-18",
-  "title": "VO₂ 10×400m",
-  "description": "Interval Training: 400m x 10. Rest 1:30. 28-34 s/m. Intensity is set to the middle of the band: your own 500m PB +25.0s/500m. Full Rowfit band is 70–80% of 500m PB.",
-  "offset": 25.0,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 400,
-    "count": 10,
-    "rest": 90,
-    "spm": 28,
-    "spmMax": 34
-   }
-  ],
-  "wid": "a85901ed-e647-4403-ac06-f091636fe3e4"
- },
- {
-  "date": "2026-10-18",
-  "title": "Threshold 6×1500m",
-  "description": "Intervals: 6 x 1500m. Rest 3 minutes. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.",
-  "offset": 30.0,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 1500,
-    "count": 6,
-    "rest": 180,
-    "spm": 26,
-    "spmMax": 28
-   }
-  ],
-  "wid": "5025137a-6f38-458d-b82f-a55179d758d4"
- },
- {
-  "date": "2026-10-25",
-  "title": "Sprint 12×30s",
-  "description": "Interval training: 12 x 30 sec. Rest 4:00. 40-44 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
-  "offset": 2.5,
-  "groups": [
-   {
-    "type": "time",
-    "value": 30,
-    "count": 12,
-    "rest": 240,
-    "spm": 40,
-    "spmMax": 44
-   }
-  ],
-  "wid": "e961a2ed-9421-4b2b-a6b6-7c8dab954f5f"
- },
- {
-  "date": "2026-10-25",
-  "title": "VO₂ 1250-1000-750-500",
-  "description": "Interval training: 1250m, 1000m, 750m, 500m. Rest 4 minutes. 30-34 s/m. Intensity is set to the middle of the band: your own 500m PB +24.0s/500m. Full Rowfit band is 72–80% of 500m PB.",
-  "offset": 24.0,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 1250,
-    "count": 1,
-    "rest": 240,
-    "spm": 30,
-    "spmMax": 34
-   },
-   {
-    "type": "distance",
-    "value": 1000,
-    "count": 1,
-    "rest": 240,
-    "spm": 30,
-    "spmMax": 34
-   },
-   {
-    "type": "distance",
-    "value": 750,
-    "count": 1,
-    "rest": 240,
-    "spm": 30,
-    "spmMax": 34
-   },
-   {
-    "type": "distance",
-    "value": 500,
-    "count": 1,
-    "rest": 240,
-    "spm": 30,
-    "spmMax": 34
-   }
-  ],
-  "wid": "00288481-e82e-4c79-8da4-ce7233f5a945"
- },
- {
-  "date": "2026-10-25",
-  "title": "Threshold 8×4min",
-  "description": "Interval Training: 8 x 4 minutes. Rest 3 minutes. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.",
-  "offset": 30.0,
-  "groups": [
-   {
-    "type": "time",
-    "value": 240,
-    "count": 8,
-    "rest": 180,
-    "spm": 26,
-    "spmMax": 28
-   }
-  ],
-  "wid": "97434956-1859-4968-9b9e-14384aed651b"
- },
- {
-  "date": "2026-11-01",
-  "title": "TEST — 1-Minute max + 5×100m",
-  "description": "1 Minute Test from race start. Then 5 x 100m with standing start, rest 3 min, 45+ s/m, 100+% of 500m PB. Test piece — maximal effort, no capped target.",
-  "offset": null,
-  "groups": [
-   {
-    "type": "time",
-    "value": 60,
-    "count": 1,
-    "rest": 600,
-    "notes": "rate max"
-   },
-   {
-    "type": "distance",
-    "value": 100,
-    "count": 5,
-    "rest": 180,
-    "spm": 45,
-    "notes": "rate 45+ s/m"
-   }
-  ],
-  "wid": "a78b2bde-eb41-43aa-ac1b-d209991dfe12"
- },
- {
-  "date": "2026-11-01",
-  "title": "VO₂ 4×4min",
-  "description": "Interval training: 4 x 4 min. Rest 3:30. 28-32 s/m. Intensity is set to the middle of the band: your own 500m PB +25.0s/500m. Full Rowfit band is 70–80% of 500m PB.",
-  "offset": 25.0,
-  "groups": [
-   {
-    "type": "time",
-    "value": 240,
-    "count": 4,
-    "rest": 210,
-    "spm": 28,
-    "spmMax": 32
-   }
-  ],
-  "wid": "e031b65c-e4e0-41a4-bad6-cce0060b3479"
- },
- {
-  "date": "2026-11-01",
-  "title": "Threshold 8×1000m",
-  "description": "Interval Training: 8 x 1000 meters. Rest 3:00. 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.",
-  "offset": 30.0,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 1000,
-    "count": 8,
-    "rest": 180,
-    "spm": 26,
-    "spmMax": 28
-   }
-  ],
-  "wid": "7eeed784-6e0d-4189-b6c7-f3e6569175c7"
- },
- {
-  "date": "2026-11-08",
-  "title": "Sprint 10×200m",
-  "description": "Power Intervals: 200m x 10. Rest 4 minutes. 40-44 s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
-  "offset": 2.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 200,
-    "count": 10,
-    "rest": 240,
-    "spm": 40,
-    "spmMax": 44
-   }
-  ],
-  "wid": "56377f9b-af94-4df4-91cc-dd8b65243e26"
- },
- {
-  "date": "2026-11-08",
-  "title": "TEST — 2000m (r28 cap) + 4×250m",
-  "description": "2000m Test, max rate 28 s/m. Rest 10 min. Then 4 x 250m at 2k race pace and rate, rest 2 min. Test piece — maximal effort, no capped target.",
-  "offset": null,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 2000,
-    "count": 1,
-    "rest": 600,
-    "notes": "rate ≤28"
-   },
-   {
-    "type": "distance",
-    "value": 250,
-    "count": 4,
-    "rest": 120,
-    "notes": "rate 2k rate"
-   }
-  ],
-  "wid": "f986f601-6729-40f6-8aab-86bf4fc69ced"
- },
- {
-  "date": "2026-11-08",
-  "title": "Threshold 5000m",
-  "description": "Single Distance: 5000m. 26-30 s/m. Intensity is set to the middle of the band: your own 500m PB +31.5s/500m. Full Rowfit band is 62–75% of 500m PB.",
-  "offset": 31.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 5000,
-    "count": 1,
-    "rest": null,
-    "spm": 26,
-    "spmMax": 30
-   }
-  ],
-  "wid": "a976e22a-80f9-414f-b90e-8b436fe4efd5"
- },
- {
-  "date": "2026-11-15",
-  "title": "TEST — 500m",
-  "description": "500m Test from race signal. Start strong and controlled, settle to race pace, lift the final 150m. Test piece — maximal effort, no capped target.",
-  "offset": null,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 500,
-    "count": 1,
-    "rest": null,
-    "notes": "rate max"
-   }
-  ],
-  "wid": "fa6b2e39-0e6a-4327-ab36-fa069f80c481"
- },
- {
-  "date": "2026-11-15",
-  "title": "VO₂ 6×500m",
-  "description": "Interval Training: 6 x 500m. Rest 2 minutes. 32-34 s/m. Intensity is set to the middle of the band: your own 500m PB +22.5s/500m. Full Rowfit band is 75–80% of 500m PB.",
-  "offset": 22.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 500,
-    "count": 6,
-    "rest": 120,
-    "spm": 32,
-    "spmMax": 34
-   }
-  ],
-  "wid": "dd388c5e-90cf-49bb-987c-ac2abe8f6910"
- },
- {
-  "date": "2026-11-15",
-  "title": "Threshold 5×1500m",
-  "description": "Interval Training: 5 x 1500m at 26-28 s/m. Intensity is set to the middle of the band: your own 500m PB +30.0s/500m. Full Rowfit band is 65–75% of 500m PB.",
-  "offset": 30.0,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 1500,
-    "count": 5,
-    "rest": 180,
-    "spm": 26,
-    "spmMax": 28
-   }
-  ],
-  "wid": "9428c806-6a52-48b4-b335-3e1950d9da61"
- },
- {
-  "date": "2026-11-22",
-  "title": "Sprint 4×250m race starts",
-  "description": "Set up a 250m race on the PM for each piece to practise starting on the signal. 4 x 250m, rest 4:00, 42+ s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
-  "offset": 2.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 250,
-    "count": 4,
-    "rest": 240,
-    "spm": 42,
-    "notes": "rate 42+ s/m"
-   }
-  ],
-  "wid": "0d887c98-d3c3-4fac-8b64-d6589c2df407"
- },
- {
-  "date": "2026-11-22",
-  "title": "TEST — 2000m",
-  "description": "2000m Test. Start strong but controlled, rate 30+, build the final 500m, everything in the last 250m. Test piece — maximal effort, no capped target.",
-  "offset": null,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 2000,
-    "count": 1,
-    "rest": null,
-    "spm": 30,
-    "notes": "rate 30+ s/m"
-   }
-  ],
-  "wid": "7f5f4b06-5ace-4ba8-b461-ff79fd842113"
- },
- {
-  "date": "2026-11-22",
-  "title": "Threshold 6×1000m",
-  "description": "Interval Training: 6 x 1000 meters. Rest 3:00. 28-30 s/m. Intensity is set to the middle of the band: your own 500m PB +27.5s/500m. Full Rowfit band is 70–75% of 500m PB.",
-  "offset": 27.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 1000,
-    "count": 6,
-    "rest": 180,
-    "spm": 28,
-    "spmMax": 30
-   }
-  ],
-  "wid": "9e0d2bf2-9ecd-4248-b73d-9bee0649e697"
- },
- {
-  "date": "2026-11-29",
-  "title": "Sprint 3×250m race starts",
-  "description": "3 x 250m from the race signal. Rest 4:00. 42+ s/m. Intensity is set to the middle of the band: your own 500m PB +2.5s/500m. Full Rowfit band is 95–100% of 500m PB.",
-  "offset": 2.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 250,
-    "count": 3,
-    "rest": 240,
-    "spm": 42,
-    "notes": "rate 42+ s/m"
-   }
-  ],
-  "wid": "271862a7-fe65-4fa8-b674-2e45ed28c036"
- },
- {
-  "date": "2026-11-29",
-  "title": "VO₂ 4×500m",
-  "description": "Interval Training: 4 x 500m. Rest 2 minutes. 32-34 s/m. Intensity is set to the middle of the band: your own 500m PB +22.5s/500m. Full Rowfit band is 75–80% of 500m PB.",
-  "offset": 22.5,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 500,
-    "count": 4,
-    "rest": 120,
-    "spm": 32,
-    "spmMax": 34
-   }
-  ],
-  "wid": "56836ffe-dc44-4e9d-9302-d32f5a3ead47"
- },
- {
-  "date": "2026-11-29",
-  "title": "RACE — BRIC Virtual 500m",
-  "description": "BRIC Virtual Race 500m. 15 min warm-up, 2 x 10 strokes at race pace, rest 4-5 min, then race. Record time, pace, avg watts, rate. Test piece — maximal effort, no capped target.",
-  "offset": null,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 500,
-    "count": 1,
-    "rest": null,
-    "notes": "rate race"
-   }
-  ],
-  "wid": "465e6e9e-6635-4a91-905a-9824af3dcbfe"
- },
- {
-  "date": "2026-11-29",
-  "title": "RACE — BRIC Virtual 2000m",
-  "description": "BRIC Virtual Race 2000m. 15 min warm-up, 2 x 20 strokes at race pace, rest 4 min, then race. Record time, pace, avg watts, rate. Test piece — maximal effort, no capped target.",
-  "offset": null,
-  "groups": [
-   {
-    "type": "distance",
-    "value": 2000,
-    "count": 1,
-    "rest": null,
-    "notes": "rate race"
-   }
-  ],
-  "wid": "95dc15ba-51b0-4cdc-b07f-bff0d880538a"
- }
+  {
+    "date": "2026-09-07",
+    "title": "Sprint 10×200m",
+    "description": "Warm-up: 12 minutes of light rowing. After 7 minutes, perform some intense 10-stroke bursts.\n\nIntervals: 200m x 10 rolling starts. Rest 3 minutes between each interval, 38-40 strokes/minute Intensity: 95%-100% of 500m PB\n\nCool-down: 10 minutes of easy rowing. Focus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 2.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 200,
+        "count": 10,
+        "rest": 180,
+        "spm": 38,
+        "spmMax": 40
+      }
+    ],
+    "wid": "7500cb11-a70d-4516-88a2-dec23cf8a5b3",
+    "hubfitId": "6a9ec8afc28d1908b98ad1ec",
+    "hubfitDate": "2026-09-07"
+  },
+  {
+    "date": "2026-09-06",
+    "title": "VO₂ 10×1:20",
+    "description": "Warm-up: 12 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 1:20 x 10. 1 min rest.\n30-34 strokes/minute\nIntensity: 75-85% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 20.0,
+    "groups": [
+      {
+        "type": "time",
+        "value": 80,
+        "count": 10,
+        "rest": 60,
+        "spm": 30,
+        "spmMax": 34
+      }
+    ],
+    "wid": "cf643da7-b4dc-4bd9-ba34-7bcda37e82b3",
+    "hubfitId": "6a9ec8afc28d1908b98ad1e6",
+    "hubfitDate": "2026-09-09"
+  },
+  {
+    "date": "2026-09-06",
+    "title": "Threshold 8×750m",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nIntervals : 8 x 750m, 26-28 strokes/minute.\nRest 2:30 minutes\nIntensity: 65-77% of your 500m personal best.\n\nCool-down: 10 minutes of calm rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 29.0,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 750,
+        "count": 8,
+        "rest": 150,
+        "spm": 26,
+        "spmMax": 28
+      }
+    ],
+    "hubfitId": "6a9ec8afc28d1908b98ad1e9",
+    "hubfitDate": "2026-09-12",
+    "wid": "d4f2a04f-b6da-4716-87c2-24b5c3b074a5"
+  },
+  {
+    "date": "2026-09-13",
+    "title": "Sprint 12×150m",
+    "description": "Warm-up: 10 minutes of easy rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nPower Intervals: 150m x 12, 2:30 min rest between intervals.\n38-42 strokes/minute\nIntensity: 95-100% of 500m PB\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 2.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 150,
+        "count": 12,
+        "rest": 150,
+        "spm": 38,
+        "spmMax": 42
+      }
+    ],
+    "hubfitId": "6a9ec8afc28d1908b98ad1ef",
+    "hubfitDate": "2026-09-14",
+    "wid": "43cf57d8-a5dd-473b-8bb5-00358635cbf1"
+  },
+  {
+    "date": "2026-09-13",
+    "title": "VO₂ 10×1:30",
+    "description": "Warm-up: 12 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 1:30 x 10. 1:20 min rest.\n30-34 strokes/minute\nIntensity: 75-85% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 20.0,
+    "groups": [
+      {
+        "type": "time",
+        "value": 90,
+        "count": 10,
+        "rest": 80,
+        "spm": 30,
+        "spmMax": 34
+      }
+    ],
+    "hubfitId": "6a9ec8afc28d1908b98ad1f2",
+    "hubfitDate": "2026-09-16",
+    "wid": "b799e3e9-20a7-4e15-a999-48bdbbc6689c"
+  },
+  {
+    "date": "2026-09-13",
+    "title": "Threshold 7×4min",
+    "description": "Warm-up: 12 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nIntervals: 7 x 4min.\n26-28 s/m rest 3 minutes.\nIntensity: 65-70% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 32.5,
+    "groups": [
+      {
+        "type": "time",
+        "value": 240,
+        "count": 7,
+        "rest": 180,
+        "spm": 26,
+        "spmMax": 28
+      }
+    ],
+    "hubfitId": "6a9ec8afc28d1908b98ad1f5",
+    "hubfitDate": "2026-09-19",
+    "wid": "76281383-bfbb-41ef-8e1c-d5c9f84cbf87"
+  },
+  {
+    "date": "2026-09-20",
+    "title": "Sprint 10×200m",
+    "description": "Warm-up: 12 minutes of light rowing.\nFocus on technique.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nPower Intervals: 200m x 10.\nRest for 3 minutes between each interval.\n38-42 strokes/minute.\nIntensity: 95-100% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 2.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 200,
+        "count": 10,
+        "rest": 180,
+        "spm": 38,
+        "spmMax": 42
+      }
+    ],
+    "wid": "a94d732e-e377-49fc-8610-affbfce6a31a",
+    "hubfitId": "6a9ec8afc28d1908b98ad1f8",
+    "hubfitDate": "2026-09-21"
+  },
+  {
+    "date": "2026-09-20",
+    "title": "VO₂ 8×500m",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense sets of 10 strokes.\n\nInterval Training: 8 x 500m.\nRest for 2:00 minutes between each interval.\n28-32 strokes/minute\nIntensity: 75-80% of your 500m personal best\n\nCooldown: 10 minutes of easy rowing.\nFocus on technique during the cooldown.\n\nShare your results in the Rowfit community.",
+    "offset": 22.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 500,
+        "count": 8,
+        "rest": 120,
+        "spm": 28,
+        "spmMax": 32
+      }
+    ],
+    "wid": "a05bc794-be23-4cac-9438-35f5e8eed4fe",
+    "hubfitId": "6a9ec8afc28d1908b98ad1fb",
+    "hubfitDate": "2026-09-23"
+  },
+  {
+    "date": "2026-09-20",
+    "title": "Threshold 2×15min",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 15 min x 2. Rest 5 min.\n26-28 strokes/minute.\nIntensity: 62-75% of your 500m personal best.\n\nCool-down: 10 minutes of calm rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 31.5,
+    "groups": [
+      {
+        "type": "time",
+        "value": 900,
+        "count": 2,
+        "rest": 300,
+        "spm": 26,
+        "spmMax": 28
+      }
+    ],
+    "wid": "55a34dae-227b-409c-a2e8-611a42ba449a",
+    "hubfitId": "6a9ec8afc28d1908b98ad201",
+    "hubfitDate": "2026-09-26"
+  },
+  {
+    "date": "2026-09-27",
+    "title": "Sprint 5×300m",
+    "description": "Warm-up: 15 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke sets.\n\nInterval Training: 5x300m at 90-95% with 5 minutes' rest 38-40s/m\n\nCool-down: 10 minutes of gentle rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 7.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 300,
+        "count": 5,
+        "rest": 300,
+        "spm": 38,
+        "spmMax": 40
+      }
+    ],
+    "wid": "bfb8ff53-7b05-4aae-992a-c25a2ba0373c",
+    "hubfitId": "6a9ec8afc28d1908b98ad204",
+    "hubfitDate": "2026-09-28"
+  },
+  {
+    "date": "2026-09-27",
+    "title": "VO₂ 6×3min",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke sets.\n\nInterval training: 6 x 3 min meters.\nRest 3:00 minutes between each interval.\n28-32 strokes/minute\nIntensity: 70-80% of 500m personal best.\n\nCool down: 10 minutes of easy rowing.\nFocus on technique during the cool down.\n\nShare your results in the Rowfit community.",
+    "offset": 25.0,
+    "groups": [
+      {
+        "type": "time",
+        "value": 180,
+        "count": 6,
+        "rest": 180,
+        "spm": 28,
+        "spmMax": 32
+      }
+    ],
+    "wid": "59c80a7f-b72f-43c8-9a74-cf7d5386e865",
+    "hubfitId": "6a9ec8afc28d1908b98ad1fe",
+    "hubfitDate": "2026-09-30"
+  },
+  {
+    "date": "2026-09-27",
+    "title": "Threshold 7×4min",
+    "description": "Warm-up: 12 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nIntervals: 7 x 4min.\n26-28 s/m rest 3 minutes.\nIntensity: 65-70% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 32.5,
+    "groups": [
+      {
+        "type": "time",
+        "value": 240,
+        "count": 7,
+        "rest": 180,
+        "spm": 26,
+        "spmMax": 28
+      }
+    ],
+    "wid": "f8091e89-b44c-4ac1-8f4c-05e7019308b0",
+    "hubfitId": "6a9ec8afc28d1908b98ad273",
+    "hubfitDate": "2026-10-03"
+  },
+  {
+    "date": "2026-10-04",
+    "title": "TEST — 400m + 5×100m",
+    "description": "Warm-up: 15 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\n400m Test: Set up a race on your Concept2 so you can practice starting on the race signal.\n\nStart hard, settle quickly, then row long and powerful strokes. With 100m to go, lift the rate and give everything to the finish\n\nRest 10 min \n\nInterval Training: 5 x 100m with 4 minutes' rest.\n42+ stroke rate\nIntensity: 100+% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": null,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 400,
+        "count": 1,
+        "rest": 600,
+        "notes": "rate max"
+      },
+      {
+        "type": "distance",
+        "value": 100,
+        "count": 5,
+        "rest": 240,
+        "spm": 42,
+        "notes": "rate 42+ s/m"
+      }
+    ],
+    "wid": "327476a1-100b-4bd4-b29c-9d28ef3e5dbe",
+    "hubfitId": "6a9ec8afc28d1908b98ad207",
+    "hubfitDate": "2026-10-05"
+  },
+  {
+    "date": "2026-10-04",
+    "title": "VO₂ 12×1:00",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 12 x 1:00 min with 1:00 minute rest between intervals.\n30-34 strokes/minute\nIntensity: 75-80% of your 500m personal best.\n\nCool-down: 10 minutes of gentle rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 22.5,
+    "groups": [
+      {
+        "type": "time",
+        "value": 60,
+        "count": 12,
+        "rest": 60,
+        "spm": 30,
+        "spmMax": 34
+      }
+    ],
+    "wid": "5d7f3d8e-d1ed-4cb5-b58f-371b9c0dac54",
+    "hubfitId": "6a9ec8afc28d1908b98ad20d",
+    "hubfitDate": "2026-10-07"
+  },
+  {
+    "date": "2026-10-04",
+    "title": "Threshold 2×15min",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 15 min x 2. Rest 5 min.\n26-28 strokes/minute.\nIntensity: 62-75% of your 500m personal best.\n\nCool-down: 10 minutes of calm rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 31.5,
+    "groups": [
+      {
+        "type": "time",
+        "value": 900,
+        "count": 2,
+        "rest": 300,
+        "spm": 26,
+        "spmMax": 28
+      }
+    ],
+    "wid": "11a53417-e29e-4ffd-893f-5720d8e42d9a",
+    "hubfitId": "6a9ec8afc28d1908b98ad276",
+    "hubfitDate": "2026-10-10"
+  },
+  {
+    "date": "2026-10-11",
+    "title": "Sprint 5×200m + 5×150m",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval training: 200m x 5  at  95% 40 s/m with 3 minutes rest + 150 x 5  at 100% 42 s/m with 2 minutes rest\n95-100% of 500m PB\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 2.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 200,
+        "count": 5,
+        "rest": 180,
+        "spm": 40
+      },
+      {
+        "type": "distance",
+        "value": 150,
+        "count": 5,
+        "rest": 120,
+        "spm": 42
+      }
+    ],
+    "wid": "b7433e5a-3e85-4f9a-8abb-44e20d8a8d4b",
+    "hubfitId": "6a9ec8afc28d1908b98ad213",
+    "hubfitDate": "2026-10-12"
+  },
+  {
+    "date": "2026-10-11",
+    "title": "TEST — 2000m (r26 cap) + 4×250m",
+    "description": "Warm-up: 10 minutes of easy rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\n2000m Test: Row 2000m as fast as possible with a maximum stroke rate of 26 strokes per minute.\nFocus on long, powerful strokes and maintaining strong technique throughout.\n\nRest for 10 minutes.\n\nRace Pace Intervals: 4 x 250m.\nRow each interval at your 2000m race pace and your normal 2000m race stroke rate.\nRest for 2 to minutes between each interval.\n\nCool down: 10 minutes of easy rowing.\nFocus on technique during the cool down.\n\nShare your results in the RowFit community.",
+    "offset": null,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 2000,
+        "count": 1,
+        "rest": 600,
+        "notes": "rate ≤26"
+      },
+      {
+        "type": "distance",
+        "value": 250,
+        "count": 4,
+        "rest": 120,
+        "notes": "rate 2k rate"
+      }
+    ],
+    "wid": "24505423-a479-4e89-b02d-5b08e0015072",
+    "hubfitId": "6a9ec8afc28d1908b98ad20a",
+    "hubfitDate": "2026-10-14"
+  },
+  {
+    "date": "2026-10-11",
+    "title": "Threshold 8×4min",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 8 x 4 minutes.\nRest 3 minutes between each interval.\n26-28 strokes/minute.\nIntensity: 65-75% of your 500m personal best.\n\nCool-down: 10 minutes of calm rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 30.0,
+    "groups": [
+      {
+        "type": "time",
+        "value": 240,
+        "count": 8,
+        "rest": 180,
+        "spm": 26,
+        "spmMax": 28
+      }
+    ],
+    "wid": "a358ea5a-49a5-4bc1-92e2-8d0ae9d23f7f",
+    "hubfitId": "6a9ec8afc28d1908b98ad219",
+    "hubfitDate": "2026-10-17"
+  },
+  {
+    "date": "2026-10-18",
+    "title": "TEST — 450m + 5×100m",
+    "description": "Warm-up: 15 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\n450m Test: Set up a race on your Concept2 so you can practice starting from a dead stop and reacting to the race signal.\n\nStart hard and accelerate quickly.\nSettle into long, powerful strokes through the middle of the test.\nWith 100m to go, increase the stroke rate and give everything to the finish.\n\nRest for 10 minutes.\n\nSprint Intervals: 5 x 100m\nMaximum effort on every interval.\nFocus on an explosive start, high stroke rate, and maintaining power all the way through.\nRest for 3 minutes between each 100m.\n\nCool down: 10 minutes of easy rowing.\nFocus on technique during the cool down.\n\nShare your results in the RowFit community.",
+    "offset": null,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 450,
+        "count": 1,
+        "rest": 600,
+        "notes": "rate max"
+      },
+      {
+        "type": "distance",
+        "value": 100,
+        "count": 5,
+        "rest": 180,
+        "notes": "rate max"
+      }
+    ],
+    "wid": "bff8d6a5-90da-4f6c-9aad-826e8226298f",
+    "hubfitId": "6a9ec8afc28d1908b98ad21c",
+    "hubfitDate": "2026-10-19"
+  },
+  {
+    "date": "2026-10-18",
+    "title": "VO₂ 10×400m",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform several intense 10-stroke bursts.\n\nInterval Training: 400m x 10.\nRest for 1:30 minutes between each interval.\n28-34 strokes per minute.\nIntensity: 70-80% of your 500m personal best.\n\nCool Down: 10 minutes of gentle rowing.\nFocus on your technique during the cooldown.\n\nShare your results in the Rowfit community.",
+    "offset": 25.0,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 400,
+        "count": 10,
+        "rest": 90,
+        "spm": 28,
+        "spmMax": 34
+      }
+    ],
+    "wid": "a85901ed-e647-4403-ac06-f091636fe3e4",
+    "hubfitId": "6a9ec8afc28d1908b98ad216",
+    "hubfitDate": "2026-10-21"
+  },
+  {
+    "date": "2026-10-18",
+    "title": "Threshold 6×1500m",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nIntervals: 6 x 1500m.\nRest 3 minutes between each interval.\n26-28 strokes/minute\nIntensity: 65-75% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community",
+    "offset": 30.0,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 1500,
+        "count": 6,
+        "rest": 180,
+        "spm": 26,
+        "spmMax": 28
+      }
+    ],
+    "wid": "5025137a-6f38-458d-b82f-a55179d758d4",
+    "hubfitId": "6a9ec8afc28d1908b98ad210",
+    "hubfitDate": "2026-10-24"
+  },
+  {
+    "date": "2026-10-25",
+    "title": "Sprint 12×30s",
+    "description": "Warm-up: 12 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval training: 12 x 30 sec.\nRest for 4:00 minutes between each interval.\n40-44 strokes per minute.\nIntensity: 95- 100% of your 500m personal best.\n\nCooldown: 10 minutes of gentle rowing.\nFocus on technique during the cooldown.\n\nShare your results in the Rowfit community.",
+    "offset": 2.5,
+    "groups": [
+      {
+        "type": "time",
+        "value": 30,
+        "count": 12,
+        "rest": 240,
+        "spm": 40,
+        "spmMax": 44
+      }
+    ],
+    "wid": "e961a2ed-9421-4b2b-a6b6-7c8dab954f5f",
+    "hubfitId": "6a9ec8afc28d1908b98ad222",
+    "hubfitDate": "2026-10-26"
+  },
+  {
+    "date": "2026-10-25",
+    "title": "VO₂ 1250-1000-750-500",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval training: 1250m, 1000m, 750m, 500m.\nRest for 4 minutes between each interval.\n30-34 strokes/minute.\nIntensity: 72-80% of your 500m personal best.\n\nCool-down: 10 minutes of gentle rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 24.0,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 1250,
+        "count": 1,
+        "rest": 240,
+        "spm": 30,
+        "spmMax": 34
+      },
+      {
+        "type": "distance",
+        "value": 1000,
+        "count": 1,
+        "rest": 240,
+        "spm": 30,
+        "spmMax": 34
+      },
+      {
+        "type": "distance",
+        "value": 750,
+        "count": 1,
+        "rest": 240,
+        "spm": 30,
+        "spmMax": 34
+      },
+      {
+        "type": "distance",
+        "value": 500,
+        "count": 1,
+        "rest": 240,
+        "spm": 30,
+        "spmMax": 34
+      }
+    ],
+    "wid": "00288481-e82e-4c79-8da4-ce7233f5a945",
+    "hubfitId": "6a9ec8afc28d1908b98ad21f",
+    "hubfitDate": "2026-10-28"
+  },
+  {
+    "date": "2026-10-25",
+    "title": "Threshold 8×4min",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 8 x 4 minutes.\nRest 3 minutes between each interval.\n26-28 strokes/minute.\nIntensity: 65-75% of your 500m personal best.\n\nCool-down: 10 minutes of calm rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 30.0,
+    "groups": [
+      {
+        "type": "time",
+        "value": 240,
+        "count": 8,
+        "rest": 180,
+        "spm": 26,
+        "spmMax": 28
+      }
+    ],
+    "wid": "97434956-1859-4968-9b9e-14384aed651b",
+    "hubfitId": "6a9ec8afc28d1908b98ad279",
+    "hubfitDate": "2026-10-31"
+  },
+  {
+    "date": "2026-11-01",
+    "title": "TEST — 1-Minute max + 5×100m",
+    "description": "Warm-up: 15 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\n1 Minute Test: Set up a race on your Concept2 so you can practice starting on the race signal.\nAccelerate hard through the opening strokes.\nSettle into your target race rhythm as quickly as possible.\nMaintain maximum sustainable power through the middle.\nGive everything you have in the final 15 seconds. \n\nInterval training: 100m x 5. With Standing Start!\nRest for 3 minutes between each interval.\n45+ strokes/minute.\nIntensity: 100+% of 500m personal best.\n\nCool-down: 10 minutes of gentle rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": null,
+    "groups": [
+      {
+        "type": "time",
+        "value": 60,
+        "count": 1,
+        "rest": 600,
+        "notes": "rate max"
+      },
+      {
+        "type": "distance",
+        "value": 100,
+        "count": 5,
+        "rest": 180,
+        "spm": 45,
+        "notes": "rate 45+ s/m"
+      }
+    ],
+    "wid": "a78b2bde-eb41-43aa-ac1b-d209991dfe12",
+    "hubfitId": "6a9ec8afc28d1908b98ad225",
+    "hubfitDate": "2026-11-02"
+  },
+  {
+    "date": "2026-11-01",
+    "title": "VO₂ 4×4min",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke sets.\n\nInterval training: 4 x 4 min meters.\nRest 3:30 minutes between each interval.\n28-32 strokes/minute\nIntensity: 70-80% of 500m personal best.\n\nCool down: 10 minutes of easy rowing.\nFocus on technique during the cool down.\n\nShare your results in the Rowfit community.",
+    "offset": 25.0,
+    "groups": [
+      {
+        "type": "time",
+        "value": 240,
+        "count": 4,
+        "rest": 210,
+        "spm": 28,
+        "spmMax": 32
+      }
+    ],
+    "wid": "e031b65c-e4e0-41a4-bad6-cce0060b3479",
+    "hubfitId": "6a9ec8afc28d1908b98ad231",
+    "hubfitDate": "2026-11-04"
+  },
+  {
+    "date": "2026-11-01",
+    "title": "Threshold 8×1000m",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 8 x 1000 meters.\nRest for 3:00 minutes between each interval.\n26-28 strokes/ minute.\nIntensity: 65-75% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 30.0,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 1000,
+        "count": 8,
+        "rest": 180,
+        "spm": 26,
+        "spmMax": 28
+      }
+    ],
+    "wid": "7eeed784-6e0d-4189-b6c7-f3e6569175c7",
+    "hubfitId": "6a9ec8afc28d1908b98ad22b",
+    "hubfitDate": "2026-11-07"
+  },
+  {
+    "date": "2026-11-08",
+    "title": "Sprint 10×200m",
+    "description": "Warm-up: 12 minutes of light rowing.\nFocus on technique.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nPower Intervals: 200m x 10.\nRest for 4 minutes between each interval.\n40-44 strokes/minute.\nIntensity: 95-100% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 2.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 200,
+        "count": 10,
+        "rest": 240,
+        "spm": 40,
+        "spmMax": 44
+      }
+    ],
+    "wid": "56377f9b-af94-4df4-91cc-dd8b65243e26",
+    "hubfitId": "6a9ec8afc28d1908b98ad22e",
+    "hubfitDate": "2026-11-09"
+  },
+  {
+    "date": "2026-11-08",
+    "title": "TEST — 2000m (r28 cap) + 4×250m",
+    "description": "Warm-up: 10 minutes of easy rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\n2000m Test: Row 2000m as fast as possible with a maximum stroke rate of 28 strokes per minute.\nFocus on long, powerful strokes and maintaining strong technique throughout.\n\nRest for 10 minutes.\n\nRace Pace Intervals: 4 x 250m.\nRow each interval at your 2000m race pace and your normal 2000m race stroke rate.\nRest for 2 to minutes between each interval.\n\nCool down: 10 minutes of easy rowing.\nFocus on technique during the cool down.\n\nShare your results in the RowFit community.",
+    "offset": null,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 2000,
+        "count": 1,
+        "rest": 600,
+        "notes": "rate ≤28"
+      },
+      {
+        "type": "distance",
+        "value": 250,
+        "count": 4,
+        "rest": 120,
+        "notes": "rate 2k rate"
+      }
+    ],
+    "wid": "f986f601-6729-40f6-8aab-86bf4fc69ced",
+    "hubfitId": "6a9ec8afc28d1908b98ad228",
+    "hubfitDate": "2026-11-11"
+  },
+  {
+    "date": "2026-11-08",
+    "title": "Threshold 5000m",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nSingle Distance: 5000m.\n26-30 strokes/minute.\nIntensity: 62-75% of your 500m personal best.\n\nCool-down: 10 minutes of calm rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 31.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 5000,
+        "count": 1,
+        "rest": null,
+        "spm": 26,
+        "spmMax": 30
+      }
+    ],
+    "wid": "a976e22a-80f9-414f-b90e-8b436fe4efd5",
+    "hubfitId": "6a9ec8afc28d1908b98ad234",
+    "hubfitDate": "2026-11-14"
+  },
+  {
+    "date": "2026-11-15",
+    "title": "TEST — 500m",
+    "description": "Warm up: 10 minutes of easy rowing.\nAfter 7 minutes, perform a few intense 10 stroke bursts.\n\n500m Test: Set up a race on your Concept2 so you can practice starting on the race signal.\nStart strong and controlled.\nSettle into your race pace quickly.\nIncrease the effort through the final 150m.\nGive everything you have in the last 50m.\n\nAim to maintain strong technique throughout.\n\nCool down: 10 minutes of easy rowing.\nFocus on technique during the cool down.\n\nShare your results in the RowFit community.",
+    "offset": null,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 500,
+        "count": 1,
+        "rest": null,
+        "notes": "rate max"
+      }
+    ],
+    "wid": "fa6b2e39-0e6a-4327-ab36-fa069f80c481",
+    "hubfitId": "6a9ec8afc28d1908b98ad23d",
+    "hubfitDate": "2026-11-16"
+  },
+  {
+    "date": "2026-11-15",
+    "title": "VO₂ 6×500m",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 6 x 500m.\nRest 2 minutes between each interval.\n32-34 strokes/minute\nIntensity: 75-80% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 22.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 500,
+        "count": 6,
+        "rest": 120,
+        "spm": 32,
+        "spmMax": 34
+      }
+    ],
+    "wid": "dd388c5e-90cf-49bb-987c-ac2abe8f6910",
+    "hubfitId": "6a9ec8afc28d1908b98ad240",
+    "hubfitDate": "2026-11-18"
+  },
+  {
+    "date": "2026-11-15",
+    "title": "Threshold 5×1500m",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 5x 1500m at 26-28 s/m\nIntensity: 65-75% of your 500m personal best.\n\nCooldown: 10 minutes of easy rowing.\nFocus on technique during the cooldown.\n\nShare your results in the Rowfit community.",
+    "offset": 30.0,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 1500,
+        "count": 5,
+        "rest": 180,
+        "spm": 26,
+        "spmMax": 28
+      }
+    ],
+    "wid": "9428c806-6a52-48b4-b335-3e1950d9da61",
+    "hubfitId": "6a9ec8afc28d1908b98ad23a",
+    "hubfitDate": "2026-11-21"
+  },
+  {
+    "date": "2026-11-22",
+    "title": "Sprint 4×250m race starts",
+    "description": "Warm-up: 12 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke intervals.\n\nInterval Training: Set up a 250m race on your Concept2 for each piece so you can practice starting on the race signal.\n4 x 250 meters.\nRest for 4:00 between each interval.\n42+ strokes/minute.\nIntensity: 95-100% of 500m PB.\n\nCool-down: 10 minutes of gentle rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 2.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 250,
+        "count": 4,
+        "rest": 240,
+        "spm": 42,
+        "notes": "rate 42+ s/m"
+      }
+    ],
+    "wid": "0d887c98-d3c3-4fac-8b64-d6589c2df407",
+    "hubfitId": "6a9ec8afc28d1908b98ad243",
+    "hubfitDate": "2026-11-23"
+  },
+  {
+    "date": "2026-11-22",
+    "title": "TEST — 2000m",
+    "description": "Warm-up: 15 minutes of easy rowing.\nAfter 10 minutes, perform a few intense 10-stroke bursts.\n\n2000m Test: Row 2000m as fast as possible.\nStart strong but controlled.\nStroke rate 30+\nSettle into your target pace through the middle of the test.\nIncrease the effort over the final 500m.\nGive everything you have in the last 250m.\n\nAim to maintain strong technique throughout.\n\nCool down: 10 minutes of easy rowing.\nFocus on technique during the cool down.\n\nShare your results in the RowFit community.",
+    "offset": null,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 2000,
+        "count": 1,
+        "rest": null,
+        "spm": 30,
+        "notes": "rate 30+ s/m"
+      }
+    ],
+    "wid": "7f5f4b06-5ace-4ba8-b461-ff79fd842113",
+    "hubfitId": "6a9ec8afc28d1908b98ad237",
+    "hubfitDate": "2026-11-25"
+  },
+  {
+    "date": "2026-11-22",
+    "title": "Threshold 6×1000m",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 6 x 1000 meters.\nRest for 3:00 minutes between each interval.\n28-30 strokes/ minute.\nIntensity: 70-75% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 27.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 1000,
+        "count": 6,
+        "rest": 180,
+        "spm": 28,
+        "spmMax": 30
+      }
+    ],
+    "wid": "9e0d2bf2-9ecd-4248-b73d-9bee0649e697",
+    "hubfitId": "6a9ec8afc28d1908b98ad26a",
+    "hubfitDate": "2026-11-28"
+  },
+  {
+    "date": "2026-11-29",
+    "title": "Sprint 3×250m race starts",
+    "description": "Warm-up: 12 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke intervals.\n\nInterval Training: Set up a 250m race on your Concept2 for each piece so you can practice starting on the race signal.\n3 x 250 meters. \nRest for 4:00 between each interval.\n42+ strokes/minute.\nIntensity: 95-100% of 500m PB.\n\nCool-down: 10 minutes of gentle rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 2.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 250,
+        "count": 3,
+        "rest": 240,
+        "spm": 42,
+        "notes": "rate 42+ s/m"
+      }
+    ],
+    "wid": "271862a7-fe65-4fa8-b674-2e45ed28c036",
+    "hubfitId": "6a9ec8afc28d1908b98ad26d",
+    "hubfitDate": "2026-11-30"
+  },
+  {
+    "date": "2026-11-29",
+    "title": "VO₂ 4×500m",
+    "description": "Warm-up: 10 minutes of light rowing.\nAfter 7 minutes, perform a few intense 10-stroke bursts.\n\nInterval Training: 4 x 500m.\nRest 2 minutes between each interval.\n32-34 strokes/minute\nIntensity: 75-80% of your 500m personal best.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": 22.5,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 500,
+        "count": 4,
+        "rest": 120,
+        "spm": 32,
+        "spmMax": 34
+      }
+    ],
+    "wid": "56836ffe-dc44-4e9d-9302-d32f5a3ead47",
+    "hubfitId": "6a9ec8afc28d1908b98ad270",
+    "hubfitDate": "2026-12-02"
+  },
+  {
+    "date": "2026-11-29",
+    "title": "RACE — BRIC Virtual 500m",
+    "description": "BRIC Virtual Race: 500m\n\nWarm-up: 15 minutes of light rowing.\nAfter 8 to 10 minutes, perform a few powerful 10-stroke bursts.\nFinish the warm-up with 2 x 10 strokes at your planned 500m race pace.\n\nRest for 4 to 5 minutes before starting the test.\n\n500m Test: Row 500m as fast as possible.\nStart hard and accelerate quickly during the first 100m.\nSettle into a strong and controlled race pace through the middle 300m.\nStart increasing the effort with 100m remaining.\nGive everything you have during the final 50m.\nStay powerful and maintain good technique all the way to the finish.\n\nRecord your total time, average 500m pace, average watts and stroke rate.\n\nCool down: 10 minutes of easy rowing.\nFocus on relaxed technique and controlled breathing.\n\nShare your results in the RowFit community.",
+    "offset": null,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 500,
+        "count": 1,
+        "rest": null,
+        "notes": "rate race"
+      }
+    ],
+    "wid": "465e6e9e-6635-4a91-905a-9824af3dcbfe",
+    "hubfitId": "6a9ec8afc28d1908b98ad264",
+    "hubfitDate": "2026-12-05"
+  },
+  {
+    "date": "2026-11-29",
+    "title": "RACE — BRIC Virtual 2000m",
+    "description": "BRIC Virtual Race: 2000m \n\nWarm-up: 15 minutes of light rowing.\nAfter 10 minutes, perform a few intense 10-stroke bursts.\nFinish the warm-up with 2 x 20 strokes at your planned race pace.\n\nRest for 4 minutes before starting the test.\n\nRow 2000m as fast as possible.\nStart powerfully but controlled during the first 500m.\nSettle into your planned race pace between 500m and 1500m.\nIncrease your effort during the final 500m.\nGive everything you have during the final 250m.\nMaintain strong technique throughout the test.\n\nRecord your total time, average 500m pace, average watts and stroke rate.\n\nCool-down: 10 minutes of easy rowing.\nFocus on technique and controlled breathing during the cool-down.\n\nShare your results in the Rowfit community.",
+    "offset": null,
+    "groups": [
+      {
+        "type": "distance",
+        "value": 2000,
+        "count": 1,
+        "rest": null,
+        "notes": "rate race"
+      }
+    ],
+    "wid": "95dc15ba-51b0-4cdc-b07f-bff0d880538a",
+    "hubfitId": "6a9ec8afc28d1908b98ad267",
+    "hubfitDate": "2026-12-06"
+  }
 ]
