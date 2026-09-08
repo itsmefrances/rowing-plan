@@ -29,7 +29,8 @@
 *{box-sizing:border-box;}
 body{margin:0;background:var(--ground);color:var(--ink);
   font-family:var(--f-d);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
-.wrap{max-width:1000px;margin:0 auto;padding:22px 16px 70px;}
+/* wide enough that an unfiltered week sits on one line without scrolling */
+.wrap{max-width:1240px;margin:0 auto;padding:22px 16px 70px;}
 h1,h2,h3{margin:0;line-height:1.15;text-wrap:balance;}
 h1{font-size:26px;font-weight:700;letter-spacing:-0.02em;}
 h2{font-size:17px;font-weight:700;letter-spacing:-0.01em;}
@@ -124,7 +125,28 @@ ul.mini li:last-child{border-bottom:0;}
 ul.mini .mn{font-size:12.5px;font-weight:600;line-height:1.3;}
 ul.mini .mr{font-family:var(--f-m);font-size:11px;color:var(--ink-2);}
 ul.mini .ml{font-family:var(--f-m);font-size:11px;color:var(--lift-ink);font-weight:600;}
-.weekgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:11px;}
+/* one row per week. Days sit on a single horizontal line and the row scrolls
+   sideways rather than wrapping to a second line; filtering days out lets the
+   rest widen to fill. */
+.weekgrid{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;
+  -webkit-overflow-scrolling:touch;align-items:stretch;}
+.weekgrid > .sess{flex:1 1 170px;min-width:170px;}
+/* a rest day carries no information — give it just enough to mark the gap */
+.weekgrid > .sess.rst{flex:0 0 62px;min-width:62px;padding:9px 6px;}
+.weekgrid > .sess.rst .lane{writing-mode:vertical-rl;transform:rotate(180deg);
+  margin:0 auto;letter-spacing:0.14em;}
+.weekgrid > .sess.rst .st,.weekgrid > .sess.rst .rx{display:none;}
+
+/* day filter */
+.filter{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:13px;}
+.fchip{font-family:var(--f-d);font-size:11.5px;font-weight:600;cursor:pointer;
+  padding:5px 9px;border:1px solid var(--rule-strong);background:var(--surface);
+  color:var(--muted);}
+.fchip[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink);}
+.fchip:focus-visible{outline:2px solid var(--erg);outline-offset:1px;}
+.fchip .fk{font-family:var(--f-m);font-size:10px;font-weight:400;opacity:.75;margin-left:5px;}
+.fall{border-style:dashed;}
+.fcount{font-size:11.5px;color:var(--muted);margin-left:4px;}
 
 /* strength day templates */
 .day h3{color:var(--lift-ink);}
@@ -191,6 +213,7 @@ footer{margin-top:38px;padding-top:13px;border-top:1px solid var(--rule);
     <h2>Week by week</h2>
     <span class="note">Every programmed day, erg and strength, in order</span>
   </div>
+  <div class="filter" id="dayFilter"></div>
   <div id="ergWeeks"></div>
   <div class="legend">
     <span><strong>Target</strong> is the middle of the Rowfit band — the pace actually programmed.</span>
@@ -345,6 +368,8 @@ function ergLaneName(t){
   return "Test";
 }
 
+var WEEKSHAPE = [];          /* {kind,label} per weekday — drives the filter chips */
+
 function renderWeekShape(plan){
   var host = document.getElementById("weekShape");
   var byWd = [[],[],[],[],[],[],[]];
@@ -370,6 +395,7 @@ function renderWeekShape(plan){
     Object.keys(tally).forEach(function(k){ if(tally[k] > bn){ bn = tally[k]; best = k; } });
     if(!best) return;
     var m = meta[best];
+    WEEKSHAPE[i] = m;
 
     var c = el("div","dayc " + m.kind);
     c.appendChild(el("div","dn", WDNAME[i]));
@@ -460,12 +486,56 @@ function restCard(dayLabel, s){
 
 /* One block per week, every day in order, so the interleave of erg and
    strength is visible rather than having to be reconstructed from two lists. */
+var dayOn = [true, true, true, true, true, true, true];
+var PLAN = null;
+
+function updateCount(){
+  var n = 0, i;
+  for(i = 0; i < 7; i++) if(dayOn[i]) n++;
+  var e = document.getElementById("fcount");
+  if(e) e.textContent = n === 7 ? "showing every day" : "showing " + n + " of 7 days";
+}
+
+/* Filter chips are labelled from the week shape, so they read "Mon / Sprint"
+   rather than a bare weekday — the coach picks a track, not a date. */
+function renderFilter(){
+  var host = document.getElementById("dayFilter");
+  host.textContent = "";
+  WDSHORT.forEach(function(wd, i){
+    var m = WEEKSHAPE[i];
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "fchip";
+    b.setAttribute("aria-pressed", dayOn[i] ? "true" : "false");
+    b.appendChild(document.createTextNode(wd));
+    if(m) b.appendChild(el("span","fk", m.kind === "rest" ? "rest" : m.label));
+    b.addEventListener("click", function(){
+      dayOn[i] = !dayOn[i];
+      b.setAttribute("aria-pressed", dayOn[i] ? "true" : "false");
+      renderErg(PLAN); updateCount();
+    });
+    host.appendChild(b);
+  });
+  var all = document.createElement("button");
+  all.type = "button"; all.className = "fchip fall"; all.textContent = "All days";
+  all.addEventListener("click", function(){
+    for(var i = 0; i < 7; i++) dayOn[i] = true;
+    renderFilter(); renderErg(PLAN);
+  });
+  host.appendChild(all);
+  var c = el("span","fcount"); c.id = "fcount";
+  host.appendChild(c);
+  updateCount();
+}
+
 function renderErg(plan){
+  if(!plan) return;
   var host = document.getElementById("ergWeeks");
+  host.textContent = "";
   for(var w = 1; w <= BLOCK_N; w++){
     var start = addDays(BLOCK_W1, (w-1)*7);
     var days = [];
     for(var k = 0; k < 7; k++){
+      if(!dayOn[k]) continue;
       var dt = addDays(start, k);
       if(plan[dt]) days.push({dt:dt, s:plan[dt], wd:WDSHORT[k]});
     }
@@ -551,8 +621,10 @@ fetch("block-plan.json", {cache:"no-store"})
     var ds = Object.keys(plan).sort();
     document.getElementById("range").textContent =
       fmtDay(ds[0]) + " – " + fmtDay(ds[ds.length-1]) + " 2026  ·  " + BLOCK_N + " weeks";
+    PLAN = plan;
     renderPhases(plan);
-    renderWeekShape(plan);
+    renderWeekShape(plan);   /* fills WEEKSHAPE, which labels the filter */
+    renderFilter();
     renderErg(plan);
     renderProg(plan);
     renderTests(plan);
