@@ -24,6 +24,8 @@ UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit
 ROOT = __file__.rsplit("/", 2)[0]
 RESULTS_JSON = f"{ROOT}/sync/results.json"
 INDEX = f"{ROOT}/index.html"
+BLOCK_PLAN = f"{ROOT}/block-plan.json"
+PB_500 = 99.9                      # 500m PB in seconds - 1:39.9
 MAX_NEW = 15
 DEBUG = "--debug" in sys.argv
 
@@ -200,6 +202,8 @@ def band_ends(band):
 
 def plausible(w, band):
     """Reject warm-up paddles / stray easy rows so they can't claim a plan day."""
+    if not (band or "").strip():
+        return True                # test / race day: max effort, no target
     if len(w.get("intervals") or []) >= 2:
         return True
     wp, _ = work_pace(w)
@@ -267,7 +271,13 @@ def main():
     # Each plan row stores pctLo/pctHi; the band string is computed here so the
     # sync and the browser agree exactly. A few legacy rows still carry "pace".
     def row_split(pct):
-        s = round(99.9 + (100 - int(pct))); return f"{s // 60}:{s % 60:02d}"
+        s = round(PB_500 + (100 - int(pct))); return f"{s // 60}:{s % 60:02d}"
+
+    def row_pace(frac):
+        """block.html's band(): PB x (2 - pct), one decimal, so the console and
+           the sync note quote the same two numbers rather than near-misses."""
+        s = PB_500 * (2 - float(frac))
+        return f"{int(s // 60)}:{s - 60 * int(s // 60):04.1f}"
     bands = {}
     for date, lo, hi in re.findall(
             r'\{"date":"(\d{4}-\d\d-\d\d)","dow":"[^"]+","type":"[^"]+","title":"[^"]*","items":\[\{"t":"row"[^}]*?"pctLo":(\d+),"pctHi":(\d+)',
@@ -277,6 +287,25 @@ def main():
             r'\{"date":"(\d{4}-\d\d-\d\d)","dow":"[^"]+","type":"[^"]+","title":"[^"]*","items":\[\{"t":"row"[^}]*?"pace":"([^"]+)"',
             index):
         bands.setdefault(date, pace)
+    # The Sep-Dec block lives in block-plan.json, not index.html, and index.html
+    # still carries a few rows past the end of the old program. Without this the
+    # block's erg days are simply absent from `bands`, and a block workout gets
+    # claimed by whichever stale row happens to sit a day either side of it.
+    try:
+        block = json.load(open(BLOCK_PLAN, encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        block = {}
+        print("block-plan.json unreadable, index.html only:", exc)
+    if block:
+        start = min(block)
+        for d in [d for d in bands if d >= start]:
+            del bands[d]
+        for date, day in sorted(block.items()):
+            if day.get("kind") != "erg":
+                continue
+            lo, hi = day.get("lo"), day.get("hi")
+            bands[date] = f"{row_pace(hi)}\u2013{row_pace(lo)}" if lo and hi else ""
+        print(f"block days from {start}: {sum(1 for d in bands if d >= start)}")
     print(f"plan rowing days: {len(bands)}  |  existing results: {len(results)}")
 
     # self-healing backfill: older entries predate the shape/key fields, and the
@@ -336,7 +365,7 @@ def main():
                                    (d - datetime.timedelta(days=1)).isoformat()]):
             if pd in bands and pd not in results and plausible(w, bands[pd]):
                 cands.append((pd, rank, -score(w, bands[pd]), w))
-    cands.sort(key=lambda c: (c[0], c[1], c[2]))
+    cands.sort(key=lambda c: (c[1], c[0], c[2]))
 
     added, taken = 0, set()
     for pd, rank, negs, w in cands:

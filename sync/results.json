@@ -423,19 +423,5 @@
   "shape": "10 × 30s",
   "key": "t30x10",
   "v": 2
- },
- "2026-09-06": {
-  "id": 120315282,
-  "link": "https://log.concept2.com/profile/2198296/log/120315282",
-  "dist": 2000,
-  "time": "6:48.4",
-  "pace": "1:42.1",
-  "rate": 36,
-  "band": "2:20–2:30",
-  "verdict": "above",
-  "note": "11 work intervals (logged Sep 7) — avg work pace 1:42.1 /500m vs 2:20–2:30 target: faster than target (above zone). Rate 36 s/m.",
-  "shape": "10 × 200m",
-  "key": "d200x10",
-  "v": 2
  }
 }
