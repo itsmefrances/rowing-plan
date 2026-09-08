@@ -1,15 +1,67 @@
 track: Rowfit Workouts
-  x workouts(first:200)          Unknown argument "first" on field "workouts" of type "Track".
-  OK workouts(limit:200)          ids=63  {"track": {"workouts": [{"id": "95dc15ba-51b0-4cdc-b07f-bff0d880538a", "publishedAt": "2026-11-29", "title": "RACE — BRIC Virtual 2000m"}, {"id": "465e6e9e-6635-4a91-905a-9824af3dcbfe", "publishedAt":
-  OK workouts(offset:15)          ids=15  {"track": {"workouts": [{"id": "e031b65c-e4e0-41a4-bad6-cce0060b3479", "publishedAt": "2026-11-01", "title": "VO₂ 4×4min"}, {"id": "e961a2ed-9421-4b2b-a6b6-7c8dab954f5f", "publishedAt": "2026-10-25", 
-  x workouts(skip:15)            Unknown argument "skip" on field "workouts" of type "Track".
-  x workouts(page:2)             Unknown argument "page" on field "workouts" of type "Track".
-  x workouts(count:200)          Unknown argument "count" on field "workouts" of type "Track".
-  OK workouts(startDate,endDate)  ids=15  {"track": {"workouts": [{"id": "327476a1-100b-4bd4-b29c-9d28ef3e5dbe", "publishedAt": "2026-10-04", "title": "TEST — 400m + 5×100m"}, {"id": "11a53417-e29e-4ffd-893f-5720d8e42d9a", "publishedAt": "202
-  x workouts(from,to)            Unknown argument "from" on field "workouts" of type "Track".
-  x workouts(before)             Unknown argument "before" on field "workouts" of type "Track".
-  x track.allWorkouts            Cannot query field "allWorkouts" on type "Track".
-  x track.workoutCount           Cannot query field "workoutCount" on type "Track".
-  x trackWorkouts(trackId)       Cannot query field "trackWorkouts" on type "RootQueryType".
-  x workouts(trackId)            Unknown argument "trackId" on field "workouts" of type "RootQueryType".
-  x workoutsConnection           Cannot query field "workoutsConnection" on type "Track".
+workouts the track returns: 63
+plan: 40 total, 4 without an id, 0 to create
+2026-07-12 | Sprint — 4×300m + 4×150m | 300m/4:00r,300m/4:00r,300m/4:00r,300m/4:00r,150m/2:00r,150m/2:00r,150m/2:00r,150m | 8 | 87003c17-c35e-44aa-a4e4-833927ff9eb1
+2026-07-12 | Threshold 5×1500m | 5x1500m/3:00r | 5 | 28678a7b-6271-4bc8-9323-3f6f1b5259ed
+2026-07-12 | VO₂ 12×1:00 | 12x1:00/1:00r | 12 | e1297e0a-80f2-4f97-8845-46e990a804cb
+2026-07-19 | Sprint — 6×200m + 6×100m | 200m/2:00r,200m/2:00r,200m/2:00r,200m/2:00r,200m/2:00r,200m/2:00r,100m/2:00r,100m/2:00r,100m/2:00r,100m/2:00r,100m/2:00r,100m | 12 | e03a629e-7dda-4b0d-9064-d256ceac0c15
+2026-07-19 | Threshold 8×4:00 | 8x4:00/3:00r | 8 | da97152c-8f0f-499e-9a2f-eff43e121b23
+2026-07-19 | VO₂ 10×400m | 10x400m/1:30r | 10 | d8aa5642-3ce3-4a2b-b54c-11271ef3457a
+2026-07-26 | Sprint 15×30s | 15x0:30/2:00r | 15 | afcca636-4727-461d-a4e7-13ee80350096
+2026-07-26 | Threshold 30:00 | 30:00 | 1 | 5fc15e33-b646-4931-a46b-c209ae86bf27
+2026-07-26 | VO₂ — 1250/1000/750/500 descend | 1250m/4:00r,1000m/4:00r,750m/4:00r,500m | 4 | 05758cc4-4131-476e-bf0a-14ae1fbc73a5
+2026-08-02 | Sprint 12×20s | 12x0:20/2:00r | 12 | 3a7db73a-683f-433c-9a63-91fc2111e83f
+2026-08-02 | Threshold 6×1000m | 6x1000m/3:00r | 6 | fe73bb6a-82df-4a48-9354-c35e6eb25cd2
+2026-08-02 | VO₂ 8×500m | 8x500m/2:00r | 8 | 5495c76f-b931-4208-bee5-cfa5278f4c81
+2026-08-09 | Sprint 8×250m | 8x250m/3:00r | 8 | 9c782740-c9e2-4b2a-80dd-85641c43c79f
+2026-08-09 | Threshold 30:00 | 30:00 | 1 | 4a3dfa47-ab28-4609-ac20-f3ceb704d555
+2026-08-09 | VO₂ 4×4:00 | 4x4:00/4:00r | 4 | 4c0aa67f-0f40-4549-ab34-7717b8f9585e
+2026-08-14 | Bike | 8:00 | 4 | df90db78-3202-413e-bb0f-b75c2fd5f996
+2026-08-16 | Sprint 2×400m | 2x400m/7:00r | 2 | b5e474be-bcd0-4953-8888-7206fb593418
+2026-08-16 | Threshold 4×1500m | 4x1500m/4:00r | 4 | e923588d-cbb5-4d56-81cf-bdc8dbf98136
+2026-08-16 | VO₂ — 1-2-3-4-3-2-1 min pyramid | 1:00/3:00r,2:00/3:00r,3:00/3:00r,4:00/3:00r,3:00/3:00r,2:00/3:00r,1:00 | 7 | f5743151-a871-47f0-be6e-ec29c5d8e5aa
+2026-08-23 | Sprint 4×250m | 4x250m/4:00r | 4 | fb42f781-4fc4-43a0-a602-dbd6149783ec
+2026-08-23 | TEST — 1-Minute max distance | 1:00 | 3 | 6ab9879a-fff7-4204-b838-f56892eebb5c
+2026-08-23 | VO₂ 4×500m | 500m/2:00r,500m/2:00r,500m/2:00r,500m/und | 4 | ae7e9f2e-8140-4adb-b6cd-f1e7c8366813
+2026-08-30 | TEST — 2000m time trial | 2000m | 1 | d695ad02-ad21-4b92-9d98-a9be67651d74
+2026-09-06 | Threshold 8×750m | 750m/2:30r,750m/2:30r,750m/2:30r,750m/2:30r,750m/2:30r,750m/2:30r,750m/2:30r,750m/und | 8 | d4f2a04f-b6da-4716-87c2-24b5c3b074a5
+2026-09-06 | VO₂ 10×1:20 | 1:20/1:00r,1:20/1:00r,1:20/1:00r,1:20/1:00r,1:20/1:00r,1:20/1:00r,1:20/1:00r,1:20/1:00r,1:20/1:00r,1:20/und | 10 | cf643da7-b4dc-4bd9-ba34-7bcda37e82b3
+2026-09-07 | Sprint 10x200 | 10x200m/3:00r | 10 | 7500cb11-a70d-4516-88a2-dec23cf8a5b3
+2026-09-13 | Sprint 12×150m | 150m/2:30r,150m/2:30r,150m/2:30r,150m/2:30r,150m/2:30r,150m/2:30r,150m/2:30r,150m/2:30r,150m/2:30r,150m/2:30r,150m/2:30r,150m/und | 12 | 43cf57d8-a5dd-473b-8bb5-00358635cbf1
+2026-09-13 | Threshold 7×4min | 4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/und | 7 | 76281383-bfbb-41ef-8e1c-d5c9f84cbf87
+2026-09-13 | VO₂ 10×1:30 | 1:30/1:20r,1:30/1:20r,1:30/1:20r,1:30/1:20r,1:30/1:20r,1:30/1:20r,1:30/1:20r,1:30/1:20r,1:30/1:20r,1:30/und | 10 | b799e3e9-20a7-4e15-a999-48bdbbc6689c
+2026-09-20 | Sprint 10×200m | 200m/3:00r,200m/3:00r,200m/3:00r,200m/3:00r,200m/3:00r,200m/3:00r,200m/3:00r,200m/3:00r,200m/3:00r,200m/und | 10 | a94d732e-e377-49fc-8610-affbfce6a31a
+2026-09-20 | Threshold 2×15min | 15:00/5:00r,15:00/und | 2 | 55a34dae-227b-409c-a2e8-611a42ba449a
+2026-09-20 | VO₂ 8×500m | 500m/2:00r,500m/2:00r,500m/2:00r,500m/2:00r,500m/2:00r,500m/2:00r,500m/2:00r,500m/und | 8 | a05bc794-be23-4cac-9438-35f5e8eed4fe
+2026-09-27 | Sprint 5×300m | 300m/5:00r,300m/5:00r,300m/5:00r,300m/5:00r,300m/und | 5 | bfb8ff53-7b05-4aae-992a-c25a2ba0373c
+2026-09-27 | Threshold 7×4min | 4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/und | 7 | f8091e89-b44c-4ac1-8f4c-05e7019308b0
+2026-09-27 | VO₂ 6×3min | 3:00/3:00r,3:00/3:00r,3:00/3:00r,3:00/3:00r,3:00/3:00r,3:00/und | 6 | 59c80a7f-b72f-43c8-9a74-cf7d5386e865
+2026-10-04 | TEST — 400m + 5×100m | 400m/10:00r,100m/4:00r,100m/4:00r,100m/4:00r,100m/4:00r,100m/und | 6 | 327476a1-100b-4bd4-b29c-9d28ef3e5dbe
+2026-10-04 | Threshold 2×15min | 15:00/5:00r,15:00/und | 2 | 11a53417-e29e-4ffd-893f-5720d8e42d9a
+2026-10-04 | VO₂ 12×1:00 | 1:00/1:00r,1:00/1:00r,1:00/1:00r,1:00/1:00r,1:00/1:00r,1:00/1:00r,1:00/1:00r,1:00/1:00r,1:00/1:00r,1:00/1:00r,1:00/1:00r,1:00/und | 12 | 5d7f3d8e-d1ed-4cb5-b58f-371b9c0dac54
+2026-10-11 | Sprint 5×200m + 5×150m | 200m/3:00r,200m/3:00r,200m/3:00r,200m/3:00r,200m/3:00r,150m/2:00r,150m/2:00r,150m/2:00r,150m/2:00r,150m/und | 10 | b7433e5a-3e85-4f9a-8abb-44e20d8a8d4b
+2026-10-11 | TEST — 2000m (r26 cap) + 4×250m | 2000m/10:00r,250m/2:00r,250m/2:00r,250m/2:00r,250m/und | 5 | 24505423-a479-4e89-b02d-5b08e0015072
+2026-10-11 | Threshold 8×4min | 4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/und | 8 | a358ea5a-49a5-4bc1-92e2-8d0ae9d23f7f
+2026-10-18 | TEST — 450m + 5×100m | 450m/10:00r,100m/3:00r,100m/3:00r,100m/3:00r,100m/3:00r,100m/und | 6 | bff8d6a5-90da-4f6c-9aad-826e8226298f
+2026-10-18 | Threshold 6×1500m | 1500m/3:00r,1500m/3:00r,1500m/3:00r,1500m/3:00r,1500m/3:00r,1500m/und | 6 | 5025137a-6f38-458d-b82f-a55179d758d4
+2026-10-18 | VO₂ 10×400m | 400m/1:30r,400m/1:30r,400m/1:30r,400m/1:30r,400m/1:30r,400m/1:30r,400m/1:30r,400m/1:30r,400m/1:30r,400m/und | 10 | a85901ed-e647-4403-ac06-f091636fe3e4
+2026-10-25 | Sprint 12×30s | 0:30/4:00r,0:30/4:00r,0:30/4:00r,0:30/4:00r,0:30/4:00r,0:30/4:00r,0:30/4:00r,0:30/4:00r,0:30/4:00r,0:30/4:00r,0:30/4:00r,0:30/und | 12 | e961a2ed-9421-4b2b-a6b6-7c8dab954f5f
+2026-10-25 | Threshold 8×4min | 4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/3:00r,4:00/und | 8 | 97434956-1859-4968-9b9e-14384aed651b
+2026-10-25 | VO₂ 1250-1000-750-500 | 1250m/4:00r,1000m/4:00r,750m/4:00r,500m/und | 4 | 00288481-e82e-4c79-8da4-ce7233f5a945
+2026-11-01 | TEST — 1-Minute max + 5×100m | 1:00/10:00r,100m/3:00r,100m/3:00r,100m/3:00r,100m/3:00r,100m/und | 6 | a78b2bde-eb41-43aa-ac1b-d209991dfe12
+2026-11-01 | Threshold 8×1000m | 1000m/3:00r,1000m/3:00r,1000m/3:00r,1000m/3:00r,1000m/3:00r,1000m/3:00r,1000m/3:00r,1000m/und | 8 | 7eeed784-6e0d-4189-b6c7-f3e6569175c7
+2026-11-01 | VO₂ 4×4min | 4:00/3:30r,4:00/3:30r,4:00/3:30r,4:00/und | 4 | e031b65c-e4e0-41a4-bad6-cce0060b3479
+2026-11-08 | Sprint 10×200m | 200m/4:00r,200m/4:00r,200m/4:00r,200m/4:00r,200m/4:00r,200m/4:00r,200m/4:00r,200m/4:00r,200m/4:00r,200m/und | 10 | 56377f9b-af94-4df4-91cc-dd8b65243e26
+2026-11-08 | TEST — 2000m (r28 cap) + 4×250m | 2000m/10:00r,250m/2:00r,250m/2:00r,250m/2:00r,250m/und | 5 | f986f601-6729-40f6-8aab-86bf4fc69ced
+2026-11-08 | Threshold 5000m | 5000m/und | 1 | a976e22a-80f9-414f-b90e-8b436fe4efd5
+2026-11-15 | TEST — 500m | 500m/und | 1 | fa6b2e39-0e6a-4327-ab36-fa069f80c481
+2026-11-15 | Threshold 5×1500m | 1500m/3:00r,1500m/3:00r,1500m/3:00r,1500m/3:00r,1500m/und | 5 | 9428c806-6a52-48b4-b335-3e1950d9da61
+2026-11-15 | VO₂ 6×500m | 500m/2:00r,500m/2:00r,500m/2:00r,500m/2:00r,500m/2:00r,500m/und | 6 | dd388c5e-90cf-49bb-987c-ac2abe8f6910
+2026-11-22 | Sprint 4×250m race starts | 250m/4:00r,250m/4:00r,250m/4:00r,250m/und | 4 | 0d887c98-d3c3-4fac-8b64-d6589c2df407
+2026-11-22 | TEST — 2000m | 2000m/und | 1 | 7f5f4b06-5ace-4ba8-b461-ff79fd842113
+2026-11-22 | Threshold 6×1000m | 1000m/3:00r,1000m/3:00r,1000m/3:00r,1000m/3:00r,1000m/3:00r,1000m/und | 6 | 9e0d2bf2-9ecd-4248-b73d-9bee0649e697
+2026-11-29 | RACE — BRIC Virtual 2000m | 2000m/und | 1 | 95dc15ba-51b0-4cdc-b07f-bff0d880538a
+2026-11-29 | RACE — BRIC Virtual 500m | 500m/und | 1 | 465e6e9e-6635-4a91-905a-9824af3dcbfe
+2026-11-29 | Sprint 3×250m race starts | 250m/4:00r,250m/4:00r,250m/und | 3 | 271862a7-fe65-4fa8-b674-2e45ed28c036
+2026-11-29 | VO₂ 4×500m | 500m/2:00r,500m/2:00r,500m/2:00r,500m/und | 4 | 56836ffe-dc44-4e9d-9302-d32f5a3ead47
+total 63
