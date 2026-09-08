@@ -272,6 +272,12 @@ svg.spark{width:100%;height:38px;display:block;}
 .f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .setgrid{display:grid;grid-template-columns:52px 1fr 1fr 1fr;gap:6px;align-items:center;}
 .setgrid.h5{grid-template-columns:46px 1fr 1fr 1fr 1fr;gap:5px;}
+.updbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;gap:11px;
+  align-items:center;justify-content:center;padding:11px 13px;
+  background:var(--ink);color:var(--ground);
+  font-family:var(--f-d);font-size:12.5px;font-weight:600;}
+.updbar button{background:var(--ground);color:var(--ink);border:1px solid var(--ground);
+  font-family:var(--f-d);font-size:12px;font-weight:600;padding:5px 11px;cursor:pointer;}
 .setgrid.head .hl{font-size:9.5px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);}
 .setgrid .sn{font-family:var(--f-m);font-size:11.5px;color:var(--muted);}
 .setgrid input{width:100%;font-size:14px;padding:7px 8px;}
@@ -1387,6 +1393,35 @@ function loadC2Sync(){
    block to the current week and re-mark today. */
 var loadedDay = todayISO(), lastRefresh = 0;
 
+/* GitHub Pages serves this file with cache-control: max-age=600 and sets that
+   header itself, so the no-cache <meta> tags cannot override it — an open tab
+   can be running code ten minutes stale, and the iOS home-screen app can hold
+   its copy far longer. That is how a deployed change appears missing.
+   The ETag changes whenever the file does, so watch it and offer a reload.
+   Offer, not force: state.log lives only in memory, so an automatic reload
+   mid-session would throw away whatever has been typed and not yet logged. */
+var pageTag = null;
+function showUpdateBar(){
+  if(document.getElementById("updbar")) return;
+  var b = el("div","updbar"); b.id = "updbar";
+  b.appendChild(el("span",null,"A newer version of this page is available."));
+  var r = document.createElement("button");
+  r.type = "button"; r.textContent = "Reload";
+  r.addEventListener("click", function(){ location.reload(); });
+  b.appendChild(r);
+  document.body.appendChild(b);
+}
+function checkBuild(){
+  fetch(location.pathname + "?v=" + Date.now(), {method:"HEAD", cache:"no-store"})
+    .then(function(r){
+      var tag = r.headers.get("etag") || r.headers.get("last-modified");
+      if(!tag) return;
+      if(pageTag === null){ pageTag = tag; return; }   /* first look — just record it */
+      if(tag !== pageTag) showUpdateBar();
+    })
+    .catch(function(){ /* offline: keep running what we have */ });
+}
+
 function refreshAll(force){
   var dayChanged = todayISO() !== loadedDay;
   /* a quick tab flick shouldn't re-hit the sheet; a new day always should */
@@ -1399,6 +1434,7 @@ function refreshAll(force){
   loadBlockPlan();
   loadSheet();
   loadC2Sync();
+  checkBuild();
 }
 
 document.addEventListener("visibilitychange", function(){
