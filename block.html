@@ -137,6 +137,13 @@ header{border-bottom:2px solid var(--rule-strong);padding-bottom:12px;margin-bot
 .exrx{font-family:var(--f-m);font-size:12.5px;color:var(--ink-2);}
 .exload{font-family:var(--f-m);font-size:15px;font-weight:600;color:var(--lift);}
 .exnote{font-size:12.5px;color:var(--muted);}
+.foldbtn{flex:0 0 20px;width:20px;height:20px;padding:0;line-height:1;cursor:pointer;
+  background:none;border:1px solid var(--rule-strong);color:var(--muted);
+  font-family:var(--f-d);font-size:9.5px;}
+.foldbtn:hover{border-color:var(--lift);color:var(--lift-ink);}
+.foldbtn:focus-visible{outline:2px solid var(--erg);outline-offset:1px;}
+.ex.folded .exload,.ex.folded .exrx,.ex.folded .exrir,.ex.folded .cutflag,
+.ex.folded .prog,.ex.folded .logline{display:none;}
 .ex.star{background:var(--lift-soft);}
 .ex.star .exname::before{content:"★ ";color:var(--lift);}
 .cutflag{font-size:11px;font-weight:600;color:var(--stop);}
@@ -381,6 +388,7 @@ var state = {
   week: activeWeek(),
   sel: 0,
   log: {},
+  fold: {},          /* date|exercise → collapsed to the title, set by hand only */
   rows: [],          /* sheet-shaped rows awaiting sync */
   metrics: {peak7:[], broad:[], cmj:[]}
 };
@@ -1088,6 +1096,23 @@ function renderSession(){
       m.appendChild(el("span","exrir", mm.rir + "  ·  rest " + mm.rest));
       if(cut) m.appendChild(el("span","cutflag","Cut by the readiness gate"));
       top2.appendChild(m);
+
+      /* collapse to the title. By hand only — nothing folds itself, so what is
+         open stays open while she works down the session. */
+      var fkey = d + "|" + x.n;
+      var folded = !!state.fold[fkey];
+      if(folded) row.classList.add("folded");
+      var fb = document.createElement("button");
+      fb.className = "foldbtn"; fb.type = "button";
+      fb.textContent = folded ? "▸" : "▾";
+      fb.title = folded ? "Show details" : "Collapse to title";
+      fb.setAttribute("aria-label", (folded ? "Expand " : "Collapse ") + x.n);
+      fb.setAttribute("aria-expanded", folded ? "false" : "true");
+      fb.addEventListener("click", function(){
+        state.fold[fkey] = !state.fold[fkey];
+        renderSession();
+      });
+      top2.appendChild(fb);
       row.appendChild(top2);
 
       var pg = progress(x.n, firstNum(x.load ? x.load() : 0), d);
