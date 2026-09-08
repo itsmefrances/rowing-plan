@@ -809,6 +809,29 @@ function logSet(d, x, setNum, st){
   pushRow(row);
 }
 
+/* CMJ goes to the sheet under its own label, one row per jump so the three
+   attempts stay separable. Height in inches lands in the weight column — it is
+   the only numeric field the sheet has, and `prescribed` carries the unit. */
+function logCMJ(d, lg){
+  var vals = [0,1,2].map(function(j){ return String(lg.cmj[j] == null ? "" : lg.cmj[j]).trim(); });
+  if(!vals.some(function(v){ return v !== ""; })) return;
+  var base = state.baseline.cmj || "";
+  var pre = "CMJ vertical height (in) · 3 jumps, 30s apart" +
+            (base ? " · baseline " + base + "″" : "");
+  var rd = readiness(d), note = "";
+  if(rd) note = "best " + rd.best + "″ vs baseline " + base + "″ — " +
+                (rd.pct >= 0 ? "+" : "") + rd.pct.toFixed(1) + "% — " +
+                {g:"green", a:"amber", r:"red"}[rd.lvl];
+  vals.forEach(function(v, j){
+    if(v === "") return;
+    pushRow({ date:d, day_type:DAYTYPE[d] || "", exercise:"CMJ", prescribed:pre,
+      set_num:j+1, reps:1, weight:v, rir_rpe:"", notes:(j === 0 ? note : "") });
+    SHEET_ROWS.push({date:d, exercise:"CMJ", set_num:j+1, reps:1,
+                     weight:parseFloat(v) || 0, rir:""});
+  });
+  renderSession();
+}
+
 
 
 
@@ -902,6 +925,18 @@ function renderSession(){
     line.appendChild(el("span","status","baseline →"));
     line.appendChild(bl);
     g.appendChild(line);
+
+    var lb = el("div","logline"); lb.style.marginTop = "7px";
+    var cbtn = document.createElement("button");
+    cbtn.type = "button"; cbtn.className = "logbtn";
+    var already = loggedCount(d, "CMJ");
+    cbtn.textContent = already ? "Log CMJ again" : "Log CMJ";
+    cbtn.disabled = !lg.cmj.some(function(v){ return String(v == null ? "" : v).trim() !== ""; });
+    cbtn.addEventListener("click", function(){ logCMJ(d, lg); });
+    lb.appendChild(cbtn);
+    if(already) lb.appendChild(el("span","status",
+      already + " jump" + (already > 1 ? "s" : "") + " already in the sheet today"));
+    g.appendChild(lb);
 
     rd = readiness(d);
     if(rd){
