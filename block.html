@@ -884,20 +884,20 @@ function renderSession(){
   var rd = null;
   if(s.gate){
     var g = el("div","gate");
-    g.appendChild(el("div","eyebrow","CMJ readiness — 3 jumps, 30s apart"));
+    g.appendChild(el("div","eyebrow","CMJ — vertical height (in) · 3 jumps, 30s apart"));
     var line = el("div","logline"); line.style.marginTop = "7px";
     [0,1,2].forEach(function(j){
       var inp = document.createElement("input");
       inp.type = "number"; inp.step = "0.1"; inp.placeholder = "jump " + (j+1);
       inp.value = lg.cmj[j] || "";
-      inp.setAttribute("aria-label","CMJ jump " + (j+1) + " (cm)");
+      inp.setAttribute("aria-label","CMJ vertical jump height " + (j+1) + " (inches)");
       inp.addEventListener("input", function(){ lg.cmj[j] = inp.value; queueSave(); renderSession(); });
       line.appendChild(inp);
     });
     var bl = document.createElement("input");
-    bl.type = "number"; bl.step = "0.1"; bl.placeholder = "baseline";
+    bl.type = "number"; bl.step = "0.1"; bl.placeholder = "baseline in";
     bl.value = state.baseline.cmj || "";
-    bl.setAttribute("aria-label","CMJ baseline (cm)");
+    bl.setAttribute("aria-label","CMJ vertical jump height baseline (inches)");
     bl.addEventListener("input", function(){ state.baseline.cmj = Number(bl.value); queueSave(); renderSession(); });
     line.appendChild(el("span","status","baseline →"));
     line.appendChild(bl);
@@ -910,13 +910,13 @@ function renderSession(){
                  a:"Drop the last set of the main lift — keep everything else",
                  r:"Skip the top set. Technical work at 70%, keep the accessories."}[rd.lvl];
       v.appendChild(el("div","vt", txt));
-      v.appendChild(el("div","vd", "Best " + rd.best + " vs baseline " + state.baseline.cmj +
+      v.appendChild(el("div","vd", "Best " + rd.best + "\u2033 vs baseline " + state.baseline.cmj + "\u2033" +
         " — " + (rd.pct>=0?"+":"") + rd.pct.toFixed(1) + "%"));
       if(rd.lvl === "r") v.appendChild(el("div","vd","The heavy single is off. A heavy single on a bad day is all cost and no adaptation."));
       if(rd.lvl === "a") v.appendChild(el("div","vd","The heavy single stays — it's the last set of the main lift that goes."));
       g.appendChild(v);
     } else {
-      g.appendChild(el("p","note","Enter three jumps and a baseline to arm the gate."));
+      g.appendChild(el("p","note","Vertical only — touch height minus your standing reach. Enter three jumps and a baseline to arm the gate."));
     }
     host.appendChild(g);
   }
@@ -1042,13 +1042,13 @@ function renderSession(){
   /* extra metric capture */
   if(s.broad || s.peak7){
     var mb = el("div","ex");
-    mb.appendChild(el("div","eyebrow", s.peak7 ? "Log 7-stroke peak" : "Log broad jump (weekly)"));
+    mb.appendChild(el("div","eyebrow", s.peak7 ? "7-stroke peak (watts)" : "Broad jump — distance (in) · weekly"));
     var ml = el("div","logline");
     var mi = document.createElement("input");
     mi.type = "number"; mi.step = "0.1";
-    mi.placeholder = s.peak7 ? "peak W" : "cm";
+    mi.placeholder = s.peak7 ? "peak W" : "inches";
     mi.value = lg.entries[s.peak7 ? "peak7" : "broad"] || "";
-    mi.setAttribute("aria-label", s.peak7 ? "Peak watts" : "Broad jump");
+    mi.setAttribute("aria-label", s.peak7 ? "Peak watts" : "Broad jump distance (inches)");
     mi.addEventListener("input", function(){
       lg.entries[s.peak7 ? "peak7" : "broad"] = mi.value; queueSave();
     });
