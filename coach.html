@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13-Week Block — Programming Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#F1F3F5; --surface:#FFF; --surface-2:#E8ECEF; --surface-3:#DDE3E8;
+  --ink:#14171B; --ink-2:#3C444D; --muted:#69727B;
+  --rule:#D3DAE0; --rule-strong:#B5BFC8;
+  --erg:#0C6F6B; --erg-soft:#DBECEB; --erg-ink:#084F4C;
+  --lift:#9A6510; --lift-soft:#F4E9D5; --lift-ink:#6E4809;
+  --test:#B23D0B; --test-soft:#F8E2D7; --test-ink:#8A2F08;
+  --f-d:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-m:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0F1216; --surface:#161A1F; --surface-2:#1E242B; --surface-3:#272E36;
+  --ink:#E6EAEE; --ink-2:#B4BDC6; --muted:#8A949E;
+  --rule:#293039; --rule-strong:#39424D;
+  --erg:#3FB3AC; --erg-soft:#11302F; --erg-ink:#7FD3CD;
+  --lift:#D9A03F; --lift-soft:#2D2414; --lift-ink:#EBC078;
+  --test:#E8733C; --test-soft:#33190E; --test-ink:#F19E75;
+}}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--f-d);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1000px;margin:0 auto;padding:22px 16px 70px;}
+h1,h2,h3{margin:0;line-height:1.15;text-wrap:balance;}
+h1{font-size:26px;font-weight:700;letter-spacing:-0.02em;}
+h2{font-size:17px;font-weight:700;letter-spacing:-0.01em;}
+h3{font-size:14px;font-weight:700;}
+p{margin:0;}
+.mono{font-family:var(--f-m);}
+.eyebrow{font-size:9.5px;font-weight:600;letter-spacing:0.11em;text-transform:uppercase;color:var(--muted);}
+
+header.top{border-bottom:2px solid var(--ink);padding-bottom:15px;margin-bottom:8px;}
+.sub{font-family:var(--f-m);font-size:12.5px;color:var(--muted);margin-top:6px;}
+.lede{margin-top:11px;font-size:14.5px;color:var(--ink-2);max-width:66ch;}
+
+section{margin-top:30px;}
+.shead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  border-bottom:1px solid var(--rule-strong);padding-bottom:6px;margin-bottom:13px;}
+.shead .note{font-size:12.5px;color:var(--muted);}
+
+.card{background:var(--surface);border:1px solid var(--rule);padding:13px 14px;}
+.grid{display:grid;gap:11px;}
+.g3{grid-template-columns:repeat(3,1fr);}
+.g4{grid-template-columns:repeat(4,1fr);}
+@media(max-width:820px){.g3,.g4{grid-template-columns:1fr;}}
+
+/* phase map */
+.phase{border-left:3px solid var(--lift);}
+.phase.p2{border-left-color:var(--erg);}
+.phase.p3{border-left-color:var(--test);}
+.phase.p4{border-left-color:var(--rule-strong);}
+.phase h3{margin-bottom:3px;}
+.phase .wks{font-family:var(--f-m);font-size:11px;color:var(--muted);}
+.phase .focus{font-size:13px;color:var(--ink-2);margin-top:7px;}
+.phase .power{font-family:var(--f-m);font-size:12px;color:var(--lift-ink);
+  background:var(--lift-soft);padding:5px 7px;margin-top:8px;}
+
+/* tables */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{border-collapse:collapse;width:100%;font-size:13px;}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--rule);vertical-align:top;}
+th{font-size:9.5px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;
+  color:var(--muted);background:var(--surface-2);white-space:nowrap;}
+tbody tr:nth-child(even){background:var(--surface-2);}
+td.wk{font-family:var(--f-m);font-size:11.5px;color:var(--muted);white-space:nowrap;}
+.piece{font-family:var(--f-m);font-size:13px;font-weight:500;color:var(--ink);}
+.meta{font-family:var(--f-m);font-size:11px;color:var(--muted);margin-top:2px;}
+.pace{font-family:var(--f-m);font-size:11.5px;color:var(--erg-ink);
+  background:var(--erg-soft);padding:1px 5px;display:inline-block;margin-top:3px;}
+.testrow{background:var(--test-soft) !important;}
+.testrow .piece{color:var(--test-ink);}
+
+/* erg sessions — the actual prescriptions */
+.wkblock{margin-bottom:14px;}
+.wkhead{display:flex;align-items:baseline;gap:9px;margin-bottom:7px;}
+.wkhead .wn{font-family:var(--f-m);font-size:11px;font-weight:600;letter-spacing:0.09em;
+  text-transform:uppercase;color:var(--ink);}
+.wkhead .wd{font-family:var(--f-m);font-size:11px;color:var(--muted);}
+.sess{border-left:3px solid var(--erg);}
+.sess .lane{font-size:9.5px;font-weight:600;letter-spacing:0.11em;text-transform:uppercase;
+  color:var(--erg-ink);}
+.sess .st{font-size:14px;font-weight:700;margin-top:2px;}
+.sess .rx{font-family:var(--f-m);font-size:12px;color:var(--ink-2);margin-top:6px;}
+.sess .tgt{font-family:var(--f-m);font-size:12px;font-weight:600;color:var(--erg-ink);
+  background:var(--erg-soft);padding:3px 7px;margin-top:8px;display:inline-block;}
+.sess .bnd{font-family:var(--f-m);font-size:10.5px;color:var(--muted);margin-top:5px;}
+.sess.tst{border-left-color:var(--test);}
+.sess.tst .lane{color:var(--test-ink);}
+.sess.empty{border-left-color:var(--rule-strong);opacity:.55;}
+
+/* strength day templates */
+.day h3{color:var(--lift-ink);}
+.day .dsub{font-family:var(--f-m);font-size:11px;color:var(--muted);margin-bottom:8px;}
+ul.lifts{list-style:none;margin:0;padding:0;}
+ul.lifts li{padding:6px 0;border-bottom:1px solid var(--rule);}
+ul.lifts li:last-child{border-bottom:0;}
+.ln{font-size:13.5px;font-weight:600;}
+.lrx{font-family:var(--f-m);font-size:11.5px;color:var(--ink-2);}
+.lload{font-family:var(--f-m);font-size:11.5px;color:var(--lift-ink);font-weight:600;}
+.star{color:var(--lift);}
+.acc{font-size:12px;color:var(--muted);font-style:italic;padding-top:8px;}
+.pill{display:inline-block;font-family:var(--f-m);font-size:9.5px;font-weight:600;
+  letter-spacing:0.06em;text-transform:uppercase;padding:1px 5px;border:1px solid currentColor;
+  margin-left:7px;vertical-align:1px;}
+.pill.pw{color:var(--lift);}
+.pill.hm{color:var(--test);}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:11px;}
+footer{margin-top:38px;padding-top:13px;border-top:1px solid var(--rule);
+  font-size:12px;color:var(--muted);}
+.err{background:var(--test-soft);color:var(--test-ink);padding:13px;font-size:13.5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Programming overview — for review</div>
+  <h1>13-Week Erg + Strength Block</h1>
+  <div class="sub" id="range">7 Sep – 6 Dec 2026</div>
+  <p class="lede">
+    Three fixed Rowfit erg sessions each week — sprint, VO₂, threshold — with strength
+    programmed around them. The strength block targets the <strong>500 m</strong> and the
+    <strong>1-minute</strong>; the 2000 m on 6 Dec is an endpoint, not the primary target.
+    Warm-ups, cool-downs and tier-3 accessory work are omitted here.
+  </p>
+</header>
+
+<section>
+  <div class="shead"><h2>How the block is built</h2></div>
+  <div class="grid g4" id="phases"></div>
+  <div class="legend">
+    <span><span class="pill hm">hallmark</span> heavy single — the expression of the phase</span>
+    <span><span class="pill pw">power</span> speed / plyometric work, done fresh</span>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>Erg programming</h2>
+    <span class="note">Mon sprint · Wed VO₂ · Fri threshold — committed, never moved for strength</span>
+  </div>
+  <div id="ergWeeks"></div>
+  <div class="legend">
+    <span><strong>Target</strong> is the middle of the Rowfit band — the pace actually programmed.</span>
+    <span><strong>Band</strong> is the full permitted range, off a 1:39.9 500 m PB.</span>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>Strength programming</h2>
+    <span class="note">Day templates per phase — loads shown as % of training max</span>
+  </div>
+  <div id="strength"></div>
+</section>
+
+<section>
+  <div class="shead">
+    <h2>Main lift progression</h2>
+    <span class="note">Percentage of training max, by week</span>
+  </div>
+  <div class="tw"><table id="progTable">
+    <thead><tr><th>Lift</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+</section>
+
+<section id="testSec">
+  <div class="shead"><h2>Testing</h2><span class="note">Fixed measurement points</span></div>
+  <div class="tw"><table id="testTable">
+    <thead><tr><th>Wk</th><th>Date</th><th>Test</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+</section>
+
+<footer id="foot">Generated from the live block plan.</footer>
+</div>
+
+<script>
+/* ------------------------------------------------------------------
+   Reads block-plan.json — the same file the training console renders
+   from — so this page cannot drift from the plan actually being run.
+   ------------------------------------------------------------------ */
+var BLOCK_W1 = "2026-09-07", BLOCK_N = 13;
+var PB = 99.9;   /* 500m PB in seconds — 1:39.9 */
+
+/* Training maxes, mirroring the console's defaults. Percentages are the
+   programming; the pound figures are only an illustration of them. */
+var MAXES = {squat:230, front:180, bench:135, ohp:95, dl:275, pull:50, bw:150};
+var MAXLABEL = {squat:"squat", front:"front squat", bench:"bench", ohp:"OHP",
+                dl:"deadlift", pull:"pull-up", bw:"bodyweight"};
+
+var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function addDays(iso, n){
+  var d = new Date(iso + "T12:00:00"); d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0,10);
+}
+function weekOf(iso){
+  return Math.floor((new Date(iso+"T12:00:00") - new Date(BLOCK_W1+"T12:00:00")) / 86400000 / 7) + 1;
+}
+function fmtDay(iso){ return Number(iso.slice(8)) + " " + MON[Number(iso.slice(5,7))-1]; }
+function el(t, c, txt){
+  var n = document.createElement(t);
+  if(c) n.className = c;
+  if(txt != null) n.textContent = txt;
+  return n;
+}
+function r5(v){ return Math.round(v/5)*5; }
+
+/* Rowcalc PACE mode: pace = PB x (2 - pct). A higher percentage is a faster pace. */
+function paceAt(pct){ return PB * (2 - pct); }
+function fmtSec(s){
+  var m = Math.floor(s/60), r = s - m*60;
+  return m + ":" + (r < 10 ? "0" : "") + r.toFixed(1);
+}
+function band(lo, hi){
+  if(lo == null || hi == null) return "";
+  return fmtSec(paceAt(lo)) + "–" + fmtSec(paceAt(hi)) + " /500m";
+}
+
+/* "10×200m" out of "Rowfit — Sprint 10×200m" */
+function shortTitle(t){
+  var s = String(t).replace(/^Rowfit\s*[—–-]\s*/, "");
+  s = s.replace(/^(Sprint|VO₂ max|VO₂|Threshold|TEST|RACE)\s*/, "");
+  s = s.replace(/^[—–-]\s*/, "");        /* "RACE — BRIC 500m" left a stray dash */
+  return s || String(t);
+}
+/* Lane by weekday, not by title: Mon sprint, Wed VO₂, Fri threshold. A test
+   piece replaces whichever session it falls on, so keying off the title put
+   tests in the wrong column and blanked a real one. -1 is a race or extra. */
+function ergLane(dt){
+  var wd = new Date(dt + "T12:00:00").getDay();
+  return wd === 1 ? 0 : wd === 3 ? 1 : wd === 5 ? 2 : -1;
+}
+function loadSpec(x){
+  if(x.load != null) return String(x.load);
+  if(x.pct != null){
+    return Math.round(x.pct*100) + "% " + (MAXLABEL[x.base] || x.base) +
+           "  ·  " + r5(MAXES[x.base] * x.pct) + " lb";
+  }
+  if(x.pctLo != null){
+    return Math.round(x.pctLo*100) + "–" + Math.round(x.pctHi*100) + "% " +
+           (MAXLABEL[x.base] || x.base) + "  ·  " +
+           r5(MAXES[x.base]*x.pctLo) + "–" + r5(MAXES[x.base]*x.pctHi) + " lb";
+  }
+  return "";
+}
+
+/* ---------- phases ---------- */
+var PHASES = [
+  {n:"Phase 1", wks:[1,4],  name:"Max strength base",
+   focus:"Build the top end and re-establish heavy positions. Jumps stay simple and low-cost so the erg work is unaffected.",
+   cls:""},
+  {n:"Phase 2", wks:[5,8],  name:"Contrast / PAP",
+   focus:"Heavy lift paired with an explosive one, so force gets expressed fast. The PAP window is found in week 5 and used from there.",
+   cls:"p2"},
+  {n:"Phase 3", wks:[9,12], name:"Speed-strength",
+   focus:"Bar speed becomes the target. Loads on the main lift peak while the power work moves to loaded jumps and throws.",
+   cls:"p3"},
+  {n:"Taper",   wks:[13,13], name:"Peak and test",
+   focus:"Volume drops hard, intensity held briefly. Race and test pieces only.",
+   cls:"p4"}
+];
+
+function renderPhases(plan){
+  var host = document.getElementById("phases");
+  PHASES.forEach(function(ph){
+    var c = el("div","card phase " + ph.cls);
+    c.appendChild(el("div","eyebrow", ph.n));
+    c.appendChild(el("h3", null, ph.name));
+    c.appendChild(el("div","wks", ph.wks[0] === ph.wks[1]
+      ? "Week " + ph.wks[0] : "Weeks " + ph.wks[0] + "–" + ph.wks[1]));
+    c.appendChild(el("div","focus", ph.focus));
+
+    /* the power + hallmark movements actually programmed in this phase */
+    var pw = {}, hm = {};
+    Object.keys(plan).forEach(function(dt){
+      var w = weekOf(dt); if(w < ph.wks[0] || w > ph.wks[1]) return;
+      (plan[dt].ex || []).forEach(function(x){
+        if(x.star) hm[x.n] = 1;
+        else if(x.tier === 2 && !x.test) pw[x.n] = 1;
+      });
+    });
+    var pwl = Object.keys(pw), hml = Object.keys(hm);
+    if(hml.length) c.appendChild(el("div","power", "Hallmark: " + hml.join(", ")));
+    if(pwl.length) c.appendChild(el("div","power", "Power: " + pwl.join(", ")));
+    host.appendChild(c);
+  });
+}
+
+/* ---------- erg sessions, week by week, with the full prescription ---------- */
+var LANE = ["Sprint", "VO₂ max", "Threshold / endurance"];
+
+/* The stored description ends with a sentence restating the band in prose.
+   The coach gets the band as a pace below, so drop the boilerplate. */
+function prescription(raw){
+  if(!raw) return "";
+  return String(raw).split(/Intensity is set to/i)[0].trim();
+}
+/* Rowfit sessions are rowed at the middle of the band — that is the real target */
+function targetPace(lo, hi){
+  if(lo == null || hi == null) return "";
+  return fmtSec(paceAt((lo + hi) / 2));
+}
+
+function sessionCard(dt, s, laneName){
+  var isTest = /TEST|RACE/i.test(s.title || "");
+  var c = el("div","card sess" + (isTest ? " tst" : ""));
+  c.appendChild(el("div","lane", laneName + (dt ? " · " + fmtDay(dt) : "")));
+  c.appendChild(el("div","st", shortTitle(s.title)));
+
+  var rx = prescription(s.raw);
+  if(rx) c.appendChild(el("div","rx", rx));
+  else if(s.rate) c.appendChild(el("div","rx", s.rate));
+
+  var tp = targetPace(s.lo, s.hi);
+  if(tp){
+    c.appendChild(el("div", null, "")).appendChild(
+      el("span","tgt", "Target " + tp + " /500m"));
+    c.appendChild(el("div","bnd", "Band " + band(s.lo, s.hi) +
+      "  ·  " + Math.round(s.lo*100) + "–" + Math.round(s.hi*100) + "% of PB"));
+  } else if(isTest){
+    c.appendChild(el("div", null, "")).appendChild(el("span","tgt","Test — row it out"));
+  }
+  return c;
+}
+
+function renderErg(plan){
+  var host = document.getElementById("ergWeeks");
+  for(var w = 1; w <= BLOCK_N; w++){
+    var lanes = [null, null, null], extra = [];
+    Object.keys(plan).sort().forEach(function(dt){
+      if(weekOf(dt) !== w) return;
+      var s = plan[dt];
+      if(s.kind !== "erg") return;
+      var i = ergLane(dt);
+      if(i < 0 || lanes[i]) extra.push({dt:dt, s:s});   /* races and extras */
+      else lanes[i] = {dt:dt, s:s};
+    });
+    if(!lanes[0] && !lanes[1] && !lanes[2] && !extra.length) continue;
+
+    var blk = el("div","wkblock");
+    var hd = el("div","wkhead");
+    hd.appendChild(el("span","wn", "Week " + w));
+    hd.appendChild(el("span","wd", fmtDay(addDays(BLOCK_W1, (w-1)*7)) +
+      " – " + fmtDay(addDays(BLOCK_W1, (w-1)*7 + 6))));
+    blk.appendChild(hd);
+
+    var g = el("div","grid g3");
+    lanes.forEach(function(L, i){
+      if(L) g.appendChild(sessionCard(L.dt, L.s, LANE[i]));
+      else {
+        var c = el("div","card sess empty");
+        c.appendChild(el("div","lane", LANE[i]));
+        c.appendChild(el("div","rx","Not programmed this week."));
+        g.appendChild(c);
+      }
+    });
+    extra.forEach(function(E){
+      g.appendChild(sessionCard(E.dt, E.s, /RACE/i.test(E.s.title || "") ? "Race" : "Additional"));
+    });
+    blk.appendChild(g);
+    host.appendChild(blk);
+  }
+}
+
+/* ---------- strength day templates, one set per phase ---------- */
+function renderStrength(plan){
+  var host = document.getElementById("strength");
+  PHASES.forEach(function(ph){
+    /* take the first full week of the phase as the representative template */
+    var days = {}, fromWk = null;
+    Object.keys(plan).sort().forEach(function(dt){
+      var w = weekOf(dt); if(w < ph.wks[0] || w > ph.wks[1]) return;
+      var s = plan[dt]; if(s.kind !== "lift") return;
+      if(!days[s.title]){ days[s.title] = s; if(fromWk === null) fromWk = w; }
+    });
+    var titles = Object.keys(days);
+    if(!titles.length) return;
+
+    var wrap = el("div"); wrap.style.marginBottom = "22px";
+    var h = el("div","shead");
+    h.style.borderBottom = "0"; h.style.marginBottom = "9px"; h.style.paddingBottom = "0";
+    h.appendChild(el("h3", null, ph.n + " · " + ph.name));
+    h.appendChild(el("span","note", ph.wks[0] === ph.wks[1]
+      ? "week " + ph.wks[0]
+      : "weeks " + ph.wks[0] + "–" + ph.wks[1] +
+        "  ·  structure shown from week " + fromWk + "; loads ramp weekly — see progression below"));
+    wrap.appendChild(h);
+
+    var g = el("div","grid g3");
+    titles.forEach(function(t){
+      var s = days[t];
+      var c = el("div","card day");
+      c.appendChild(el("h3", null, t.replace(/^Strength\s*/, "")));
+
+      var main = (s.ex || []).filter(function(x){ return x.tier !== 3; });
+      var acc  = (s.ex || []).filter(function(x){ return x.tier === 3; });
+      c.appendChild(el("div","dsub", main.length + " main · " +
+        (acc.length ? acc.length + " optional accessories" : "no accessories")));
+
+      var ul = el("ul","lifts");
+      main.forEach(function(x){
+        var li = document.createElement("li");
+        var nm = el("div","ln");
+        if(x.star){ nm.appendChild(el("span","star","★ ")); }
+        nm.appendChild(document.createTextNode(x.n));
+        if(x.star) nm.appendChild(el("span","pill hm","hallmark"));
+        else if(x.tier === 2 && !x.test) nm.appendChild(el("span","pill pw","power"));
+        li.appendChild(nm);
+        if(x.rx) li.appendChild(el("div","lrx", x.rx));
+        var ls = loadSpec(x);
+        if(ls) li.appendChild(el("div","lload", ls));
+        ul.appendChild(li);
+      });
+      c.appendChild(ul);
+      if(acc.length) c.appendChild(el("div","acc",
+        "Plus optional accessories — pumps, isolation and bracing work, held at the athlete's discretion."));
+      g.appendChild(c);
+    });
+    wrap.appendChild(g);
+    host.appendChild(wrap);
+  });
+}
+
+/* ---------- main lift progression ---------- */
+function renderProg(plan){
+  var byLift = {};
+  Object.keys(plan).forEach(function(dt){
+    var w = weekOf(dt), s = plan[dt];
+    if(s.kind !== "lift") return;
+    (s.ex || []).forEach(function(x){
+      if(x.tier === 3 || x.test) return;
+      if(x.pct == null && x.pctLo == null) return;
+      if(!byLift[x.n]) byLift[x.n] = {};
+      byLift[x.n][w] = x.pct != null
+        ? Math.round(x.pct*100) + "%"
+        : Math.round(x.pctLo*100) + "–" + Math.round(x.pctHi*100) + "%";
+    });
+  });
+  var names = Object.keys(byLift).sort(function(a,b){
+    return Object.keys(byLift[b]).length - Object.keys(byLift[a]).length;
+  });
+  var head = document.querySelector("#progTable thead tr");
+  for(var w = 1; w <= BLOCK_N; w++) head.appendChild(el("th", null, "W" + w));
+  var tb = document.querySelector("#progTable tbody");
+  names.forEach(function(n){
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+    td.appendChild(el("span","ln", n));
+    tr.appendChild(td);
+    for(var w = 1; w <= BLOCK_N; w++){
+      var v = byLift[n][w];
+      var c = el("td","wk", v || "·");
+      if(v) c.style.color = "var(--lift-ink)";
+      tr.appendChild(c);
+    }
+    tb.appendChild(tr);
+  });
+}
+
+/* ---------- testing ---------- */
+function renderTests(plan){
+  var tb = document.querySelector("#testTable tbody"), any = false;
+  Object.keys(plan).sort().forEach(function(dt){
+    var s = plan[dt], w = weekOf(dt);
+    var items = [];
+    if(s.kind === "erg" && /TEST|RACE/i.test(s.title || "")) items.push(s.title.replace(/^Rowfit\s*[—–-]\s*/, ""));
+    (s.ex || []).forEach(function(x){ if(x.test) items.push(x.n); });
+    items.forEach(function(t){
+      any = true;
+      var tr = document.createElement("tr");
+      tr.appendChild(el("td","wk","W" + w));
+      tr.appendChild(el("td","wk", fmtDay(dt)));
+      tr.appendChild(el("td","piece", t));
+      tb.appendChild(tr);
+    });
+  });
+  if(!any) document.getElementById("testSec").hidden = true;
+}
+
+fetch("block-plan.json", {cache:"no-store"})
+  .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+  .then(function(plan){
+    var ds = Object.keys(plan).sort();
+    document.getElementById("range").textContent =
+      fmtDay(ds[0]) + " – " + fmtDay(ds[ds.length-1]) + " 2026  ·  " + BLOCK_N + " weeks";
+    renderPhases(plan);
+    renderErg(plan);
+    renderStrength(plan);
+    renderProg(plan);
+    renderTests(plan);
+    document.getElementById("foot").textContent =
+      "Generated from the live block plan · " + ds.length + " programmed days.";
+  })
+  .catch(function(e){
+    var d = el("div","err","Could not load the block plan (" + e.message + "). " +
+      "This page reads block-plan.json from the same folder.");
+    document.querySelector(".wrap").appendChild(d);
+  });
+</script>
+</body>
+</html>
