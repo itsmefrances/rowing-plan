@@ -271,6 +271,7 @@ svg.spark{width:100%;height:38px;display:block;}
 .f input{width:100%;font-size:15px;padding:8px 9px;}
 .f3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .setgrid{display:grid;grid-template-columns:52px 1fr 1fr 1fr;gap:6px;align-items:center;}
+.setgrid.h5{grid-template-columns:46px 1fr 1fr 1fr 1fr;gap:5px;}
 .setgrid.head .hl{font-size:9.5px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);}
 .setgrid .sn{font-family:var(--f-m);font-size:11.5px;color:var(--muted);}
 .setgrid input{width:100%;font-size:14px;padding:7px 8px;}
@@ -713,8 +714,14 @@ function readiness(d){
 }
 
 /* ---------- log modal ---------- */
+/* A box jump has two dimensions — the box height and whatever load is added —
+   so these get a Height field alongside Weight, written to recomp-log's own
+   height column. Everything else logs weight only and leaves height empty. */
+function hasHeight(name){ return /box jump/i.test(name || ""); }
+
 function openLog(d, x, m, startAt){
   var nSets = Math.max(1, Number(m.sets) || 1);
+  var wantsH = hasHeight(x.n);
   var bg = el("div","modal-bg");
   bg.setAttribute("role","dialog"); bg.setAttribute("aria-modal","true");
   var mo = el("div","modal");
@@ -725,20 +732,26 @@ function openLog(d, x, m, startAt){
   mo.appendChild(h);
 
   var b = el("div","modal-b");
-  var head = el("div","setgrid head");
-  ["", "Reps", "Weight", "RIR / RPE"].forEach(function(t){ head.appendChild(el("span","hl", t)); });
+  var head = el("div","setgrid head" + (wantsH ? " h5" : ""));
+  (wantsH ? ["", "Reps", "Weight", "Height", "RIR / RPE"]
+          : ["", "Reps", "Weight", "RIR / RPE"])
+    .forEach(function(t){ head.appendChild(el("span","hl", t)); });
   b.appendChild(head);
 
   var rows = [];
   for(var k = 0; k < nSets; k++){
     (function(k){
-      var g = el("div","setgrid");
+      var g = el("div","setgrid" + (wantsH ? " h5" : ""));
       g.appendChild(el("span","sn", "Set " + (k+1)));
       var f = {};
-      [["reps", m.reps],["weight", suggestFor(x, d)],["rir", m.rir]].forEach(function(fd){
+      var fields = [["reps", m.reps], ["weight", suggestFor(x, d)]];
+      if(wantsH) fields.push(["height", ""]);
+      fields.push(["rir", m.rir]);
+      fields.forEach(function(fd){
         var inp = document.createElement("input");
         inp.type = "text";
         inp.value = fd[1] == null ? "" : String(fd[1]);
+        if(fd[0] === "height") inp.placeholder = "in";
         inp.setAttribute("aria-label", x.n + " set " + (k+1) + " " + fd[0]);
         g.appendChild(inp); f[fd[0]] = inp;
       });
@@ -752,6 +765,7 @@ function openLog(d, x, m, startAt){
     rows.slice(1).forEach(function(r){
       r.reps.value = rows[0].reps.value;
       r.weight.value = rows[0].weight.value;
+      if(r.height && rows[0].height) r.height.value = rows[0].height.value;
       r.rir.value = rows[0].rir.value;
     });
   });
@@ -776,9 +790,12 @@ function openLog(d, x, m, startAt){
   save.addEventListener("click", function(){
     var n = 0;
     rows.forEach(function(r, k){
-      if(!r.reps.value && !r.weight.value) return;
+      /* a bodyweight box jump has a height and no load, so height alone
+         is enough to make the set worth logging */
+      var hv = r.height ? r.height.value : "";
+      if(!r.reps.value && !r.weight.value && !hv) return;
       logSet(d, x, (startAt || 1) + k, {
-        reps: r.reps.value, weight: r.weight.value,
+        reps: r.reps.value, weight: r.weight.value, height: hv,
         rir: r.rir.value, notes: ni.value
       });
       n++;
@@ -804,7 +821,8 @@ var DAYTYPE = {"2026-09-07":"sprint","2026-09-08":"lower","2026-09-09":"vo2",
 function logSet(d, x, setNum, st){
   var row = { date:d, day_type:DAYTYPE[d]||"", exercise:x.n,
     prescribed:(x.load ? x.load()+" lb · " : "")+x.rx, set_num:setNum,
-    reps:st.reps||"", weight:st.weight||"", rir_rpe:st.rir||"", notes:st.notes||"" };
+    reps:st.reps||"", weight:st.weight||"", height:st.height||"",
+    rir_rpe:st.rir||"", notes:st.notes||"" };
   SHEET_ROWS.push({date:d, exercise:x.n});
   pushRow(row);
 }
@@ -911,17 +929,23 @@ function renderSession(){
     var line = el("div","logline"); line.style.marginTop = "7px";
     [0,1,2].forEach(function(j){
       var inp = document.createElement("input");
-      inp.type = "number"; inp.step = "0.1"; inp.placeholder = "jump " + (j+1);
+      /* text + decimal inputmode rather than type=number: a half-typed "21."
+         reads back as "" from a number input, which ate the decimal point */
+      inp.type = "text"; inp.setAttribute("inputmode","decimal");
+      inp.autocomplete = "off"; inp.placeholder = "jump " + (j+1);
       inp.value = lg.cmj[j] || "";
       inp.setAttribute("aria-label","CMJ vertical jump height " + (j+1) + " (inches)");
-      inp.addEventListener("input", function(){ lg.cmj[j] = inp.value; queueSave(); renderSession(); });
+      inp.addEventListener("input", function(){ lg.cmj[j] = inp.value; queueSave(); syncGate(); });
       line.appendChild(inp);
     });
     var bl = document.createElement("input");
-    bl.type = "number"; bl.step = "0.1"; bl.placeholder = "baseline in";
+    bl.type = "text"; bl.setAttribute("inputmode","decimal");
+    bl.autocomplete = "off"; bl.placeholder = "baseline in";
     bl.value = state.baseline.cmj || "";
     bl.setAttribute("aria-label","CMJ vertical jump height baseline (inches)");
-    bl.addEventListener("input", function(){ state.baseline.cmj = Number(bl.value); queueSave(); renderSession(); });
+    bl.addEventListener("input", function(){
+      state.baseline.cmj = Number(bl.value) || 0; queueSave(); syncGate();
+    });
     line.appendChild(el("span","status","baseline →"));
     line.appendChild(bl);
     g.appendChild(line);
@@ -938,21 +962,42 @@ function renderSession(){
       already + " jump" + (already > 1 ? "s" : "") + " already in the sheet today"));
     g.appendChild(lb);
 
-    rd = readiness(d);
-    if(rd){
-      var v = el("div","verdict " + rd.lvl);
-      var txt = {g:"Run the session as written",
-                 a:"Drop the last set of the main lift — keep everything else",
-                 r:"Skip the top set. Technical work at 70%, keep the accessories."}[rd.lvl];
-      v.appendChild(el("div","vt", txt));
-      v.appendChild(el("div","vd", "Best " + rd.best + "\u2033 vs baseline " + state.baseline.cmj + "\u2033" +
-        " — " + (rd.pct>=0?"+":"") + rd.pct.toFixed(1) + "%"));
-      if(rd.lvl === "r") v.appendChild(el("div","vd","The heavy single is off. A heavy single on a bad day is all cost and no adaptation."));
-      if(rd.lvl === "a") v.appendChild(el("div","vd","The heavy single stays — it's the last set of the main lift that goes."));
-      g.appendChild(v);
-    } else {
-      g.appendChild(el("p","note","Vertical only — touch height minus your standing reach. Enter three jumps and a baseline to arm the gate."));
+    /* The verdict repaints in place as she types. Calling renderSession() from
+       the input handler rebuilt these very inputs mid-keystroke, so focus died
+       and the phone keyboard closed after every digit. */
+    var vbox = el("div");
+    g.appendChild(vbox);
+    function syncGate(){
+      var r = readiness(d);
+      cbtn.disabled = !lg.cmj.some(function(v){ return String(v == null ? "" : v).trim() !== ""; });
+      while(vbox.firstChild) vbox.removeChild(vbox.firstChild);
+      if(r){
+        var v = el("div","verdict " + r.lvl);
+        var txt = {g:"Run the session as written",
+                   a:"Drop the last set of the main lift \u2014 keep everything else",
+                   r:"Skip the top set. Technical work at 70%, keep the accessories."}[r.lvl];
+        v.appendChild(el("div","vt", txt));
+        v.appendChild(el("div","vd", "Best " + r.best + "\u2033 vs baseline " + state.baseline.cmj + "\u2033" +
+          " \u2014 " + (r.pct>=0?"+":"") + r.pct.toFixed(1) + "%"));
+        if(r.lvl === "r") v.appendChild(el("div","vd","The heavy single is off. A heavy single on a bad day is all cost and no adaptation."));
+        if(r.lvl === "a") v.appendChild(el("div","vd","The heavy single stays \u2014 it's the last set of the main lift that goes."));
+        vbox.appendChild(v);
+      } else {
+        vbox.appendChild(el("p","note","Vertical only \u2014 touch height minus your standing reach. Enter three jumps and a baseline to arm the gate."));
+      }
     }
+    rd = readiness(d);
+    var lvlAtRender = rd ? rd.lvl : null;
+    syncGate();
+
+    /* the gate also cuts sets further down, so repaint the whole session once
+       she leaves the gate entirely \u2014 and only if the verdict actually moved */
+    g.addEventListener("focusout", function(e){
+      if(g.contains(e.relatedTarget)) return;
+      var now = readiness(d);
+      if((now ? now.lvl : null) !== lvlAtRender) renderSession();
+    });
+
     host.appendChild(g);
   }
 
