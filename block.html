@@ -308,6 +308,17 @@ svg.spark{width:100%;height:38px;display:block;}
 .c2link{align-self:flex-start;margin-top:5px;font-family:var(--f-d);font-size:12px;
   font-weight:600;color:var(--erg);text-decoration:none;border-bottom:1px solid var(--erg);}
 .c2link:hover{opacity:.75;}
+.notewrap{display:flex;flex-direction:column;gap:6px;padding:11px 13px;
+  background:var(--surface-2);border-left:3px solid var(--rule-strong);}
+.noteta{font-family:var(--f-m);font-size:12.5px;line-height:1.45;color:var(--ink);
+  background:var(--surface);border:1px solid var(--rule);border-radius:4px;
+  padding:7px 8px;resize:vertical;min-height:46px;width:100%;box-sizing:border-box;}
+.noteta:focus{outline:2px solid var(--erg);outline-offset:1px;}
+.notebtn{align-self:flex-start;font-family:var(--f-d);font-size:12.5px;font-weight:600;
+  color:var(--ink);background:var(--surface);border:1px solid var(--rule-strong);
+  border-radius:4px;padding:5px 11px;cursor:pointer;}
+.notebtn:hover{background:var(--surface-3);}
+.notebox{border-left-color:var(--erg);}
 .ezlink{align-self:flex-start;font-family:var(--f-d);font-size:12.5px;font-weight:600;
   color:var(--erg);text-decoration:none;border:1px solid var(--erg);padding:6px 10px;}
 .ezlink:hover{background:var(--erg-soft);}
@@ -968,6 +979,47 @@ function priorSub(name, before){
   return hit;
 }
 
+/* A session note is its own row in recomp-log: day_type "erg-note", with the
+   workout's shape key in `prescribed`. That is what lets a note written after
+   10 x 1:20 in June come back the next time a 10 x 1:20 is programmed. */
+function noteOn(date){
+  for(var i = SHEET_ROWS.length - 1; i >= 0; i--){
+    var r = SHEET_ROWS[i];
+    if(r.dtype === "erg-note" && r.date === date) return r.notes || "";
+  }
+  return "";
+}
+function priorNote(date, key){
+  var want = keyParts(key), best = null, bestScore = 0;
+  for(var i = 0; i < SHEET_ROWS.length; i++){
+    var r = SHEET_ROWS[i];
+    if(r.dtype !== "erg-note" || !r.notes || !r.date || r.date >= date) continue;
+    var sc;
+    if(key && r.pres === key) sc = 100;
+    else {
+      var got = keyParts(r.pres);
+      if(!got || !want || got.u !== want.u) continue;
+      var vg = got.size * got.reps, vw = want.size * want.reps;
+      sc = 40 + 30 * (Math.min(vg, vw) / Math.max(vg, vw)) +
+                20 * (Math.min(got.size, want.size) / Math.max(got.size, want.size));
+    }
+    if(sc > bestScore || (sc === bestScore && best && r.date > best.date)){
+      bestScore = sc; best = {date:r.date, text:r.notes, exact:sc === 100};
+    }
+  }
+  return best;
+}
+function logErgNote(d, s, text){
+  var t = String(text || "").trim();
+  if(!t) return;
+  pushRow({ date:d, day_type:"erg-note", exercise:s.title || "Erg session",
+    prescribed:s.key || "", set_num:1, reps:"", weight:"", height:"",
+    rir_rpe:"", notes:t });
+  SHEET_ROWS.push({date:d, exercise:s.title || "Erg session", notes:t, reps:0,
+    weight:0, height:0, set_num:1, rir:"", pres:s.key || "", dtype:"erg-note"});
+  renderSession();
+}
+
 function logSet(d, x, setNum, st){
   var sub = subFor(d, x), nm = sub || x.n;
   var note = st.notes || "";
@@ -1181,12 +1233,12 @@ function renderSession(){
       "PB " + fmtTime(state.pb) + " = " + Math.round(basePower()) + " W"));
     pbx.appendChild(pcell("Rate", s.rate, ""));
     b.appendChild(pbx);
-    if(s.prev && !c2On(d)){
-      var cmp = comparableFor(d, s);
+    var cmp = comparableFor(d, s);
+    if((cmp || s.prev) && !c2On(d)){
       var pb2 = el("div","prevbox");
       var pDate, pShape, pPace, pRate, pWhy, pLink;
       if(cmp){
-        pDate = cmp.date; pShape = cmp.w.shape || (cmp.w.dist + " m");
+        pDate = fmtDay(cmp.date); pShape = cmp.w.shape || (cmp.w.dist + " m");
         pPace = cmp.w.pace; pRate = cmp.w.rate;
         pWhy = cmp.exact ? "same shape, straight from your logbook" : "nearest match by work volume";
         pLink = cmp.w.link || c2Link(cmp.w.id);
@@ -1204,6 +1256,26 @@ function renderSession(){
       pb2.appendChild(a2);
       b.appendChild(pb2);
     }
+    var pn = priorNote(d, s.key);
+    if(pn){
+      var pnb = el("div","prevbox notebox");
+      pnb.appendChild(el("span","c2k","Your note \u00b7 " + fmtDay(pn.date) +
+        (pn.exact ? "" : "  \u00b7  nearest shape")));
+      pnb.appendChild(el("span","c2v", pn.text));
+      b.appendChild(pnb);
+    }
+    var nw = el("div","notewrap");
+    nw.appendChild(el("span","c2k","How did it feel?"));
+    var ta = document.createElement("textarea");
+    ta.className = "noteta";
+    ta.rows = 2;
+    ta.placeholder = "Difficulty, pacing, what you'd change \u2014 whatever you'd want to read the next time this one comes round.";
+    ta.value = noteOn(d);
+    nw.appendChild(ta);
+    var nbtn = el("button","notebtn","Save note");
+    nbtn.addEventListener("click", function(){ logErgNote(d, s, ta.value); });
+    nw.appendChild(nbtn);
+    b.appendChild(nw);
     if(s.ezId){
       var lk = document.createElement("a");
       lk.className = "ezlink"; lk.target = "_blank"; lk.rel = "noopener";
@@ -1514,7 +1586,8 @@ function loadSheet(){
       return { date:String(r[ix.date]||"").slice(0,10), exercise:String(r[ix.exercise]||""),
                set_num:Number(r[ix.set_num])||0, reps:Number(r[ix.reps])||0,
                weight:parseFloat(r[ix.weight])||0, rir:String(r[ix.rir_rpe]||""),
-               height:parseFloat(r[ix.height])||0, notes:String(r[ix.notes]||"") };
+               height:parseFloat(r[ix.height])||0, notes:String(r[ix.notes]||""),
+               pres:String(r[ix.prescribed]||""), dtype:String(r[ix.day_type]||"") };
     });
     setStatus(sheetStatus());
     render();
