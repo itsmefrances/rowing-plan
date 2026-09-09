@@ -509,16 +509,13 @@ var C2LOG = [
 ];
 var C2SYNC = null;   /* sync/results.json, refreshed daily at 9am ET by c2sync.yml */
 function c2Link(id){ return "https://log.concept2.com/profile/2198296/log/" + id; }
-/* the sync keys on the erg's own date, which can sit a day off — allow ±1 */
+/* The sync files a result under the plan day it belongs to, not the erg's own
+   date, so this looks that date up exactly. The old ±1 day tolerance repeated
+   work the sync already does — and it searched backwards first, which put
+   Wednesday's row on Thursday's card. */
 function syncOn(date){
   if(!C2SYNC) return null;
-  var d = new Date(date + "T12:00:00");
-  for(var k=-1;k<=1;k++){
-    var t = new Date(d.getTime() + k*86400000);
-    var key = t.getFullYear() + "-" + String(t.getMonth()+1).padStart(2,"0") + "-" + String(t.getDate()).padStart(2,"0");
-    if(C2SYNC[key]) return C2SYNC[key];
-  }
-  return null;
+  return C2SYNC[date] || null;
 }
 function c2On(date){
   var live = syncOn(date);
@@ -1127,7 +1124,9 @@ function renderSession(){
   var pub = !!s;
   if(!pub) s = {kind:"none", title:"Not published yet", chip:null};
 
-  var c2 = c2On(d);
+  /* Only a rowing day is completed by a row. A lift day is completed by logging
+     its sets, and a row logged on a lift date belongs to the erg day beside it. */
+  var c2 = s.kind === "erg" ? c2On(d) : null;
   if(c2 && !lg.done){ lg.done = true; queueSave(); }
 
   var h = el("div","sess-h");
