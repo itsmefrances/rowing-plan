@@ -989,8 +989,12 @@ function noteOn(date){
   }
   return "";
 }
+/* 75 is the floor for showing a note written against a different shape: 10x1:30
+   scores 84 against 10x1:20 and is worth reading, 7x4min scores 61 and is a
+   different session. Without a floor the only note in the sheet lands on every
+   rowing day, which is worse than showing nothing. */
 function priorNote(date, key){
-  var want = keyParts(key), best = null, bestScore = 0;
+  var want = keyParts(key), best = null, bestScore = 75;
   for(var i = 0; i < SHEET_ROWS.length; i++){
     var r = SHEET_ROWS[i];
     if(r.dtype !== "erg-note" || !r.notes || !r.date || r.date >= date) continue;
