@@ -308,6 +308,15 @@ svg.spark{width:100%;height:38px;display:block;}
 .c2link{align-self:flex-start;margin-top:5px;font-family:var(--f-d);font-size:12px;
   font-weight:600;color:var(--erg);text-decoration:none;border-bottom:1px solid var(--erg);}
 .c2link:hover{opacity:.75;}
+.coachbox{display:flex;flex-direction:column;gap:7px;padding:11px 13px;
+  background:var(--surface-2);border-left:3px solid var(--ink-2);
+  border-bottom:1px solid var(--rule);}
+.cpt{font-family:var(--f-m);font-size:12px;line-height:1.5;color:var(--ink-2);
+  padding-left:12px;position:relative;}
+.cpt:before{content:"\2014";position:absolute;left:0;color:var(--muted);}
+.cwatch,.cnext{font-family:var(--f-m);font-size:12px;line-height:1.5;color:var(--ink);
+  background:var(--surface);border-radius:4px;padding:6px 8px;}
+.cnext{border-left:2px solid var(--erg);}
 .notewrap{display:flex;flex-direction:column;gap:6px;padding:11px 13px;
   background:var(--surface-2);border-left:3px solid var(--rule-strong);}
 .noteta{font-family:var(--f-m);font-size:12.5px;line-height:1.45;color:var(--ink);
@@ -982,6 +991,32 @@ function priorSub(name, before){
 /* A session note is its own row in recomp-log: day_type "erg-note", with the
    workout's shape key in `prescribed`. That is what lets a note written after
    10 x 1:20 in June come back the next time a 10 x 1:20 is programmed. */
+/* Coach notes are written by hand into coach-notes.json, keyed by the date of
+   the session they review. A note carries that session's shape key, so it comes
+   forward onto the next comparable workout the same way her own notes do. */
+var COACH = null;
+function coachFor(date, s){
+  if(!COACH) return null;
+  if(COACH[date]) return {date:date, n:COACH[date], mode:"today"};
+  var key = s && s.key, want = keyParts(key), best = null, bestScore = 75;
+  Object.keys(COACH).forEach(function(dt){
+    if(dt >= date) return;
+    var n = COACH[dt], sc;
+    if(key && n.key === key) sc = 100;
+    else {
+      var got = keyParts(n.key);
+      if(!got || !want || got.u !== want.u) return;
+      var vg = got.size * got.reps, vw = want.size * want.reps;
+      sc = 40 + 30 * (Math.min(vg, vw) / Math.max(vg, vw)) +
+                20 * (Math.min(got.size, want.size) / Math.max(got.size, want.size));
+    }
+    if(sc > bestScore || (sc === bestScore && best && dt > best.date)){
+      bestScore = sc; best = {date:dt, n:n, mode:"prior"};
+    }
+  });
+  return best;
+}
+
 function noteOn(date){
   for(var i = SHEET_ROWS.length - 1; i >= 0; i--){
     var r = SHEET_ROWS[i];
@@ -1216,6 +1251,19 @@ function renderSession(){
     var nb = el("div"); nb.style.padding = "13px"; nb.style.borderBottom = "1px solid var(--rule)";
     nb.appendChild(el("p","note w", s.note));
     host.appendChild(nb);
+  }
+
+  var cn = coachFor(d, s);
+  if(cn){
+    var cb = el("div","coachbox");
+    cb.appendChild(el("span","c2k", "Coach note \u00b7 " + fmtDay(cn.date) +
+      (cn.mode === "prior" ? "  \u00b7  " + (cn.n.session || "") : "")));
+    if(cn.n.headline) cb.appendChild(el("span","c2v", cn.n.headline));
+    (cn.n.points || []).forEach(function(t){ cb.appendChild(el("span","cpt", t)); });
+    if(cn.n.watch) cb.appendChild(el("span","cwatch", "Watch \u00b7 " + cn.n.watch));
+    if(cn.n.next) cb.appendChild(el("span","cnext",
+      (cn.mode === "today" ? "Next time \u00b7 " : "Today \u00b7 ") + cn.n.next));
+    host.appendChild(cb);
   }
 
   if(!pub){
@@ -1651,6 +1699,14 @@ function loadBlockPlan(){
   }).catch(function(){ /* week 1 still renders on its own */ });
 }
 
+/* Coach notes — hand-written, optional; the console runs fine without the file */
+function loadCoachNotes(){
+  fetch("coach-notes.json", {cache:"no-store"}).then(function(r){
+    if(!r.ok) throw new Error(r.status);
+    return r.json();
+  }).then(function(j){ COACH = j; render(); }).catch(function(){ COACH = null; });
+}
+
 /* Concept2 logbook — refreshed every morning at 9am ET by c2sync.yml */
 function loadC2Sync(){
   fetch("sync/results.json", {cache:"no-store"}).then(function(r){
@@ -1709,6 +1765,7 @@ function refreshAll(force){
   loadBlockPlan();
   loadSheet();
   loadC2Sync();
+  loadCoachNotes();
   checkBuild();
 }
 
