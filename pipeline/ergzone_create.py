@@ -107,7 +107,12 @@ def find():
 
 
 def expand(p):
-    """groups -> one entry per rep; the final rep always has undefined rest."""
+    """groups -> one entry per rep; the final rep carries no rest at all.
+
+    Not "undefined" rest - that is a distinct ErgZone setting, and ticking it
+    is what put the stray Undefined flag on the last interval of every workout.
+    The last piece of an interval session just ends, so the field stays empty:
+    no `rest`, and `undefRest` sent as false so an update clears an old true."""
     ivs = []
     for g in p["groups"]:
         for _ in range(g["count"]):
@@ -120,7 +125,7 @@ def expand(p):
             ivs.append(d)
     if ivs:
         ivs[-1].pop("rest", None)
-        ivs[-1]["undefRest"] = True
+        ivs[-1]["undefRest"] = False
     return ivs
 
 
