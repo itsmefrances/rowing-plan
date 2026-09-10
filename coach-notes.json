@@ -10,5 +10,17 @@
   ],
   "watch": "Rate bought the pace. Reps 1–5: 30 spm, 8.50 m/stroke, peak force 138. Reps 6–10: 31.6 spm, 8.11 m/stroke, peak force 129. Identical split, 4.6% less distance per stroke — invisible in the pace column.",
   "next": "Open at 1:58 and hold. Make stroke-rate discipline the target rather than the split: finish the last rep still at 30–31 spm and ~8.4 m/stroke. The pace looks after itself."
+ },
+ "2026-09-10": {
+  "title": "Strength B — Posterior + pull",
+  "session": "Strength B",
+  "headline": "Strong session — and the second day running you took the prescription up.",
+  "points": [
+   "Trap bar: prescribed 195 (70%), you pulled 205 × 5 × 4 — 74.5% of your 275. The card said “RPE cap 7 — hard cap, Wednesday was hard”, and that cap was there because Wednesday's VO₂ was run 2.7 s/500m hot. Two sessions, two overshoots, one day apart.",
+   "Weighted pull-up 4 × 5 @ +25 at RIR 2, every set. That clears double progression, so the card will offer +30 next week. Your own note says 27–30 and questions whether 30 holds over four sets — take +27.5 if the gym has the plate.",
+   "CMJ best 19.9″ vs 18.0″ on Tuesday: +1.9″, +10.6% in two days. Either genuine rebound or the measurement moved. No baseline is entered, so the readiness gate can't arm and can't tell you which."
+  ],
+  "watch": "Hip thrust went into the log as “50kg” while every other load is in pounds. The progression engine reads the number and drops the unit, so next week it compares 50 against 110 lb and tells you to hold. Log it in lb (50 kg ≈ 110 lb) or it silently stalls.",
+  "next": "Trap bar 195 as written, and let the RPE cap win over the number — if it reads under 7 at 195, that is the session working, not the session being easy. Pull-up +27.5. Chest-supported row: your own call is right — 80–85 for 8, build to 10 before adding again."
  }
 }

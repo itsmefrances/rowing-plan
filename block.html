@@ -308,15 +308,23 @@ svg.spark{width:100%;height:38px;display:block;}
 .c2link{align-self:flex-start;margin-top:5px;font-family:var(--f-d);font-size:12px;
   font-weight:600;color:var(--erg);text-decoration:none;border-bottom:1px solid var(--erg);}
 .c2link:hover{opacity:.75;}
-.coachbox{display:flex;flex-direction:column;gap:7px;padding:11px 13px;
-  background:var(--surface-2);border-left:3px solid var(--ink-2);
-  border-bottom:1px solid var(--rule);}
-.cpt{font-family:var(--f-m);font-size:12px;line-height:1.5;color:var(--ink-2);
-  padding-left:12px;position:relative;}
-.cpt:before{content:"\2014";position:absolute;left:0;color:var(--muted);}
-.cwatch,.cnext{font-family:var(--f-m);font-size:12px;line-height:1.5;color:var(--ink);
-  background:var(--surface);border-radius:4px;padding:6px 8px;}
-.cnext{border-left:2px solid var(--erg);}
+.coachwrap{padding:13px;background:var(--ground);border-top:1px solid var(--rule);}
+.coachbox{display:flex;flex-direction:column;gap:9px;padding:13px 14px;
+  background:#14171B;border-radius:6px;}
+.ceyebrow{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+  font-family:var(--f-d);font-size:10px;font-weight:700;letter-spacing:0.13em;
+  text-transform:uppercase;color:#7E8991;}
+.ceyebrow b{color:#4FB3AC;}
+.chead{font-family:var(--f-d);font-size:14px;font-weight:600;line-height:1.35;color:#FFF;}
+.cpt{font-family:var(--f-m);font-size:12px;line-height:1.55;color:#BDC7CF;
+  padding-left:14px;position:relative;}
+.cpt:before{content:"\2014";position:absolute;left:0;color:#5A646D;}
+.cwatch,.cnext{font-family:var(--f-m);font-size:12px;line-height:1.5;color:#DDE4EA;
+  background:#1E242A;border-radius:4px;padding:7px 9px;}
+.cwatch{border-left:2px solid #C08A2C;}
+.cnext{border-left:2px solid #3E9E97;}
+.clabel{display:block;margin-bottom:3px;font-family:var(--f-d);font-size:9.5px;
+  font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#828D96;}
 .notewrap{display:flex;flex-direction:column;gap:6px;padding:11px 13px;
   background:var(--surface-2);border-left:3px solid var(--rule-strong);}
 .noteta{font-family:var(--f-m);font-size:12.5px;line-height:1.45;color:var(--ink);
@@ -998,11 +1006,15 @@ var COACH = null;
 function coachFor(date, s){
   if(!COACH) return null;
   if(COACH[date]) return {date:date, n:COACH[date], mode:"today"};
-  var key = s && s.key, want = keyParts(key), best = null, bestScore = 75;
+  if(!s) return null;
+  var key = s.key, want = keyParts(key), title = s.title || "";
+  var best = null, bestScore = 75;
   Object.keys(COACH).forEach(function(dt){
     if(dt >= date) return;
     var n = COACH[dt], sc;
     if(key && n.key === key) sc = 100;
+    /* a lift day has no shape key - Strength A/B/C recur by name instead */
+    else if(title && n.title && n.title === title) sc = 95;
     else {
       var got = keyParts(n.key);
       if(!got || !want || got.u !== want.u) return;
@@ -1015,6 +1027,27 @@ function coachFor(date, s){
     }
   });
   return best;
+}
+
+function coachCard(cn){
+  var wrap = el("div","coachwrap"), cb = el("div","coachbox");
+  var eb = el("div","ceyebrow");
+  eb.appendChild(el("b", null, "Coach note"));
+  eb.appendChild(el("span", null, fmtDay(cn.date) +
+    (cn.mode === "prior" && cn.n.session ? "  \u00b7  " + cn.n.session : "")));
+  cb.appendChild(eb);
+  if(cn.n.headline) cb.appendChild(el("div","chead", cn.n.headline));
+  (cn.n.points || []).forEach(function(t){ cb.appendChild(el("div","cpt", t)); });
+  function panel(cls, label, text){
+    var b = el("div", cls);
+    b.appendChild(el("span","clabel", label));
+    b.appendChild(document.createTextNode(text));
+    cb.appendChild(b);
+  }
+  if(cn.n.watch) panel("cwatch", "Watch", cn.n.watch);
+  if(cn.n.next) panel("cnext", cn.mode === "today" ? "Next time" : "Today", cn.n.next);
+  wrap.appendChild(cb);
+  return wrap;
 }
 
 function noteOn(date){
@@ -1255,19 +1288,6 @@ function renderSession(){
     host.appendChild(nb);
   }
 
-  var cn = coachFor(d, s);
-  if(cn){
-    var cb = el("div","coachbox");
-    cb.appendChild(el("span","c2k", "Coach note \u00b7 " + fmtDay(cn.date) +
-      (cn.mode === "prior" ? "  \u00b7  " + (cn.n.session || "") : "")));
-    if(cn.n.headline) cb.appendChild(el("span","c2v", cn.n.headline));
-    (cn.n.points || []).forEach(function(t){ cb.appendChild(el("span","cpt", t)); });
-    if(cn.n.watch) cb.appendChild(el("span","cwatch", "Watch \u00b7 " + cn.n.watch));
-    if(cn.n.next) cb.appendChild(el("span","cnext",
-      (cn.mode === "today" ? "Next time \u00b7 " : "Today \u00b7 ") + cn.n.next));
-    host.appendChild(cb);
-  }
-
   if(!pub){
     var np = el("div","nopub");
     np.appendChild(el("p","note","Week " + state.week + " hasn't been written yet. Anything you row on this date still appears above once it reaches your Concept2 logbook."));
@@ -1465,6 +1485,12 @@ function renderSession(){
     mb.appendChild(ml);
     host.appendChild(mb);
   }
+
+  /* The note reads the session, so it sits under it - and it is commentary,
+     not prescription, so it is styled as its own object rather than one more
+     row in the list. */
+  var cn = coachFor(d, s);
+  if(cn) host.appendChild(coachCard(cn));
 
   /* done */
   var f = el("div"); f.style.padding = "13px";
