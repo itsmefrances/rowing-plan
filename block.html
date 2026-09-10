@@ -570,6 +570,7 @@ function c2Summary(w){
 
 /* ---------- prescribed sets, reps and effort target ---------- */
 var RXMETA = {
+  "Unbroken hang challenge":{sets:1,reps:"",rir:"one round, unbroken",rest:"as needed",tier:2},
   "Box jump, step down":{sets:4,reps:3,rir:"max intent",rest:"2:00",tier:2},
   "Heavy top single":{sets:1,reps:1,rir:"RPE 7",rest:"4:00–5:00",tier:1},
   "Back squat":{sets:4,reps:5,rir:"RIR 2-3",rest:"3:00",tier:1},
@@ -763,6 +764,8 @@ var SESSIONS = {
 "2026-09-12": {kind:"lift", title:"Strength C — Press + pump + bracing", chip:"lift", gate:true, peak7:true,
   ex:[
    {s:"—", n:"7-stroke peak power test", rx:"Drag 140, best of 3, full recovery — baseline for the block", tier:1, test:true},
+   {s:"✦", n:"Unbroken hang challenge", tier:2,
+     rx:"8s dead hang · 4 pull-ups · 8 knee raises · 5-5-5 hang (5s locked off at the top, 5s at mid, 5s dead hang) · straight into 5 chin-ups · 8s dead hang — hands never leave the bar"},
    {s:"A", n:"Plyo push-up", rx:"4 × 4", tier:2},
    {s:"★", n:"Heavy bench single", rx:"RPE 7", load:function(){return r5(M().bench*0.88);}, star:true, tier:1},
    {s:"B", n:"Bench", rx:"4 × 6 @ 75%, RIR 2", load:function(){return r5(M().bench*0.75);}, tier:1},
