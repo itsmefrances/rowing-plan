@@ -22,5 +22,19 @@
   ],
   "watch": "Hip thrust went into the log as “50kg” while every other load is in pounds. The progression engine reads the number and drops the unit, so next week it compares 50 against 110 lb and tells you to hold. Log it in lb (50 kg ≈ 110 lb) or it silently stalls.",
   "next": "Trap bar 195 as written, and let the RPE cap win over the number — if it reads under 7 at 195, that is the session working, not the session being easy. Pull-up +27.5. Chest-supported row: your own call is right — 80–85 for 8, build to 10 before adding again."
+ },
+ "2026-09-11": {
+  "key": "d750x8",
+  "title": "Rowfit — Threshold",
+  "session": "Threshold 8×750m",
+  "headline": "Rate bought the pace. Rep 2 is the one to copy.",
+  "points": [
+   "2:03.7 → 1:59.4, average 2:02.1 at 192 W, drag 117. Fastest rep last, and reps 2–7 sat inside 0.7 s of each other — the set was flat by design, not by fade.",
+   "2:02.1 is 77.8% of PB, a shade over the top of the prescribed 65–77% band. You ran the edge of threshold rather than inside it, which is why the middle felt monotonous and rep 8 still had 205 W in it.",
+   "Rep 1: 25 spm, 9.70 m/stroke. Rep 3: 28 spm, 8.77. Three extra strokes a minute bought 1.5 s/500m, and you held 28 for the last six reps — pace held by adding rate and shortening the stroke.",
+   "Strap peaked 169 in FITIV, just over VT2 (167), and only at the end. That is exactly where a threshold day should top out."
+  ],
+  "watch": "Rep 2 is the template: 2:02.5 at 26 spm, 9.42 m/stroke, 190 W — the same watts as reps 3–6 with two fewer strokes a minute. There, length was paying for the pace; after that, rate was. Opening at 26 and defending the length is the harder and more useful version of this session.",
+  "next": "Sep 18 is 7 × 4:00 — reps about 25% longer than these. Open at 2:03 and hold it rather than building into it. If you're still at 26–27 spm by rep 5, you've run it right."
  }
 }
