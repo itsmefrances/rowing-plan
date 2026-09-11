@@ -23,6 +23,8 @@ BASE = f"https://log.concept2.com/profile/{PROFILE}/log"
 UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"}
 ROOT = __file__.rsplit("/", 2)[0]
 RESULTS_JSON = f"{ROOT}/sync/results.json"
+INTERVALS_JSON = f"{ROOT}/sync/intervals.json"
+PILLARS_JSON = f"{ROOT}/sync/pillars.json"
 INDEX = f"{ROOT}/index.html"
 BLOCK_PLAN = f"{ROOT}/block-plan.json"
 PB_500 = 99.9                      # 500m PB in seconds - 1:39.9
@@ -114,10 +116,27 @@ def parse_workout(html):
             d = re.fullmatch(r"([\d,]+)", lines[i + 1]) if t else None
             p = re.fullmatch(r"(\d+:\d\d\.\d)", lines[i + 2]) if d else None
             if t and d and p and int(d.group(1).replace(",", "")) > 0:
-                intervals.append({"time": t.group(1),
-                                  "dist": int(d.group(1).replace(",", "")),
-                                  "pace": p.group(1)})
-                i += 3
+                iv = {"time": t.group(1),
+                      "dist": int(d.group(1).replace(",", "")),
+                      "pace": p.group(1)}
+                # Watts, Cal/Hr and S/M follow the pace, then Heart Rate when a
+                # strap is paired to the PM5. Each is a bare integer, so read
+                # forward until something that isn't one - the next interval's
+                # time has a colon in it and stops the run.
+                nums = []
+                for k in range(3, 7):
+                    if i + k < end and re.fullmatch(r"\d+", lines[i + k]):
+                        nums.append(int(lines[i + k]))
+                    else:
+                        break
+                if len(nums) >= 3:
+                    iv["watts"], iv["spm"] = nums[0], nums[2]
+                    if len(nums) >= 4 and 60 <= nums[3] <= 230:
+                        iv["hr"] = nums[3]
+                    i += 3 + len(nums)
+                else:
+                    i += 3
+                intervals.append(iv)
             else:
                 i += 1
     if intervals:
@@ -261,8 +280,47 @@ def inspect(wid):
 
 
 
+def pillar_of(title, pace_s):
+    """sprint / vo2 / threshold / test. The block names the session; where it
+       doesn't, intensity as a share of the 1:39.9 PB decides."""
+    t = (title or "").lower()
+    for k, v in (("sprint", "sprint"), ("vo", "vo2"), ("threshold", "threshold")):
+        if k in t:
+            return v
+    if "test" in t or "race" in t:
+        return "test"
+    if not pace_s:
+        return None
+    pct = (2 - pace_s / PB_500) * 100
+    return "sprint" if pct >= 90 else ("vo2" if pct >= 76 else "threshold")
+
+
+def load_intervals():
+    try:
+        return json.load(open(INTERVALS_JSON, encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def iv_rows(w):
+    """[distance, pace seconds, watts, stroke rate, heart rate] per work interval."""
+    out = []
+    for x in w.get("intervals") or []:
+        ps = pace_secs(x.get("pace"))
+        if not x.get("dist") or ps is None:
+            continue
+        out.append([x["dist"], round(ps, 1), x.get("watts", 0),
+                    x.get("spm", 0), x.get("hr", 0)])
+    return out
+
+
 def main():
     results = json.load(open(RESULTS_JSON))
+    intervals_by_day = load_intervals()
+    try:
+        pillars = json.load(open(PILLARS_JSON, encoding="utf-8"))
+    except (OSError, ValueError):
+        pillars = {}
     used_ids = {v["id"] for v in results.values()}
     index = open(INDEX).read()
 
@@ -402,8 +460,15 @@ def main():
             "band": band, "verdict": verdict, "note": note,
             "shape": (sh or {}).get("shape", ""), "key": (sh or {}).get("key", ""), "v": SHAPE_V,
         }
+        rows = iv_rows(w)
+        if rows:
+            intervals_by_day[pd] = rows
+        pil = pillar_of((block.get(pd) or {}).get("title"), pace_secs(wp))
+        if pil:
+            pillars[pd] = pil
         taken.add(w["id"])
-        print(f"  + {pd}: id {w['id']}, {w['dist']}m, pace {wp}, verdict {verdict}")
+        print(f"  + {pd}: id {w['id']}, {w['dist']}m, pace {wp}, verdict {verdict}"
+              + (f", {len(rows)} intervals" if rows else ""))
         added += 1
 
     unmatched = [w["id"] for w in workouts if w["id"] not in taken]
@@ -415,6 +480,10 @@ def main():
 
     json.dump(dict(sorted(results.items())), open(RESULTS_JSON, "w"),
               ensure_ascii=False, indent=1)
+    json.dump(dict(sorted(intervals_by_day.items())), open(INTERVALS_JSON, "w"),
+              ensure_ascii=False, separators=(",", ":"))
+    json.dump(dict(sorted(pillars.items())), open(PILLARS_JSON, "w"),
+              ensure_ascii=False, separators=(",", ":"))
 
     def js_str(s):
         return '"' + str(s or "").replace("\\", "\\\\").replace('"', '\\"') + '"'
