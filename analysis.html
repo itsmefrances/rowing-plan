@@ -487,6 +487,17 @@ function render(){
   renderDetail();
 }
 
+/* a session card in the console links here as analysis.html#2026-09-11 */
+function fromHash(){
+  var w = (location.hash || "").replace(/^#/, "");
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(w)) return null;
+  return S.sessions.filter(function(s){ return s.date === w; })[0] || null;
+}
+function scrollToDetail(){
+  var d = document.getElementById("detail");
+  if(d && d.scrollIntoView) d.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
 function boot(){
   Promise.all([
     fetch("sync/results.json",   {cache:"no-store"}).then(function(r){ return r.json(); }),
@@ -495,7 +506,9 @@ function boot(){
   ]).then(function(a){
     S.sessions = build(a[0], a[1], a[2]);
     var last = S.sessions[S.sessions.length-1];
-    S.sel = last ? last.date : null;
+    var hit = fromHash();
+    S.sel = hit ? hit.date : (last ? last.date : null);
+    if(hit) S.pillar = hit.pillar;
     document.getElementById("hdr").textContent = "";
     var h = document.getElementById("hdr");
     h.appendChild(document.createTextNode(
@@ -505,6 +518,13 @@ function boot(){
     a1.href = "block.html"; a1.textContent = "back to the console";
     h.appendChild(a1);
     render();
+    if(hit) scrollToDetail();
+    window.addEventListener("hashchange", function(){
+      var w = fromHash();
+      if(!w) return;
+      S.sel = w.date; S.pillar = w.pillar;
+      render(); scrollToDetail();
+    });
   }).catch(function(e){
     document.getElementById("hdr").textContent = "Could not load the sync files (" + e.message + ").";
   });

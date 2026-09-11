@@ -308,6 +308,9 @@ svg.spark{width:100%;height:38px;display:block;}
 .c2link{align-self:flex-start;margin-top:5px;font-family:var(--f-d);font-size:12px;
   font-weight:600;color:var(--erg);text-decoration:none;border-bottom:1px solid var(--erg);}
 .c2link:hover{opacity:.75;}
+.c2links{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:5px;}
+.c2links .c2link{margin-top:0;}
+.htools{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end;}
 .coachwrap{padding:13px;background:var(--ground);border-top:1px solid var(--rule);}
 .coachbox{display:flex;flex-direction:column;gap:9px;padding:13px 14px;
   background:#14171B;border-radius:6px;}
@@ -360,11 +363,9 @@ svg.spark{width:100%;height:38px;display:block;}
         <button type="button" id="wNow" class="wnow">This week</button>
       </div>
     </div>
-    <div class="stack-s" style="align-items:flex-end;">
-      <a class="maxlink" id="maxesLink" href="progression.html" target="_blank" rel="noopener">Maxes &amp; Progression &rarr;</a>
-      <a class="maxlink" href="analysis.html" target="_blank" rel="noopener">Erg Analysis &rarr;</a>
-      <span class="eyebrow">Rowcalc mode</span>
-      <div class="seg" id="convSeg">
+    <div class="htools">
+      <a class="maxlink" id="maxesLink" href="progression.html" target="_blank" rel="noopener">Progress &rarr;</a>
+      <div class="seg" id="convSeg" title="Rowcalc mode">
         <button type="button" data-c="pace" aria-pressed="true">Pace</button>
         <button type="button" data-c="power" aria-pressed="false">Power</button>
       </div>
@@ -462,6 +463,14 @@ function band(lo, hi){
     wHi: Math.round(wattsFromSec(fast))
   };
 }
+function extLink(href, text){
+  var a = document.createElement("a");
+  a.className = "c2link"; a.href = href;
+  a.target = "_blank"; a.rel = "noopener";
+  a.textContent = text;
+  return a;
+}
+
 function el(tag, cls, txt){
   var e = document.createElement(tag);
   if(cls) e.className = cls;
@@ -1221,12 +1230,10 @@ function renderSession(){
       done.appendChild(el("span","c2d", Math.abs(dlt).toFixed(1) + " s/500m " +
         (dlt > 0 ? "faster" : "slower") + " than " + s.prev.shape + " on " + s.prev.date + " (" + s.prev.pace + ")"));
     }
-    if(f.link){
-      var a1 = document.createElement("a");
-      a1.className = "c2link"; a1.href = f.link; a1.target = "_blank"; a1.rel = "noopener";
-      a1.textContent = "View on Concept2 →";
-      done.appendChild(a1);
-    }
+    var lr = el("div","c2links");
+    if(f.link) lr.appendChild(extLink(f.link, "View on Concept2 →"));
+    lr.appendChild(extLink("analysis.html#" + d, "View analysis →"));
+    done.appendChild(lr);
     host.appendChild(done);
   }
 
@@ -1338,26 +1345,26 @@ function renderSession(){
     var cmp = comparableFor(d, s);
     if((cmp || s.prev) && !c2On(d)){
       var pb2 = el("div","prevbox");
-      var pDate, pShape, pPace, pRate, pWhy, pLink;
+      var pDate, pShape, pPace, pRate, pWhy, pLink, pRaw;
       if(cmp){
         pDate = fmtDay(cmp.date); pShape = cmp.w.shape || (cmp.w.dist + " m");
         pPace = cmp.w.pace; pRate = cmp.w.rate;
         pWhy = cmp.exact ? "same shape, straight from your logbook"
           : "closest interval length \u2014 " + mmss(cmp.sec) + " of work vs " +
             mmss(cmp.want) + " today";
-        pLink = cmp.w.link || c2Link(cmp.w.id);
+        pLink = cmp.w.link || c2Link(cmp.w.id); pRaw = cmp.date;
       } else {
         pDate = s.prev.date; pShape = s.prev.shape; pPace = s.prev.pace;
         pRate = s.prev.rate; pWhy = s.prev.why; pLink = c2Link(s.prev.id);
+        pRaw = s.prev.date;
       }
       pb2.appendChild(el("span","c2k","Last comparable attempt · " + pDate));
       pb2.appendChild(el("span","c2v", pShape));
       pb2.appendChild(el("span","c2d", pPace + " /500m  ·  r" + pRate + "  ·  " + pWhy));
-      var a2 = document.createElement("a");
-      a2.className = "c2link"; a2.href = pLink;
-      a2.target = "_blank"; a2.rel = "noopener";
-      a2.textContent = "View on Concept2 →";
-      pb2.appendChild(a2);
+      var lr2 = el("div","c2links");
+      lr2.appendChild(extLink(pLink, "View on Concept2 →"));
+      if(pRaw) lr2.appendChild(extLink("analysis.html#" + pRaw, "View analysis →"));
+      pb2.appendChild(lr2);
       b.appendChild(pb2);
     }
     var pn = priorNote(d, s.key);
