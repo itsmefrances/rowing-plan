@@ -12,22 +12,26 @@
   --ground:#F1F3F5; --surface:#FFF; --surface-2:#E8ECEF; --surface-3:#DDE3E8;
   --ink:#14171B; --ink-2:#3C444D; --muted:#69727B;
   --rule:#D3DAE0; --rule-strong:#B5BFC8;
+  /* pillar identity - tabs and chips only, never a chart series */
   --sprint:#B23D0B; --sprint-soft:#F8E2D7;
   --vo2:#0C6F6B;   --vo2-soft:#DBECEB;
   --thr:#2D5AA8;   --thr-soft:#DEE7F5;
   --test:#9A6510;  --test-soft:#F4E9D5;
-  --good:#136F47;  --bad:#A0341A;
+  /* chart series - validated categorical trio, fixed order, never cycled */
+  --s-power:#008C7E; --s-stroke:#B23D0B; --s-rate:#2D5AA8;
+  /* status - reserved, always shipped with a word */
+  --up:#1A7A4A; --dn:#8A1C3B;
   --f-d:"Archivo","Helvetica Neue",Arial,sans-serif;
   --f-m:"IBM Plex Mono",ui-monospace,Menlo,monospace;
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-d);
   font-size:14px;line-height:1.45;-webkit-text-size-adjust:100%;}
-.wrap{max-width:940px;margin:0 auto;padding:0 0 60px;}
+.wrap{max-width:960px;margin:0 auto;padding:0 0 60px;}
 header{background:var(--surface);border-bottom:1px solid var(--rule);padding:16px 14px 13px;}
 h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-0.01em;}
 .sub{font-family:var(--f-m);font-size:11.5px;color:var(--muted);margin-top:3px;}
-.sub a{color:var(--vo2);text-decoration:none;border-bottom:1px solid var(--rule-strong);}
+.sub a{color:var(--s-power);text-decoration:none;border-bottom:1px solid var(--rule-strong);}
 .tabs{display:flex;gap:1px;background:var(--rule);border-bottom:1px solid var(--rule);
   overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .tab{flex:1 0 auto;min-width:88px;background:var(--surface);border:0;cursor:pointer;
@@ -39,26 +43,57 @@ h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-0.01em;}
 .tab[data-p=vo2][aria-selected=true]{color:var(--vo2);}
 .tab[data-p=threshold][aria-selected=true]{color:var(--thr);}
 .tab[data-p=test][aria-selected=true]{color:var(--test);}
-section{background:var(--surface);border-bottom:1px solid var(--rule);padding:14px;}
+section{background:var(--surface);border-bottom:1px solid var(--rule);padding:15px 14px;}
 .eyebrow{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
-  color:var(--muted);margin-bottom:9px;}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:1px;
+  color:var(--muted);margin-bottom:10px;}
+
+/* scorecard */
+.score{display:grid;grid-template-columns:repeat(auto-fit,minmax(286px,1fr));gap:1px;
   background:var(--rule);border:1px solid var(--rule);}
-.tile{background:var(--surface);padding:10px 11px;}
-.tile .k{font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
-.tile .v{font-family:var(--f-m);font-size:19px;line-height:1.2;margin-top:3px;
+.card{background:var(--surface);padding:11px 12px 12px;display:flex;flex-direction:column;gap:2px;}
+.card .q{font-size:13px;font-weight:700;color:var(--ink);}
+.card .k{font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
+.card .v{font-family:var(--f-m);font-size:21px;line-height:1.15;margin-top:4px;
   font-variant-numeric:tabular-nums;}
-.tile .s{font-family:var(--f-m);font-size:11px;color:var(--ink-2);margin-top:1px;}
-.chartbox{overflow-x:auto;}
+.card .c{font-family:var(--f-m);font-size:12px;color:var(--ink-2);}
+.card .m{font-size:11.5px;line-height:1.4;color:var(--ink-2);margin-top:5px;}
+.chip{align-self:flex-start;margin-top:6px;font-size:10px;font-weight:700;letter-spacing:0.07em;
+  text-transform:uppercase;padding:2px 7px;border:1px solid currentColor;}
+.chip.g{color:var(--up);} .chip.b{color:var(--dn);} .chip.n{color:var(--muted);}
+.card.off{opacity:.62;}
+
+/* contribution bar */
+.split{margin-top:4px;}
+.bars{display:flex;flex-direction:column;gap:6px;}
+.brow{display:grid;grid-template-columns:126px 1fr 78px;gap:10px;align-items:center;}
+.brow .bl{font-size:11.5px;font-weight:600;color:var(--ink-2);}
+.brow .bt{position:relative;height:20px;background:var(--surface-2);}
+.brow .bz{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--rule-strong);}
+.brow .bf{position:absolute;top:2px;bottom:2px;min-width:1px;}
+.brow .bv{font-family:var(--f-m);font-size:12px;text-align:right;
+  font-variant-numeric:tabular-nums;color:var(--ink);}
+.barnote{font-family:var(--f-m);font-size:10.5px;color:var(--muted);margin-top:7px;}
+@media(max-width:520px){.brow{grid-template-columns:96px 1fr 62px;gap:7px;}}
+.lede{font-size:13.5px;line-height:1.55;color:var(--ink);margin:0 0 10px;}
+.lede b{font-weight:700;}
+
+/* charts */
+.chartbox{position:relative;overflow-x:auto;}
 svg{display:block;}
 svg text{font-family:var(--f-m);font-size:9px;fill:var(--muted);}
 svg text.lab{fill:var(--ink-2);font-size:9.5px;}
-/* the m/stroke line runs through the bar labels - halo them so both stay readable */
-svg text.bl{paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round;}
-.legend{display:flex;flex-wrap:wrap;gap:11px;margin-top:8px;font-family:var(--f-m);
-  font-size:10.5px;color:var(--ink-2);}
-.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;
-  vertical-align:-1px;}
+svg text.end{font-size:10px;font-weight:500;}
+.legend{display:flex;flex-wrap:wrap;gap:13px;margin-top:9px;font-family:var(--f-m);
+  font-size:11px;color:var(--ink-2);}
+.legend i{display:inline-block;width:14px;height:3px;margin-right:6px;vertical-align:3px;}
+.tip{position:absolute;pointer-events:none;opacity:0;transition:opacity .08s;
+  background:var(--ink);color:#FFF;font-family:var(--f-m);font-size:11px;line-height:1.5;
+  padding:6px 8px;white-space:nowrap;z-index:3;}
+.cap{font-size:12.5px;line-height:1.55;color:var(--ink-2);margin:10px 0 0;}
+.cap b{color:var(--ink);font-weight:600;}
+
+/* table */
+.scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-family:var(--f-m);font-size:11.5px;
   font-variant-numeric:tabular-nums;}
 th{text-align:right;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;
@@ -69,37 +104,20 @@ tbody tr{cursor:pointer;}
 tbody tr:hover td{background:var(--surface-2);}
 tbody tr[aria-selected=true] td{background:var(--surface-3);}
 .pill{display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.06em;
-  text-transform:uppercase;padding:1px 5px;border-radius:3px;font-family:var(--f-d);}
+  text-transform:uppercase;padding:1px 5px;font-family:var(--f-d);}
 .p-sprint{background:var(--sprint-soft);color:var(--sprint);}
 .p-vo2{background:var(--vo2-soft);color:var(--vo2);}
 .p-threshold{background:var(--thr-soft);color:var(--thr);}
 .p-test{background:var(--test-soft);color:var(--test);}
-.note{font-family:var(--f-m);font-size:11.5px;line-height:1.5;color:var(--ink-2);margin:0;}
-.rdg{font-family:var(--f-m);font-size:11.5px;line-height:1.55;color:var(--ink-2);margin:9px 0 0;}
-.rdg b{color:var(--ink);font-weight:500;}
-.scroll{overflow-x:auto;}
-.verdict{background:var(--surface-2);border-left:3px solid var(--ink);padding:11px 13px;
-  font-size:13px;line-height:1.55;margin-top:11px;}
-.trend{display:grid;grid-template-columns:repeat(auto-fit,minmax(176px,1fr));gap:1px;
-  background:var(--rule);border:1px solid var(--rule);margin-top:11px;}
-.tr{background:var(--surface);padding:10px 11px;}
-.tr .k{font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
-.tr .v{font-family:var(--f-m);font-size:13.5px;margin-top:3px;font-variant-numeric:tabular-nums;}
-.tr .v em{font-style:normal;color:var(--muted);}
-.tr .m{font-size:11.5px;line-height:1.45;color:var(--ink-2);margin-top:5px;}
-.up{color:var(--good);font-weight:600;}
-.dn{color:var(--bad);font-weight:600;}
-.flat{color:var(--muted);font-weight:600;}
-.caveat{font-family:var(--f-m);font-size:10.5px;line-height:1.5;color:var(--muted);margin:9px 0 0;}
-.cap{font-size:12px;line-height:1.5;color:var(--ink-2);margin:9px 0 0;}
-.cap b{color:var(--ink);font-weight:600;}
-.reads{display:flex;flex-direction:column;gap:8px;margin-top:11px;}
-.rd{display:grid;grid-template-columns:118px 1fr;gap:11px;align-items:baseline;}
-.rd .rk{font-size:9.5px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;
-  color:var(--muted);}
+
+/* readouts */
+.reads{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.rd{display:grid;grid-template-columns:122px 1fr;gap:11px;align-items:baseline;}
+.rd .rk{font-size:9.5px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);}
 .rd .rv{font-size:12.5px;line-height:1.55;color:var(--ink-2);}
 .rd .rv b{color:var(--ink);font-weight:600;}
 .rd .rv em{font-style:normal;font-family:var(--f-m);color:var(--ink);}
+.caveat{font-family:var(--f-m);font-size:10.5px;line-height:1.5;color:var(--muted);margin:10px 0 0;}
 @media(max-width:520px){.rd{grid-template-columns:1fr;gap:2px;}}
 </style>
 </head>
@@ -113,34 +131,36 @@ tbody tr[aria-selected=true] td{background:var(--surface-3);}
 <div class="tabs" id="tabs" role="tablist"></div>
 
 <section>
-  <div class="eyebrow" id="tileHead">Summary</div>
-  <div class="tiles" id="tiles"></div>
-  <p class="rdg" id="readout"></p>
-  <div class="verdict" id="verdict"></div>
-  <div class="trend" id="trend"></div>
-  <p class="caveat" id="caveat"></p>
+  <div class="eyebrow" id="scoreHead">Are you getting better?</div>
+  <div class="score" id="score"></div>
+  <p class="caveat" id="scoreCav"></p>
 </section>
 
 <section>
-  <div class="eyebrow">Pace by session &middot; faster is higher</div>
-  <div class="chartbox"><svg id="cPace" width="900" height="190" role="img"
-    aria-label="Average work pace for each session over time"></svg></div>
-  <div class="legend" id="legend"></div>
-  <p class="cap" id="capPace"></p>
+  <div class="eyebrow">Where the power came from</div>
+  <p class="lede" id="splitLede"></p>
+  <div class="split">
+    <div class="bars" id="splitBar"></div>
+    <div class="barnote" id="splitKey"></div>
+  </div>
+  <p class="cap" id="splitCap"></p>
 </section>
 
 <section>
-  <div class="eyebrow">Metres per stroke &middot; how far each stroke carried you</div>
-  <div class="chartbox"><svg id="cEff" width="900" height="170" role="img"
-    aria-label="Average distance per stroke for each session over time"></svg></div>
-  <p class="cap" id="capEff"></p>
+  <div class="eyebrow">Power, stroke and rate over the block &middot; % change from your first three sessions</div>
+  <div class="chartbox"><svg id="cIdx" width="920" height="230" role="img"
+    aria-label="Power, work per stroke and stroke rate, each indexed to the first session"></svg>
+    <div class="tip" id="tipIdx"></div></div>
+  <div class="legend" id="legIdx"></div>
+  <p class="cap" id="capIdx"></p>
 </section>
 
 <section>
-  <div class="eyebrow">Work per stroke &middot; how much each stroke actually did</div>
-  <div class="chartbox"><svg id="cJps" width="900" height="170" role="img"
-    aria-label="Average work per stroke in joules for each session over time"></svg></div>
-  <p class="cap" id="capJps"></p>
+  <div class="eyebrow">Stroke economy &middot; strokes above or below what that power usually costs you</div>
+  <div class="chartbox"><svg id="cEcon" width="920" height="170" role="img"
+    aria-label="Stroke rate residual against the rate expected for each session's power"></svg>
+    <div class="tip" id="tipEcon"></div></div>
+  <p class="cap" id="capEcon"></p>
 </section>
 
 <section>
@@ -150,29 +170,65 @@ tbody tr[aria-selected=true] td{background:var(--surface-3);}
 
 <section id="detail">
   <div class="eyebrow" id="detHead">Session</div>
-  <div class="chartbox"><svg id="cIv" width="900" height="200" role="img"
-    aria-label="Pace, stroke rate and metres per stroke for each interval"></svg></div>
+  <p class="lede" id="detLede"></p>
+  <div class="chartbox"><svg id="cRep" width="920" height="220" role="img"
+    aria-label="Power, work per stroke and stroke rate for each interval, indexed to the first"></svg>
+    <div class="tip" id="tipRep"></div></div>
+  <div class="legend" id="legRep"></div>
+  <p class="cap" id="capRep"></p>
   <div class="scroll"><table id="ivTbl"></table></div>
   <div class="reads" id="detRead"></div>
 </section>
 </div>
-
 <script>
 "use strict";
-var PB = 99.9;                       /* 500m PB in seconds — the intensity reference */
-var VT2 = 167;                       /* PNOE, Apr 2025 — anaerobic threshold in bpm */
-var COL = {sprint:"#B23D0B", vo2:"#0C6F6B", threshold:"#2D5AA8", test:"#9A6510"};
+/* ------------------------------------------------------------------
+   What this page can and cannot know.
+
+   The PM5 hands back two independent numbers per interval: pace and
+   stroke rate. Everything else is arithmetic on those two -
+
+     watts        = 2.80 / (pace_s_per_m)^3
+     work/stroke  = watts * 60 / rate          (J)
+     metres/stroke= 30000 / (rate * pace_500)  (m)
+
+   which means "faster" and "more powerful" are the same measurement in
+   different units, and the only real question left is HOW the power was
+   made: a bigger stroke, or more of them. That identity -
+
+     watts = work-per-stroke * rate / 60
+
+   is exact, so every change in power splits cleanly into a stroke share
+   and a rate share. That split is what most of this page shows.
+
+   A force curve is genuinely new information and the logbook does not
+   carry it; only ErgZone does. Heart rate is the other genuinely new
+   axis and lights up the moment it starts arriving in the sync.
+   ------------------------------------------------------------------ */
+var PB = 99.9;                       /* 500m PB in seconds */
+var VT2 = 167;                       /* PNOE, Apr 2025 - anaerobic threshold */
+var SER = {power:"#008C7E", stroke:"#B23D0B", rate:"#2D5AA8"};
 var LABEL = {sprint:"Sprint", vo2:"VO₂", threshold:"Threshold", test:"Test"};
-var S = {pillar:"all", sel:null, sessions:[]};
+var S = {pillar:"all", sel:null, sessions:[], econ:null};
 
 function paceStr(s){
   if(!s) return "—";
   var m = Math.floor(s/60), r = s - m*60;
   return m + ":" + (r < 10 ? "0" : "") + r.toFixed(1);
 }
+function paceSec(str){
+  var m = /(\d+):(\d\d(?:\.\d+)?)/.exec(String(str || ""));
+  return m ? (+m[1]) * 60 + parseFloat(m[2]) : 0;
+}
+function mmssShort(sec){
+  var m = Math.floor(sec/60), r = Math.round(sec - m*60);
+  if(r === 60){ m++; r = 0; }
+  return m + ":" + (r < 10 ? "0" : "") + r;
+}
 function pct(s){ return s ? (2 - s/PB) * 100 : 0; }
-function mPerStroke(paceSec, spm){ return (paceSec && spm) ? 30000/(spm*paceSec) : 0; }
-function jPerStroke(watts, spm){ return (watts && spm) ? watts*60/spm : 0; }
+function wattsFor(paceSec){ return paceSec ? 2.80 / Math.pow(paceSec/500, 3) : 0; }
+function mPerStroke(p, spm){ return (p && spm) ? 30000/(spm*p) : 0; }
+function jPerStroke(w, spm){ return (w && spm) ? w*60/spm : 0; }
 function fmtDay(iso){
   var M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   return M[+iso.slice(5,7)-1] + " " + (+iso.slice(8,10));
@@ -189,8 +245,13 @@ function svgEl(n, a){
   return e;
 }
 function mean(a){ return a.length ? a.reduce(function(x,y){return x+y;},0)/a.length : 0; }
+function pos(a){ return a.filter(function(v){ return v > 0; }); }
+function sgnPct(v, sig){ return v > sig ? 1 : (v < -sig ? -1 : 0); }
+function pctStr(v, dp){
+  return (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(dp == null ? 1 : dp) + "%";
+}
 
-/* ---------- build one row per session out of the three files ---------- */
+/* ---------- one row per session ---------- */
 function build(results, intervals, pillars){
   var out = [];
   Object.keys(intervals).sort().forEach(function(d){
@@ -200,31 +261,23 @@ function build(results, intervals, pillars){
     var dist = 0, time = 0;
     rows.forEach(function(x){ dist += x[0]; time += x[0] * x[1] / 500; });
     var paces = rows.map(function(x){ return x[1]; });
-    var spms  = rows.map(function(x){ return x[3]; }).filter(function(v){ return v > 0; });
-    var watts = rows.map(function(x){ return x[2]; }).filter(function(v){ return v > 0; });
-    var hrs   = rows.map(function(x){ return x[4]; }).filter(function(v){ return v > 0; });
+    var spms  = pos(rows.map(function(x){ return x[3]; }));
+    var watts = pos(rows.map(function(x){ return x[2]; }));
+    var hrs   = pos(rows.map(function(x){ return x[4]; }));
     var avg = dist ? time / dist * 500 : 0;
+    var w = watts.length ? mean(watts) : wattsFor(avg);
+    var sp = mean(spms);
     out.push({
-      date: d,
-      pillar: pillars[d] || "test",
+      date: d, pillar: pillars[d] || "test",
       shape: r.shape || (rows.length + " × " + rows[0][0] + "m"),
-      key: r.key || "",
-      link: r.link || "",
-      band: r.band || "",
-      verdict: r.verdict || "",
-      note: r.note || "",
-      rows: rows,
-      reps: rows.length,
-      dist: dist,
-      pace: avg,
-      pct: pct(avg),
-      spm: mean(spms),
-      watts: mean(watts),
+      key: r.key || "", link: r.link || "", band: r.band || "", note: r.note || "",
+      rows: rows, reps: rows.length, dist: dist,
+      pace: avg, pct: pct(avg),
+      spm: sp, watts: w,
+      jps: jPerStroke(w, sp),
+      mps: mPerStroke(avg, sp),
       hrMax: hrs.length ? Math.max.apply(null, hrs) : 0,
-      mps: mean(rows.map(function(x){ return mPerStroke(x[1], x[3]); })
-                    .filter(function(v){ return v > 0; })),
-      jps: mean(rows.map(function(x){ return jPerStroke(x[2], x[3]); })
-                    .filter(function(v){ return v > 0; })),
+      hrAvg: hrs.length ? mean(hrs) : 0,
       spread: Math.max.apply(null, paces) - Math.min.apply(null, paces),
       drift: paces[paces.length-1] - paces[0]
     });
@@ -236,219 +289,628 @@ function inPillar(){
     return S.pillar === "all" || s.pillar === S.pillar;
   });
 }
-
-
-function paceSec(str){
-  var m = /(\d+):(\d\d(?:\.\d+)?)/.exec(String(str || ""));
-  return m ? (+m[1]) * 60 + parseFloat(m[2]) : 0;
+function repOf(r){
+  var w = r[2] || wattsFor(r[1]);
+  return {dist:r[0], pace:r[1], watts:w, spm:r[3], hr:r[4] || 0,
+          jps:jPerStroke(w, r[3]), mps:mPerStroke(r[1], r[3]),
+          secs:r[0]/500*r[1]};
 }
-function mmssShort(sec){
-  var m = Math.floor(sec / 60), r = Math.round(sec - m * 60);
-  if(r === 60){ m++; r = 0; }
-  return m + ":" + (r < 10 ? "0" : "") + r;
+function ivSecs(s){ return mean(s.rows.map(function(r){ return r[0]/500*r[1]; })); }
+
+/* ---------- stroke economy ----------
+   Rate rises with power in a very tight relationship across the whole log
+   (log-log, R² ≈ 0.95). Fitting it once and reading each session's residual
+   gives an efficiency number that does not care how hard the session was
+   prescribed: negative means you held that power on fewer strokes than that
+   power normally costs you. */
+function fitEconomy(list){
+  var pts = list.filter(function(s){ return s.watts > 0 && s.spm > 0; });
+  if(pts.length < 8) return null;
+  var xs = pts.map(function(s){ return Math.log(s.watts); });
+  var ys = pts.map(function(s){ return Math.log(s.spm); });
+  var mx = mean(xs), my = mean(ys), num = 0, den = 0;
+  for(var i = 0; i < xs.length; i++){
+    num += (xs[i]-mx) * (ys[i]-my);
+    den += (xs[i]-mx) * (xs[i]-mx);
+  }
+  if(!den) return null;
+  var b = num/den, a = my - b*mx;
+  return {expected: function(w){ return w > 0 ? Math.exp(a + b*Math.log(w)) : 0; }};
+}
+function econOf(s){
+  return S.econ && s.watts > 0 ? s.spm - S.econ.expected(s.watts) : null;
 }
 
-/* ---------- reading the numbers, not just printing them ----------
-   Every figure on this page is paired with what it means. The rule
-   throughout: pace alone says little, because the prescription moves
-   week to week. Length (m/stroke) and work per stroke (J) are what
-   separate real development from buying speed with rate.           */
-
-var SIG = {pace:0.8, watts:4, spm:0.5, mps:0.10, jps:8};
-
-function repSecs(r){ return r[0] / 500 * r[1]; }
-function ivSecs(s){ return mean(s.rows.map(repSecs)); }
-function avgOf(list, f){
-  return mean(list.map(f).filter(function(v){ return v > 0; }));
-}
-function sgn(v, sig){ return v > sig ? 1 : (v < -sig ? -1 : 0); }
-function signed(v, dp, unit){
-  return (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(dp) + (unit || "");
-}
-
-/* first half vs second half of whatever is on screen */
-function trendOf(list){
-  if(list.length < 4) return null;
-  var h = Math.floor(list.length / 2);
-  var A = list.slice(0, h), B = list.slice(list.length - h);
-  function pair(f){ return {a: avgOf(A, f), b: avgOf(B, f)}; }
+/* ---------- the identity: watts = work/stroke × rate / 60 ---------- */
+function decompose(a, b){
+  if(!a || !b || !a.watts || !b.watts || !a.jps || !b.jps || !a.spm || !b.spm) return null;
+  var lw = Math.log(b.watts/a.watts), lj = Math.log(b.jps/a.jps), lr = Math.log(b.spm/a.spm);
+  var tot = Math.abs(lj) + Math.abs(lr);
   return {
-    n: list.length, na: A.length, nb: B.length,
-    aFrom: A[0].date, aTo: A[A.length-1].date,
-    bFrom: B[0].date, bTo: B[B.length-1].date,
-    pace:  pair(function(s){ return s.pace; }),
-    watts: pair(function(s){ return s.watts; }),
-    spm:   pair(function(s){ return s.spm; }),
-    mps:   pair(function(s){ return s.mps; }),
-    jps:   pair(function(s){ return s.jps; })
+    power:  (Math.exp(lw)-1)*100,
+    stroke: (Math.exp(lj)-1)*100,
+    rate:   (Math.exp(lr)-1)*100,
+    strokeShare: tot ? Math.abs(lj)/tot : 0.5,
+    rateShare:   tot ? Math.abs(lr)/tot : 0.5,
+    sameWay: (lj >= 0) === (lr >= 0)
   };
 }
-function dv(o){ return o.b - o.a; }
-
-function verdictText(t){
-  var p = sgn(dv(t.pace),  SIG.pace);    /* + = slower */
-  var w = sgn(dv(t.watts), SIG.watts);
-  var r = sgn(dv(t.spm),   SIG.spm);
-  var m = sgn(dv(t.mps),   SIG.mps);
-  var j = sgn(dv(t.jps),   SIG.jps);
-  if(j > 0 && m > 0)
-    return "Each stroke is doing more work and carrying further. That is power development — " +
-           "the stroke itself got stronger, not just quicker.";
-  if(j > 0 && m < 0)
-    return "Each stroke is doing more work, but it is shorter and the rate is higher. The power " +
-           "is real; some of it is going into rate rather than into length.";
-  if(m > 0 && r < 0)
-    return "Longer stroke at a lower rate. The clock follows whatever was prescribed that week, " +
-           "but the stroke underneath it is more effective than it was — that is the gain to keep.";
-  if(p <= 0 && m < 0 && r > 0)
-    return "Pace is holding or improving, but on a shorter stroke at a higher rate — you are buying " +
-           "the pace with rate. It is the pattern that stops paying at race distance.";
-  if(p < 0 && r <= 0 && m >= 0)
-    return "Faster without rating up, and the stroke has not shortened. That is the cleanest kind " +
-           "of progress in this data.";
-  if(m < 0 && j <= 0)
-    return "The stroke is getting shorter without more work in it. That is the one pattern here " +
-           "that reads as a regression rather than a trade.";
-  if(p > 0 && w < 0)
-    return "Pace and average power have both come off. Some of that is what was prescribed rather " +
-           "than what you can do — read it against the band before calling it a regression.";
-  return "Nothing has moved far enough in either direction to call. Pace, rate and stroke length " +
-         "are all inside normal week-to-week noise.";
+/* which side carried the change, and which way it went - the direction
+   matters as much as the split: power falling on lower rate is a lighter
+   prescription, power falling on a weaker stroke is not */
+function carriedBy(d){
+  if(!d) return "none";
+  if(Math.abs(d.power) < 1.5 && Math.abs(d.stroke) < 1.5 && Math.abs(d.rate) < 1.5) return "flat";
+  if(d.stroke > 1 && d.rate < -1) return "traded-up";
+  if(d.stroke < -1 && d.rate > 1) return "traded-down";
+  var side = d.strokeShare >= 0.62 ? "stroke" : (d.rateShare >= 0.62 ? "rate" : "both");
+  if(d.power > 1.5) return "up-" + side;
+  if(d.power < -1.5) return "down-" + side;
+  return "mixed";
 }
 
-function renderTrend(){
-  var list = inPillar();
-  var vHost = document.getElementById("verdict");
-  var host  = document.getElementById("trend");
-  var cav   = document.getElementById("caveat");
-  host.textContent = ""; cav.textContent = "";
-  var t = trendOf(list);
-  if(!t){
-    vHost.textContent = "Four sessions in a group before trends mean anything — " +
-      list.length + " here so far.";
+/* mean of a group, as something decompose() can take */
+function groupMean(list){
+  if(!list.length) return null;
+  return {watts: mean(pos(list.map(function(s){ return s.watts; }))),
+          jps:   mean(pos(list.map(function(s){ return s.jps; }))),
+          spm:   mean(pos(list.map(function(s){ return s.spm; }))),
+          mps:   mean(pos(list.map(function(s){ return s.mps; }))),
+          pace:  mean(pos(list.map(function(s){ return s.pace; })))};
+}
+function halves(list){
+  if(list.length < 4) return null;
+  var h = Math.floor(list.length/2);
+  return {a: list.slice(0, h), b: list.slice(list.length - h)};
+}
+
+/* ---------- charts ----------
+   One axis, always. Power, work per stroke and rate live on wildly
+   different scales, so they are indexed to a common base (% change from
+   the first point) and share a single percentage axis - never two. */
+function attachTip(svg, tipEl, xs, xAt, render){
+  function hide(){ tipEl.style.opacity = 0; }
+  function move(ev){
+    var box = svg.getBoundingClientRect();
+    var px = (ev.clientX - box.left) / box.width * 920;
+    var best = 0, bd = Infinity;
+    xs.forEach(function(_, i){
+      var d = Math.abs(xAt(i) - px);
+      if(d < bd){ bd = d; best = i; }
+    });
+    var cur = svg.querySelector(".cursor");
+    if(cur) cur.setAttribute("transform", "translate(" + (xAt(best) - 460) + ",0)");
+    tipEl.innerHTML = "";
+    render(best).forEach(function(line, k){
+      var d = document.createElement("div");
+      d.textContent = line;
+      if(k === 0) d.style.fontWeight = "600";
+      tipEl.appendChild(d);
+    });
+    var left = xAt(best) / 920 * box.width;
+    tipEl.style.left = Math.min(Math.max(left + 10, 4), box.width - 150) + "px";
+    tipEl.style.top = "10px";
+    tipEl.style.opacity = 1;
+  }
+  svg.onmousemove = move;
+  svg.onmouseleave = hide;
+  svg.ontouchstart = function(e){ if(e.touches[0]) move(e.touches[0]); };
+  svg.ontouchmove  = function(e){ if(e.touches[0]) move(e.touches[0]); };
+}
+
+/* multi-series, indexed to the first point, one percentage axis */
+function indexChart(svg, tipEl, legEl, items, series, opts){
+  svg.textContent = ""; legEl.textContent = "";
+  var W = 920, H = +svg.getAttribute("height"), L = 46, R = 74, T = 16, B = 30;
+  if(items.length < 2){
+    svg.appendChild(svgEl("text", {x:L, y:H/2, class:"lab"}))
+       .textContent = "Two sessions minimum before a trend exists.";
     return;
   }
-  vHost.textContent = "";
-  vHost.appendChild(el("b", null, "Across these " + t.n + " sessions: "));
-  vHost.appendChild(document.createTextNode(verdictText(t)));
+  /* baseline is the mean of the first few points, not a single one - one soft
+     opening session should not tilt every number on the chart */
+  var baseN = Math.min(opts.baseN || 1, items.length - 1) || 1;
+  var vals = [];
+  series.forEach(function(s){
+    var head = items.slice(0, baseN).map(s.of).filter(function(v){ return v > 0; });
+    var base = head.length ? mean(head) : s.of(items[0]);
+    s.pcts = items.map(function(it){
+      var v = s.of(it);
+      return (base && v) ? (v/base - 1) * 100 : 0;
+    });
+    vals = vals.concat(s.pcts);
+  });
+  var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  var span = Math.max(hi - lo, 4);
+  lo -= span * 0.18; hi += span * 0.18;
+  var x = function(i){ return L + i * (W - L - R) / (items.length - 1); };
+  var y = function(v){ return H - B - (v - lo) / (hi - lo) * (H - T - B); };
 
-  function card(k, o, dp, unit, better, meaning){
-    /* better: -1 when a fall is the good direction (pace), +1 when a rise is */
-    var d = dv(o), dir = sgn(d, SIG[k.key]);
-    var cls = dir === 0 ? "flat" : ((dir * better) > 0 ? "up" : "dn");
-    var c = el("div", "tr");
-    c.appendChild(el("div", "k", k.label));
-    var v = el("div", "v");
-    v.appendChild(document.createTextNode(k.fmt(o.a)));
-    v.appendChild(el("em", null, "  →  "));
-    v.appendChild(document.createTextNode(k.fmt(o.b)));
-    v.appendChild(document.createTextNode("  "));
-    v.appendChild(el("span", cls, dir === 0 ? "no change" : signed(d, dp, unit)));
-    c.appendChild(v);
-    c.appendChild(el("div", "m", meaning(dir, Math.abs(d))));
+  [lo + (hi-lo)*0.08, (lo+hi)/2, hi - (hi-lo)*0.08].forEach(function(v){
+    var yy = y(v);
+    svg.appendChild(svgEl("line", {x1:L, x2:W-R, y1:yy, y2:yy, stroke:"#E4E9ED"}));
+    var t = svgEl("text", {x:L-7, y:yy+3, "text-anchor":"end"});
+    t.textContent = pctStr(v, 0);
+    svg.appendChild(t);
+  });
+  if(lo < 0 && hi > 0){
+    svg.appendChild(svgEl("line", {x1:L, x2:W-R, y1:y(0), y2:y(0),
+      stroke:"#B5BFC8", "stroke-width":1}));
+  }
+  /* moving crosshair for the hover layer */
+  var cur = svgEl("g", {class:"cursor"});
+  cur.appendChild(svgEl("line", {x1:460, x2:460, y1:T, y2:H-B, stroke:"#B5BFC8",
+    "stroke-dasharray":"2 3"}));
+  svg.appendChild(cur);
+
+  series.forEach(function(s){
+    svg.appendChild(svgEl("polyline", {
+      points: s.pcts.map(function(v, i){ return x(i) + "," + y(v); }).join(" "),
+      fill:"none", stroke:s.color, "stroke-width":2,
+      "stroke-linejoin":"round", "stroke-linecap":"round"}));
+    s.pcts.forEach(function(v, i){
+      svg.appendChild(svgEl("circle", {cx:x(i), cy:y(v), r:4, fill:s.color,
+        stroke:"#FFF", "stroke-width":2}));
+    });
+  });
+  /* direct labels at the live end - identity is never colour alone.
+     Nudge them apart so two series ending close together stay readable. */
+  var ends = series.map(function(s){
+    return {s:s, v:s.pcts[s.pcts.length-1], y:y(s.pcts[s.pcts.length-1])};
+  }).sort(function(a,b){ return a.y - b.y; });
+  for(var k = 1; k < ends.length; k++){
+    if(ends[k].y - ends[k-1].y < 12) ends[k].y = ends[k-1].y + 12;
+  }
+  ends.forEach(function(e){
+    var lbl = svgEl("text", {x:W-R+8, y:e.y+3, class:"end", fill:e.s.color});
+    lbl.textContent = e.s.short + " " + pctStr(e.v, 0);
+    svg.appendChild(lbl);
+  });
+
+  var x0 = svgEl("text", {x:L, y:H-9}); x0.textContent = opts.first;
+  svg.appendChild(x0);
+  var x1 = svgEl("text", {x:W-R, y:H-9, "text-anchor":"end"}); x1.textContent = opts.last;
+  svg.appendChild(x1);
+
+  series.forEach(function(s){
+    var i = el("span"), w = el("span");
+    var sw = el("i"); sw.style.background = s.color;
+    w.appendChild(sw); w.appendChild(document.createTextNode(s.name));
+    legEl.appendChild(w);
+  });
+
+  attachTip(svg, tipEl, items, x, function(i){
+    var out = [opts.labelOf(items[i])];
+    series.forEach(function(s){
+      out.push(s.name + "  " + s.fmt(s.of(items[i])) + "   " + pctStr(s.pcts[i], 1));
+    });
+    return out;
+  });
+}
+
+/* single series around a zero line - no legend needed, the title names it */
+function zeroChart(svg, tipEl, items, valueOf, opts){
+  svg.textContent = "";
+  var W = 920, H = +svg.getAttribute("height"), L = 46, R = 20, T = 16, B = 30;
+  var pts = items.map(valueOf);
+  if(pts.length < 2 || pts.some(function(v){ return v == null; })){
+    svg.appendChild(svgEl("text", {x:L, y:H/2, class:"lab"}))
+       .textContent = "Not enough sessions to fit the model yet.";
+    return;
+  }
+  var lo = Math.min.apply(null, pts), hi = Math.max.apply(null, pts);
+  var m = Math.max(Math.abs(lo), Math.abs(hi), 0.5) * 1.25;
+  lo = -m; hi = m;
+  var x = function(i){ return L + i * (W - L - R) / (items.length - 1); };
+  var y = function(v){ return H - B - (v - lo) / (hi - lo) * (H - T - B); };
+  [hi*0.75, 0, lo*0.75].forEach(function(v){
+    var yy = y(v);
+    svg.appendChild(svgEl("line", {x1:L, x2:W-R, y1:yy, y2:yy,
+      stroke: v === 0 ? "#B5BFC8" : "#E4E9ED", "stroke-width": v === 0 ? 1 : 1}));
+    var t = svgEl("text", {x:L-7, y:yy+3, "text-anchor":"end"});
+    t.textContent = (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1);
+    svg.appendChild(t);
+  });
+  var cur = svgEl("g", {class:"cursor"});
+  cur.appendChild(svgEl("line", {x1:460, x2:460, y1:T, y2:H-B, stroke:"#B5BFC8",
+    "stroke-dasharray":"2 3"}));
+  svg.appendChild(cur);
+  svg.appendChild(svgEl("polyline", {
+    points: pts.map(function(v, i){ return x(i) + "," + y(v); }).join(" "),
+    fill:"none", stroke:"#14171B", "stroke-width":2, "stroke-linejoin":"round"}));
+  pts.forEach(function(v, i){
+    svg.appendChild(svgEl("circle", {cx:x(i), cy:y(v), r:4, fill:"#14171B",
+      stroke:"#FFF", "stroke-width":2}));
+  });
+  var a = svgEl("text", {x:L, y:T+4, class:"lab"});
+  a.textContent = "↑ more strokes than that power usually costs you";
+  svg.appendChild(a);
+  var b = svgEl("text", {x:L, y:H-9, class:"lab"});
+  b.textContent = "↓ fewer strokes — more economical";
+  svg.appendChild(b);
+  attachTip(svg, tipEl, items, x, function(i){
+    return [opts.labelOf(items[i]),
+            "rate " + items[i].spm.toFixed(1) + " vs " +
+            S.econ.expected(items[i].watts).toFixed(1) + " expected",
+            (pts[i] >= 0 ? "+" : "−") + Math.abs(pts[i]).toFixed(2) + " spm"];
+  });
+}
+
+/* ---------- render ---------- */
+function renderTabs(){
+  var host = document.getElementById("tabs");
+  host.textContent = "";
+  [["all","All"],["sprint","Sprint"],["vo2","VO₂"],["threshold","Threshold"],["test","Tests"]]
+  .forEach(function(g){
+    var n = g[0] === "all" ? S.sessions.length
+          : S.sessions.filter(function(s){ return s.pillar === g[0]; }).length;
+    var b = el("button", "tab");
+    b.type = "button"; b.setAttribute("role","tab");
+    b.setAttribute("data-p", g[0]);
+    b.setAttribute("aria-selected", S.pillar === g[0] ? "true" : "false");
+    b.appendChild(document.createTextNode(g[1]));
+    b.appendChild(el("span","n", n + (n === 1 ? " session" : " sessions")));
+    b.addEventListener("click", function(){
+      S.pillar = g[0];
+      var list = inPillar();
+      if(!list.some(function(s){ return s.date === S.sel; })){
+        S.sel = list.length ? list[list.length-1].date : null;
+      }
+      render();
+    });
+    host.appendChild(b);
+  });
+}
+
+function verdict(dir){
+  return dir > 0 ? {t:"Improving", c:"g"} : (dir < 0 ? {t:"Slipping", c:"b"} : {t:"Holding", c:"n"});
+}
+function renderScore(){
+  var list = inPillar(), host = document.getElementById("score");
+  var cav = document.getElementById("scoreCav");
+  host.textContent = ""; cav.textContent = "";
+  document.getElementById("scoreHead").textContent =
+    "Are you getting better?  ·  " + (S.pillar === "all" ? "all erg work" : LABEL[S.pillar]);
+  var hv = halves(list);
+  if(!hv){
+    host.appendChild(el("div","card")).appendChild(el("div","q",
+      "Four sessions in a group before any of this means anything — " + list.length + " so far."));
+    return;
+  }
+  var A = groupMean(hv.a), B = groupMean(hv.b);
+
+  function card(q, k, value, change, sig, better, meaning, off){
+    var c = el("div", "card" + (off ? " off" : ""));
+    c.appendChild(el("div","q", q));
+    c.appendChild(el("div","k", k));
+    c.appendChild(el("div","v", value));
+    if(change != null){
+      c.appendChild(el("div","c", change));
+      var v = verdict(sgnPct(sig, 0) * better);
+      c.appendChild(el("span","chip " + v.c, v.t));
+    }
+    c.appendChild(el("div","m", meaning));
     host.appendChild(c);
   }
 
-  card({key:"pace", label:"Pace / 500m", fmt:paceStr}, t.pace, 1, " s", -1,
-    function(dir, a){
-      if(dir < 0) return "Faster by " + a.toFixed(1) + " s per 500m. Some of that is fitness and " +
-        "some is what the plan asked for — the metrics below are the ones that separate the two.";
-      if(dir > 0) return "Slower by " + a.toFixed(1) + " s per 500m. Check what was prescribed " +
-        "before reading this as lost fitness.";
-      return "Holding within " + a.toFixed(1) + " s per 500m — the pace itself has not moved.";
-    });
+  var dW = (B.watts/A.watts - 1) * 100;
+  var dJ = (B.jps/A.jps - 1) * 100;
+  var dR = (B.spm/A.spm - 1) * 100;
+  var dM = (B.mps/A.mps - 1) * 100;
 
-  card({key:"watts", label:"Average watts", fmt:function(v){ return v.toFixed(0) + " W"; }},
-    t.watts, 0, " W", 1,
-    function(dir, a){
-      if(dir > 0) return "Producing " + a.toFixed(0) + " W more across work intervals. More work " +
-        "done per session at the same kind of effort.";
-      if(dir < 0) return "Down " + a.toFixed(0) + " W. Either the prescriptions eased or you are " +
-        "producing less at the same rate.";
-      return "Power output is steady across the block.";
-    });
+  card("Faster?", "Power", B.watts.toFixed(0) + " W",
+    pctStr(dW) + "  ·  " + paceStr(B.pace), Math.abs(dW) < 2 ? 0 : dW, 1,
+    "Watts and pace are the same measurement. This one follows the plan as much as it follows you — " +
+    "the cards beside it are the ones that don't.");
 
-  card({key:"spm", label:"Stroke rate", fmt:function(v){ return "r" + v.toFixed(1); }},
-    t.spm, 1, " spm", -1,
-    function(dir, a){
-      if(dir > 0) return "Taking " + a.toFixed(1) + " more strokes a minute. On its own that is " +
-        "neutral — it only matters next to what each stroke is doing.";
-      if(dir < 0) return "Same work on " + a.toFixed(1) + " fewer strokes a minute. That is the " +
-        "direction you want: the boat is moving further per stroke.";
-      return "Rate is unchanged, so any pace change came from the stroke, not from turnover.";
-    });
+  card("Stronger?", "Work per stroke", B.jps.toFixed(0) + " J",
+    pctStr(dJ), Math.abs(dJ) < 2 ? 0 : dJ, 1,
+    "How much work each stroke does. Rising here is the stroke itself getting stronger.");
 
-  card({key:"mps", label:"Metres per stroke", fmt:function(v){ return v.toFixed(2) + " m"; }},
-    t.mps, 2, " m", 1,
-    function(dir, a){
-      if(dir > 0) return "Every stroke carries " + a.toFixed(2) + " m further. Length is improving " +
-        "— the stroke is doing more, not just repeating faster.";
-      if(dir < 0) return "Every stroke carries " + a.toFixed(2) + " m less. Length is giving way; " +
-        "if pace held, rate paid for it.";
-      return "Stroke length is holding. Whatever changed in pace did not cost you length.";
-    });
+  card("Quicker or bigger?", "Stroke rate", "r" + B.spm.toFixed(1),
+    pctStr(dR), Math.abs(dR) < 1.5 ? 0 : dR, -1,
+    "Turnover. Rising rate with a flat stroke means you are buying power rather than building it.");
 
-  card({key:"jps", label:"Work per stroke", fmt:function(v){ return v.toFixed(0) + " J"; }},
-    t.jps, 0, " J", 1,
-    function(dir, a){
-      if(dir > 0) return "Each stroke is doing " + a.toFixed(0) + " J more work. Paired with " +
-        "rising length that is force development; paired with falling length it is rate.";
-      if(dir < 0) return "Each stroke is doing " + a.toFixed(0) + " J less work.";
-      return "Work per stroke is flat — each stroke is doing the same job it was in June.";
-    });
+  card("Longer?", "Metres per stroke", B.mps.toFixed(2) + " m",
+    pctStr(dM), Math.abs(dM) < 1.5 ? 0 : dM, 1,
+    "How far each stroke carries you. Falls when the rate climbs faster than the stroke does.");
 
-  cav.textContent = "First " + t.na + " sessions (" + fmtDay(t.aFrom) + " – " + fmtDay(t.aTo) +
-    ") against the last " + t.nb + " (" + fmtDay(t.bFrom) + " – " + fmtDay(t.bTo) + ")." +
+  var eA = mean(hv.a.map(econOf).filter(function(v){ return v != null; }));
+  var eB = mean(hv.b.map(econOf).filter(function(v){ return v != null; }));
+  if(S.econ){
+    var de = eB - eA;
+    card("More efficient?", "Strokes vs expected",
+      (eB >= 0 ? "+" : "−") + Math.abs(eB).toFixed(2) + " spm",
+      (de >= 0 ? "+" : "−") + Math.abs(de).toFixed(2) + " spm since the first half",
+      Math.abs(de) < 0.15 ? 0 : de, -1,
+      "Rate against what that power normally costs you, so it ignores how hard the session was " +
+      "prescribed. Below zero means fewer strokes than your own norm.");
+  }
+
+  var withHR = list.filter(function(s){ return s.hrAvg > 0; });
+  if(withHR.length >= 4){
+    var hA = groupMean(withHR.slice(0, Math.floor(withHR.length/2)));
+    var hB = groupMean(withHR.slice(-Math.floor(withHR.length/2)));
+    var jbA = mean(withHR.slice(0, Math.floor(withHR.length/2))
+                 .map(function(s){ return s.watts/(s.hrAvg/60); }));
+    var jbB = mean(withHR.slice(-Math.floor(withHR.length/2))
+                 .map(function(s){ return s.watts/(s.hrAvg/60); }));
+    var dh = (jbB/jbA - 1) * 100;
+    card("Fitter?", "Work per heartbeat", jbB.toFixed(1) + " J",
+      pctStr(dh), Math.abs(dh) < 2 ? 0 : dh, 1,
+      "Watts carried per beat. The one metric here that is pure aerobic fitness — " +
+      "it rises when the same power costs you fewer heartbeats.");
+  } else {
+    card("Fitter?", "Work per heartbeat", "—", null, 0, 1,
+      "Needs heart rate in the sync. Pair the strap to the PM5, or send the Apple Health " +
+      "export and this fills in for every session it covers.", true);
+  }
+
+  cav.textContent = "First " + hv.a.length + " sessions (" + fmtDay(hv.a[0].date) + " – " +
+    fmtDay(hv.a[hv.a.length-1].date) + ") against the last " + hv.b.length + " (" +
+    fmtDay(hv.b[0].date) + " – " + fmtDay(hv.b[hv.b.length-1].date) + ")." +
     (S.pillar === "all"
-      ? "  This tab mixes sprint, VO₂ and threshold work, so pace and watts move with the mix as " +
-        "well as with you — the per-pillar tabs are the fair comparison."
-      : "  Same pillar throughout, so the prescriptions are comparable.");
+      ? "  This tab mixes sprint, VO₂ and threshold work, so power moves with the mix as much as " +
+        "with you. The per-pillar tabs are the comparison that means something."
+      : "  Same pillar throughout, so the prescriptions are broadly comparable.");
+  var secs = list.map(ivSecs).filter(function(v){ return v > 0; });
+  if(secs.length){
+    cav.textContent += "  Reps in this group run " +
+      mmssShort(Math.min.apply(null, secs)) + " to " + mmssShort(Math.max.apply(null, secs)) +
+      ", so the like-for-like line on each session is the sharper comparison.";
+  }
 }
 
-/* ---------- chart captions ---------- */
-function slopeText(list, f, dp, unit, better, sig, good, bad, flat){
-  if(list.length < 4) return null;
-  var h = Math.floor(list.length/2);
-  var a = avgOf(list.slice(0,h), f), b = avgOf(list.slice(list.length-h), f);
-  var d = b - a, dir = sgn(d, sig);
-  if(!dir) return flat;
-  return ((dir * better) > 0 ? good : bad).replace("{d}", Math.abs(d).toFixed(dp) + unit);
-}
-function renderCaps(){
+function renderSplit(){
   var list = inPillar();
-  function put(id, txt){
-    var e = document.getElementById(id); e.textContent = "";
-    if(txt) e.appendChild(document.createTextNode(txt));
+  var lede = document.getElementById("splitLede");
+  var bar = document.getElementById("splitBar");
+  var key = document.getElementById("splitKey");
+  var cap = document.getElementById("splitCap");
+  lede.textContent = ""; bar.textContent = ""; key.textContent = ""; cap.textContent = "";
+  var hv = halves(list);
+  var d = hv && decompose(groupMean(hv.a), groupMean(hv.b));
+  if(!d){ lede.textContent = "Not enough sessions in this group yet."; return; }
+
+  lede.appendChild(document.createTextNode("Power "));
+  lede.appendChild(el("b", null, pctStr(d.power)));
+  lede.appendChild(document.createTextNode(" across this block, and it breaks down exactly: the stroke contributed "));
+  lede.appendChild(el("b", null, pctStr(d.stroke)));
+  lede.appendChild(document.createTextNode(", turnover contributed "));
+  lede.appendChild(el("b", null, pctStr(d.rate)));
+  lede.appendChild(document.createTextNode("."));
+
+  /* signed bars from a zero line: stroke and rate often pull opposite ways,
+     and a stacked bar would imply they add up when they do not */
+  var max = Math.max(Math.abs(d.power), Math.abs(d.stroke), Math.abs(d.rate), 1);
+  function row(label, val, color){
+    var r = el("div","brow");
+    r.appendChild(el("div","bl", label));
+    var t = el("div","bt");
+    t.appendChild(el("div","bz"));
+    var f = el("div","bf");
+    f.style.background = color;
+    f.style.width = (Math.abs(val)/max*50) + "%";
+    if(val >= 0) f.style.left = "50%"; else f.style.right = "50%";
+    t.appendChild(f);
+    r.appendChild(t);
+    r.appendChild(el("div","bv", pctStr(val)));
+    bar.appendChild(r);
   }
-  if(list.length < 4){
-    put("capPace", "Too few sessions in this group to read a direction yet.");
-    put("capEff", ""); put("capJps", "");
-    return;
-  }
-  var neg = list.filter(function(s){ return s.drift < -0.3; }).length;
-  put("capPace", (slopeText(list, function(s){ return s.pace; }, 1, " s/500m", -1, SIG.pace,
-      "Second half of the block is {d} quicker on average.",
-      "Second half is {d} slower on average — check the prescriptions before reading it as form.",
-      "Pace is flat across the block.") || "") +
-    "  " + neg + " of " + list.length + " sessions finished faster than they started, so the " +
-    "within-session pattern is to build rather than fade.");
-  put("capEff", slopeText(list, function(s){ return s.mps; }, 2, " m", 1, SIG.mps,
-      "The stroke is carrying {d} further than it did early in the block — length is being added, " +
-      "which is the durable kind of gain.",
-      "The stroke is {d} shorter than it was early in the block. If pace held anyway, rate is " +
-      "covering for it — that is the thing to correct.",
-      "Stroke length is unchanged across the block."));
-  put("capJps", slopeText(list, function(s){ return s.jps; }, 0, " J", 1, SIG.jps,
-      "Each stroke is doing {d} more work than early in the block. Read it next to the length " +
-      "chart above: more work on a longer stroke is force, more work on a shorter one is rate.",
-      "Each stroke is doing {d} less work than early in the block.",
-      "Work per stroke is unchanged across the block."));
+  row("Power", d.power, SER.power);
+  row("Work per stroke", d.stroke, SER.stroke);
+  row("Stroke rate", d.rate, SER.rate);
+  key.textContent = "Percent change, first half of the block to second. The centre line is no " +
+    "change; power is what the other two multiply out to.";
+
+  var M = {
+    "up-stroke": "The extra power is coming from the stroke rather than from turnover. That is the " +
+      "version of progress that keeps paying as the pieces get longer.",
+    "up-rate": "The extra power is coming from turnover rather than from the stroke. It works, but it " +
+      "runs out of room first — there is a ceiling on rate and none on force.",
+    "up-both": "Both sides are up. Real gain, with some of it borrowed from rate; watch whether the " +
+      "stroke keeps its share as the block gets harder.",
+    "down-rate": "Power is down and almost all of it is turnover — each stroke is still doing the same " +
+      "work, you are simply taking fewer of them. That is usually lighter prescriptions rather than " +
+      "anything lost.",
+    "down-stroke": "Power is down and it is the stroke doing less work, not the rate. That is the one " +
+      "worth taking seriously.",
+    "down-both": "Power, stroke and rate are all down. Check what was prescribed across these weeks " +
+      "before reading it as form.",
+    "traded-up": "More work in every stroke, on fewer strokes. That is the cleanest reading available " +
+      "in this data.",
+    "traded-down": "The stroke has given ground and rate has covered for it. This is the one " +
+      "combination worth correcting deliberately.",
+    "mixed": "Power held while the mix underneath it changed — worth reading the two bars above " +
+      "rather than the clock.",
+    "flat": "Neither side has moved much. Whatever the clock did over this block, the stroke behind " +
+      "it is the same one.",
+    "none": ""
+  };
+  var msg = M[carriedBy(d)] || "";
+  if(S.pillar === "test")
+    msg = "These are one-off benchmarks rather than a series — a 100m sprint and a 20-minute piece " +
+          "sit in the same tab, so the block-level split above means very little. Read them one " +
+          "session at a time.";
+  cap.appendChild(el("b", null, "Reading: "));
+  cap.appendChild(document.createTextNode(msg));
 }
 
-/* ---------- the most comparable earlier session ----------
-   Interval duration decides, not total distance: a 750m rep at threshold
-   is ~3 minutes of work, so a 4-minute rep is a far closer match than a
-   1500m one. An exact plan key beats everything.                        */
+function renderCharts(){
+  var list = inPillar();
+  var ser = [
+    {name:"Power", short:"Power", color:SER.power,
+     of:function(s){ return s.watts; }, fmt:function(v){ return v.toFixed(0) + " W"; }},
+    {name:"Work per stroke", short:"Stroke", color:SER.stroke,
+     of:function(s){ return s.jps; }, fmt:function(v){ return v.toFixed(0) + " J"; }},
+    {name:"Stroke rate", short:"Rate", color:SER.rate,
+     of:function(s){ return s.spm; }, fmt:function(v){ return "r" + v.toFixed(1); }}
+  ];
+  indexChart(document.getElementById("cIdx"), document.getElementById("tipIdx"),
+    document.getElementById("legIdx"), list, ser,
+    {baseN: 3,
+     first: list.length ? fmtDay(list[0].date) : "",
+     last:  list.length ? fmtDay(list[list.length-1].date) : "",
+     labelOf:function(s){ return fmtDay(s.date) + " · " + s.shape; }});
+
+  var cap = document.getElementById("capIdx");
+  cap.textContent = "";
+  if(ser[0].pcts && list.length > 3){
+    var n = ser[0].pcts.length - 1;
+    var eP = ser[0].pcts[n], eJ = ser[1].pcts[n], eR = ser[2].pcts[n];
+    cap.appendChild(el("b", null, "What to watch: "));
+    cap.appendChild(document.createTextNode(
+      "the gap between the teal line and the rust one. When power climbs and work per stroke does " +
+      "not, the blue line is making up the difference — that is rate carrying the session. Against " +
+      "your first three sessions in this group the latest one sits at " + pctStr(eP, 0) +
+      " power, " + pctStr(eJ, 0) + " stroke, " + pctStr(eR, 0) + " rate."));
+  }
+
+  if(S.econ){
+    zeroChart(document.getElementById("cEcon"), document.getElementById("tipEcon"),
+      list.filter(function(s){ return s.watts > 0; }), econOf,
+      {labelOf:function(s){ return fmtDay(s.date) + " · " + s.shape; }});
+    var ec = document.getElementById("capEcon");
+    ec.textContent = "";
+    var vals = list.map(econOf).filter(function(v){ return v != null; });
+    if(vals.length >= 4){
+      var h = Math.floor(vals.length/2);
+      var ea = mean(vals.slice(0, h)), eb = mean(vals.slice(-h));
+      var de = eb - ea;
+      ec.appendChild(el("b", null, "How to read it: "));
+      ec.appendChild(document.createTextNode(
+        "rate rises with power in a very tight relationship across your whole log, so the line above " +
+        "is what is left after that is taken out — pure technique, with the prescription removed. " +
+        "You have moved from " + (ea >= 0 ? "+" : "−") + Math.abs(ea).toFixed(2) + " to " +
+        (eb >= 0 ? "+" : "−") + Math.abs(eb).toFixed(2) + " spm, " +
+        (de < -0.15 ? "which means the same power now costs you fewer strokes than it used to."
+         : (de > 0.15 ? "which means the same power now costs you more strokes than it used to."
+                      : "which is effectively unchanged."))));
+    }
+  }
+}
+
+function renderTable(){
+  var list = inPillar().slice().reverse();
+  var t = document.getElementById("tbl");
+  t.textContent = "";
+  var thead = document.createElement("thead"), tr = document.createElement("tr");
+  ["Date","Session","Pace","Watts","Rate","J/str","m/str","Econ","Spread"].forEach(function(h){
+    tr.appendChild(el("th", null, h));
+  });
+  thead.appendChild(tr); t.appendChild(thead);
+  var tb = document.createElement("tbody");
+  list.forEach(function(s){
+    var row = document.createElement("tr");
+    row.setAttribute("aria-selected", s.date === S.sel ? "true" : "false");
+    var td0 = el("td");
+    td0.appendChild(el("span", "pill p-" + s.pillar, LABEL[s.pillar]));
+    td0.appendChild(document.createTextNode(" " + fmtDay(s.date)));
+    row.appendChild(td0);
+    var e = econOf(s);
+    [s.shape, paceStr(s.pace), s.watts.toFixed(0), "r" + s.spm.toFixed(0),
+     s.jps.toFixed(0), s.mps.toFixed(2),
+     e == null ? "—" : (e >= 0 ? "+" : "−") + Math.abs(e).toFixed(2),
+     s.spread.toFixed(1)
+    ].forEach(function(v){ row.appendChild(el("td", null, v)); });
+    row.addEventListener("click", function(){ S.sel = s.date; render(); });
+    tb.appendChild(row);
+  });
+  t.appendChild(tb);
+}
+
+function renderDetail(){
+  var s = S.sessions.filter(function(x){ return x.date === S.sel; })[0];
+  var head = document.getElementById("detHead");
+  var lede = document.getElementById("detLede");
+  var t = document.getElementById("ivTbl");
+  var reads = document.getElementById("detRead");
+  var cap = document.getElementById("capRep");
+  head.textContent = "Session"; lede.textContent = ""; t.textContent = "";
+  reads.textContent = ""; cap.textContent = "";
+  document.getElementById("cRep").textContent = "";
+  document.getElementById("legRep").textContent = "";
+  if(!s) return;
+
+  head.textContent = fmtDay(s.date) + " · " + s.shape + " · " + paceStr(s.pace) +
+    " · " + s.pct.toFixed(1) + "% of PB" + (s.band ? "  ·  target " + s.band : "");
+
+  var reps = s.rows.map(repOf);
+  var d = decompose(reps[0], reps[reps.length-1]);
+  if(d){
+    lede.appendChild(document.createTextNode("Rep 1 to rep " + reps.length + ", power "));
+    lede.appendChild(el("b", null, pctStr(d.power)));
+    lede.appendChild(document.createTextNode(" — the stroke gave "));
+    lede.appendChild(el("b", null, pctStr(d.stroke)));
+    lede.appendChild(document.createTextNode(" of it and rate gave "));
+    lede.appendChild(el("b", null, pctStr(d.rate)));
+    var V = {"traded-down":" You bought the finish with rate.",
+             "traded-up":" You finished on a bigger stroke, not a faster one.",
+             "up-rate":" Turnover carried the piece.",
+             "up-stroke":" The stroke carried the piece.",
+             "up-both":" Both sides grew together.",
+             "down-rate":" You eased off the rate rather than losing the stroke.",
+             "down-stroke":" The stroke faded by the end.",
+             "down-both":" The set softened all round.",
+             "mixed":" Power held while the mix changed.",
+             "flat":" Nothing moved — a genuinely even set.", "none":""};
+    lede.appendChild(document.createTextNode("." + (V[carriedBy(d)] || "")));
+  }
+
+  indexChart(document.getElementById("cRep"), document.getElementById("tipRep"),
+    document.getElementById("legRep"), reps, [
+      {name:"Power", short:"Power", color:SER.power,
+       of:function(r){ return r.watts; }, fmt:function(v){ return v.toFixed(0) + " W"; }},
+      {name:"Work per stroke", short:"Stroke", color:SER.stroke,
+       of:function(r){ return r.jps; }, fmt:function(v){ return v.toFixed(0) + " J"; }},
+      {name:"Stroke rate", short:"Rate", color:SER.rate,
+       of:function(r){ return r.spm; }, fmt:function(v){ return "r" + v.toFixed(0); }}
+    ], {baseN: 1, first:"rep 1", last:"rep " + reps.length,
+        labelOf:function(r){ return "rep " + (reps.indexOf(r)+1) + " · " + paceStr(r.pace); }});
+
+  if(d){
+    var R = {
+      "traded-down": "the rust line falls while the blue one climbs. Each stroke did less work and " +
+        "you took more of them — rate covering for the stroke, which is what fatigue in the drive " +
+        "looks like from the outside.",
+      "traded-up": "the rust line climbs while the blue one drops. You got more out of every stroke " +
+        "and needed fewer of them. This is the shape to repeat.",
+      "up-rate": "almost all of the movement is the blue line. You built the piece on turnover; the " +
+        "stroke itself finished roughly where it started.",
+      "up-stroke": "almost all of the movement is the rust line. The extra power came out of the " +
+        "stroke, not out of taking more of them.",
+      "up-both": "stroke and rate both climbed, so the piece grew on two fronts at once.",
+      "down-rate": "power came off and so did the rate — you eased the piece rather than losing the stroke.",
+      "down-stroke": "power came off through the stroke: each one did less work by the end.",
+      "down-both": "everything came down across the set — the last reps were softer than the first.",
+      "mixed": "power finished where it started, but the mix changed underneath it.",
+      "flat": "all three lines stay flat — you rowed the same stroke from the first rep to the last.",
+      "none": ""
+    };
+    cap.appendChild(el("b", null, "Inside the piece: "));
+    cap.appendChild(document.createTextNode(R[carriedBy(d)] || ""));
+  }
+
+  var thead = document.createElement("thead"), tr = document.createElement("tr");
+  ["Rep","Metres","Pace","Watts","Rate","J/stroke","m/stroke","HR"].forEach(function(h){
+    tr.appendChild(el("th", null, h));
+  });
+  thead.appendChild(tr); t.appendChild(thead);
+  var tb = document.createElement("tbody");
+  reps.forEach(function(r, i){
+    var row = document.createElement("tr");
+    [String(i+1), r.dist.toLocaleString(), paceStr(r.pace), r.watts.toFixed(0), "r" + r.spm,
+     r.jps.toFixed(0), r.mps.toFixed(2),
+     r.hr ? (r.hr + (r.hr >= VT2 ? " ▲" : "")) : "—"
+    ].forEach(function(v){ row.appendChild(el("td", null, v)); });
+    tb.appendChild(row);
+  });
+  t.appendChild(tb);
+  renderReads(s, reps, reads);
+}
+
+/* the most comparable earlier session - interval duration decides, an exact
+   plan key beats everything, total distance is irrelevant */
 function comparableFor(s){
   var want = ivSecs(s), best = null, score = 0;
   S.sessions.forEach(function(o){
@@ -467,407 +929,95 @@ function comparableFor(s){
   return best ? {s: best, exact: !!(s.key && best.key === s.key)} : null;
 }
 
-/* ---------- charts ---------- */
-/* One scale, ticks that name real values, every point inside the box. */
-function lineChart(svg, list, valueOf, opts){
-  svg.textContent = "";
-  var W = 900, H = +svg.getAttribute("height");
-  var L = 44, R = 12, T = 12, B = 26;
-  if(!list.length){
-    svg.appendChild(svgEl("text", {x:L, y:H/2, class:"lab"})).textContent =
-      "No sessions in this group yet.";
-    return;
-  }
-  var vals = list.map(valueOf);
-  var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
-  if(hi - lo < 1e-6){ hi = lo + 1; lo = lo - 1; }
-  var padv = (hi - lo) * 0.18; lo -= padv; hi += padv;
-  var x = function(i){ return L + (list.length === 1 ? (W-L-R)/2
-        : i * (W - L - R) / (list.length - 1)); };
-  var y = function(v){
-    var t = (v - lo) / (hi - lo);
-    return opts.invert ? T + t * (H - T - B) : H - B - t * (H - T - B);
-  };
-  /* gridlines + axis labels */
-  [0, 0.5, 1].forEach(function(f){
-    var v = lo + f * (hi - lo), yy = y(v);
-    svg.appendChild(svgEl("line", {x1:L, x2:W-R, y1:yy, y2:yy,
-      stroke:"#D3DAE0", "stroke-width":1}));
-    var t = svgEl("text", {x:L-6, y:yy+3, "text-anchor":"end"});
-    t.textContent = opts.fmt(v);
-    svg.appendChild(t);
-  });
-  if(opts.markVal != null && opts.markVal > lo && opts.markVal < hi){
-    var my = y(opts.markVal);
-    svg.appendChild(svgEl("line", {x1:L, x2:W-R, y1:my, y2:my,
-      stroke:"#B02020", "stroke-width":1, "stroke-dasharray":"3 3"}));
-    var mt = svgEl("text", {x:W-R, y:my-4, "text-anchor":"end", fill:"#B02020"});
-    mt.textContent = opts.markLabel;
-    svg.appendChild(mt);
-  }
-  /* connect sessions of the same pillar so a trend is readable */
-  var byP = {};
-  list.forEach(function(s, i){ (byP[s.pillar] = byP[s.pillar] || []).push([x(i), y(valueOf(s))]); });
-  Object.keys(byP).forEach(function(p){
-    if(byP[p].length < 2) return;
-    svg.appendChild(svgEl("polyline", {
-      points: byP[p].map(function(q){ return q[0] + "," + q[1]; }).join(" "),
-      fill:"none", stroke:COL[p] || "#69727B", "stroke-width":1.5, opacity:0.55}));
-  });
-  list.forEach(function(s, i){
-    var cx = x(i), cy = y(valueOf(s));
-    var c = svgEl("circle", {cx:cx, cy:cy, r: s.date === S.sel ? 5.5 : 3.5,
-      fill: COL[s.pillar] || "#69727B",
-      stroke: s.date === S.sel ? "#14171B" : "#FFF", "stroke-width":1.5});
-    c.style.cursor = "pointer";
-    c.addEventListener("click", function(){ S.sel = s.date; render(); });
-    var ttl = svgEl("title");
-    ttl.textContent = fmtDay(s.date) + " · " + s.shape + " · " + opts.fmt(valueOf(s));
-    c.appendChild(ttl);
-    svg.appendChild(c);
-    if(i === 0 || i === list.length - 1 || list.length <= 8){
-      var lt = svgEl("text", {x:cx, y:H-9, "text-anchor": i === 0 ? "start"
-        : (i === list.length-1 ? "end" : "middle")});
-      lt.textContent = fmtDay(s.date);
-      svg.appendChild(lt);
-    }
-  });
-}
-
-/* per-interval view: pace as bars, stroke rate and m/stroke as lines over them */
-function intervalChart(svg, s){
-  svg.textContent = "";
-  var W = 900, H = 200, L = 44, R = 44, T = 14, B = 30;
-  if(!s){ return; }
-  var n = s.rows.length;
-  var paces = s.rows.map(function(r){ return r[1]; });
-  var lo = Math.min.apply(null, paces), hi = Math.max.apply(null, paces);
-  var pad = Math.max((hi - lo) * 0.35, 1.5); lo -= pad; hi += pad;
-  var bw = (W - L - R) / n;
-  var y = function(v){ return T + (v - lo) / (hi - lo) * (H - T - B); };  /* faster = higher */
-  [lo + (hi-lo)*0.1, (lo+hi)/2, hi - (hi-lo)*0.1].forEach(function(v){
-    var yy = y(v);
-    svg.appendChild(svgEl("line", {x1:L, x2:W-R, y1:yy, y2:yy, stroke:"#D3DAE0"}));
-    var t = svgEl("text", {x:L-6, y:yy+3, "text-anchor":"end"});
-    t.textContent = paceStr(v);
-    svg.appendChild(t);
-  });
-  var col = COL[s.pillar] || "#69727B";
-  /* pace labels go into their own layer, appended last, so the m/stroke
-     line never paints over them */
-  var labs = svgEl("g", {});
-  s.rows.forEach(function(r, i){
-    var cx = L + bw * i + bw/2, yy = y(r[1]);
-    svg.appendChild(svgEl("rect", {x:L + bw*i + bw*0.18, y:yy, width:bw*0.64,
-      height:(H - B) - yy, fill:col, opacity:0.22}));
-    /* inside the bar, not above it - the m/stroke line runs through that space */
-    var t = svgEl("text", {x:cx, y:yy + 13, "text-anchor":"middle", class:"lab bl"});
-    t.setAttribute("fill", "#14171B");
-    t.textContent = paceStr(r[1]);
-    labs.appendChild(t);
-    var b = svgEl("text", {x:cx, y:H - 16, "text-anchor":"middle"});
-    b.textContent = "r" + r[3];
-    svg.appendChild(b);
-    var m = svgEl("text", {x:cx, y:H - 5, "text-anchor":"middle"});
-    m.textContent = mPerStroke(r[1], r[3]).toFixed(2);
-    svg.appendChild(m);
-  });
-  var lt = svgEl("text", {x:L-6, y:H-16, "text-anchor":"end"}); lt.textContent = "rate";
-  svg.appendChild(lt);
-  var lm = svgEl("text", {x:L-6, y:H-5, "text-anchor":"end"}); lm.textContent = "m/str";
-  svg.appendChild(lm);
-  /* metres per stroke as a line, on its own scale, so the trade is visible */
-  var mps = s.rows.map(function(r){ return mPerStroke(r[1], r[3]); });
-  var mlo = Math.min.apply(null, mps), mhi = Math.max.apply(null, mps);
-  if(mhi - mlo < 0.05){ mhi = mlo + 0.05; }
-  var my = function(v){ return T + (1 - (v - mlo) / (mhi - mlo)) * (H - T - B) * 0.55 + 6; };
-  svg.appendChild(svgEl("polyline", {
-    points: mps.map(function(v, i){ return (L + bw*i + bw/2) + "," + my(v); }).join(" "),
-    fill:"none", stroke:"#14171B", "stroke-width":1.5, "stroke-dasharray":"4 3", opacity:0.75}));
-  var rl = svgEl("text", {x:W-R+6, y:my(mhi)+3, fill:"#14171B"});
-  rl.textContent = mhi.toFixed(2);
-  svg.appendChild(rl);
-  var rl2 = svgEl("text", {x:W-R+6, y:my(mlo)+3, fill:"#14171B"});
-  rl2.textContent = mlo.toFixed(2);
-  svg.appendChild(rl2);
-  svg.appendChild(labs);
-}
-
-/* ---------- render ---------- */
-function renderTabs(){
-  var host = document.getElementById("tabs");
-  host.textContent = "";
-  var groups = [["all","All"],["sprint","Sprint"],["vo2","VO₂"],
-                ["threshold","Threshold"],["test","Tests"]];
-  groups.forEach(function(g){
-    var n = g[0] === "all" ? S.sessions.length
-          : S.sessions.filter(function(s){ return s.pillar === g[0]; }).length;
-    var b = document.createElement("button");
-    b.className = "tab"; b.type = "button";
-    b.setAttribute("role", "tab");
-    b.setAttribute("data-p", g[0]);
-    b.setAttribute("aria-selected", S.pillar === g[0] ? "true" : "false");
-    b.appendChild(document.createTextNode(g[1]));
-    b.appendChild(el("span", "n", n + (n === 1 ? " session" : " sessions")));
-    b.addEventListener("click", function(){
-      S.pillar = g[0];
-      var list = inPillar();
-      if(!list.some(function(s){ return s.date === S.sel; })){
-        S.sel = list.length ? list[list.length-1].date : null;
-      }
-      render();
-    });
-    host.appendChild(b);
-  });
-}
-
-function renderTiles(){
-  var list = inPillar(), host = document.getElementById("tiles");
-  host.textContent = "";
-  document.getElementById("tileHead").textContent =
-    (S.pillar === "all" ? "All erg work" : LABEL[S.pillar]) + " · summary";
-  function tile(k, v, s){
-    var t = el("div", "tile");
-    t.appendChild(el("div", "k", k));
-    t.appendChild(el("div", "v", v));
-    if(s) t.appendChild(el("div", "s", s));
-    host.appendChild(t);
-  }
-  if(!list.length){ tile("Sessions", "0", "nothing synced yet"); return; }
-  var best = list.reduce(function(a, b){ return b.pace < a.pace ? b : a; });
-  var totM = list.reduce(function(a, b){ return a + b.dist; }, 0);
-  var half = Math.ceil(list.length / 2);
-  var early = mean(list.slice(0, half).map(function(s){ return s.pace; }));
-  var late  = mean(list.slice(half).map(function(s){ return s.pace; }));
-  var d = early - late;
-  tile("Sessions", String(list.length),
-       fmtDay(list[0].date) + " – " + fmtDay(list[list.length-1].date));
-  tile("Work volume", (totM/1000).toFixed(1) + " km", "at prescribed intensity");
-  tile("Best session", paceStr(best.pace), fmtDay(best.date) + " · " + best.shape);
-  tile("Trend", (d >= 0 ? "−" : "+") + Math.abs(d).toFixed(1) + " s",
-       "per 500m, first half → second");
-  tile("Metres / stroke", mean(list.map(function(s){ return s.mps; })).toFixed(2),
-       "mean across intervals");
-  tile("Within-session spread", mean(list.map(function(s){ return s.spread; })).toFixed(1) + " s",
-       "fastest to slowest rep");
-
-  var neg = list.filter(function(s){ return s.drift < -0.3; }).length;
-  var r = document.getElementById("readout");
-  r.textContent = "";
-  var b1 = el("b", null, neg + " of " + list.length);
-  r.appendChild(document.createTextNode("Negative split in "));
-  r.appendChild(b1);
-  r.appendChild(document.createTextNode(" sessions — last rep faster than first. Average intensity "));
-  r.appendChild(el("b", null, mean(list.map(function(s){ return s.pct; })).toFixed(1) + "%"));
-  r.appendChild(document.createTextNode(" of the " + paceStr(PB) + " PB."));
-}
-
-function renderTable(){
-  var list = inPillar().slice().reverse(), t = document.getElementById("tbl");
-  t.textContent = "";
-  var head = ["Date","Session","Pace","% PB","Rate","m/str","J/str","Spread","Drift"];
-  var thead = document.createElement("thead"), tr = document.createElement("tr");
-  head.forEach(function(h){ tr.appendChild(el("th", null, h)); });
-  thead.appendChild(tr); t.appendChild(thead);
-  var tb = document.createElement("tbody");
-  list.forEach(function(s){
-    var row = document.createElement("tr");
-    row.setAttribute("aria-selected", s.date === S.sel ? "true" : "false");
-    var d = el("td");
-    d.appendChild(el("span", "pill p-" + s.pillar, LABEL[s.pillar]));
-    d.appendChild(document.createTextNode(" " + fmtDay(s.date)));
-    row.appendChild(d);
-    [s.shape, paceStr(s.pace), s.pct.toFixed(1) + "%", "r" + s.spm.toFixed(0),
-     s.mps.toFixed(2), s.jps ? s.jps.toFixed(0) : "—",
-     s.spread.toFixed(1), (s.drift <= 0 ? "" : "+") + s.drift.toFixed(1)
-    ].forEach(function(v){ row.appendChild(el("td", null, v)); });
-    row.addEventListener("click", function(){ S.sel = s.date; render(); });
-    tb.appendChild(row);
-  });
-  t.appendChild(tb);
-}
-
-function renderDetail(){
-  var s = S.sessions.filter(function(x){ return x.date === S.sel; })[0];
-  var head = document.getElementById("detHead");
-  var t = document.getElementById("ivTbl"), rd = document.getElementById("detRead");
-  t.textContent = ""; rd.textContent = "";
-  if(!s){ head.textContent = "Session"; intervalChart(document.getElementById("cIv"), null); return; }
-  head.textContent = fmtDay(s.date) + " · " + s.shape + " · " + paceStr(s.pace) +
-    " · " + s.pct.toFixed(1) + "% of PB" + (s.band ? "  ·  target " + s.band : "");
-  intervalChart(document.getElementById("cIv"), s);
-  var thead = document.createElement("thead"), tr = document.createElement("tr");
-  ["Rep","Metres","Pace","Watts","Rate","m/stroke","J/stroke","HR"].forEach(function(h){
-    tr.appendChild(el("th", null, h));
-  });
-  thead.appendChild(tr); t.appendChild(thead);
-  var tb = document.createElement("tbody");
-  s.rows.forEach(function(r, i){
-    var row = document.createElement("tr");
-    [String(i+1), r[0].toLocaleString(), paceStr(r[1]), r[2] || "—", "r" + r[3],
-     mPerStroke(r[1], r[3]).toFixed(2), jPerStroke(r[2], r[3]).toFixed(0),
-     r[4] ? (r[4] + (r[4] >= VT2 ? " ▲" : "")) : "—"
-    ].forEach(function(v){ row.appendChild(el("td", null, v)); });
-    tb.appendChild(row);
-  });
-  t.appendChild(tb);
-  var reads = document.getElementById("detRead");
+function renderReads(s, reps, host){
   function line(label, build){
-    var w = el("div", "rd");
-    w.appendChild(el("div", "rk", label));
-    var v = el("div", "rv");
-    build(v);
-    w.appendChild(v);
-    reads.appendChild(w);
+    var w = el("div","rd");
+    w.appendChild(el("div","rk", label));
+    var v = el("div","rv"); build(v); w.appendChild(v);
+    host.appendChild(w);
   }
-  function txt(v, t){ v.appendChild(document.createTextNode(t)); }
-  function num(v, t){ v.appendChild(el("em", null, t)); }
-  function str(v, t){ v.appendChild(el("b", null, t)); }
+  function txt(v,t){ v.appendChild(document.createTextNode(t)); }
+  function num(v,t){ v.appendChild(el("em",null,t)); }
+  function str(v,t){ v.appendChild(el("b",null,t)); }
 
-  /* where the session landed against what was asked for */
-  var bandSecs = (s.band || "").match(/(\d+):(\d\d(?:\.\d)?)/g);
+  var bands = (s.band || "").match(/(\d+):(\d\d(?:\.\d)?)/g);
   line("Pace", function(v){
-    num(v, paceStr(s.pace)); txt(v, " average, ");
-    num(v, s.pct.toFixed(1) + "% of PB");
-    if(bandSecs && bandSecs.length === 2){
-      var lo = paceSec(bandSecs[0]), hi = paceSec(bandSecs[1]);
-      txt(v, ". Target was " + s.band + " — ");
-      if(s.pace < lo) str(v, (lo - s.pace).toFixed(1) + " s/500m faster than the quick end");
-      else if(s.pace > hi) str(v, (s.pace - hi).toFixed(1) + " s/500m slower than the easy end");
-      else {
-        var into = (s.pace - lo) / (hi - lo) * 100;
-        str(v, "inside it, " + into.toFixed(0) + "% of the way down the band");
-      }
-      txt(v, s.pace < lo
-        ? ". Run hot: the session cost more than it was meant to."
-        : (s.pace > hi ? ". Run soft: there was more in it." : "."));
-    } else if(s.band){
-      txt(v, ". Target was " + s.band + ".");
+    num(v, paceStr(s.pace)); txt(v, " average, "); num(v, s.pct.toFixed(1) + "% of PB");
+    if(bands && bands.length === 2){
+      var lo = paceSec(bands[0]), hi = paceSec(bands[1]);
+      txt(v, ". Target " + s.band + " — ");
+      if(s.pace < lo) str(v, (lo - s.pace).toFixed(1) + " s/500m hotter than the quick end");
+      else if(s.pace > hi) str(v, (s.pace - hi).toFixed(1) + " s/500m softer than the easy end");
+      else str(v, "inside it, " + ((s.pace-lo)/(hi-lo)*100).toFixed(0) + "% of the way down the band");
+      txt(v, ".");
+    } else if(s.band){ txt(v, ". Target " + s.band + "."); }
+  });
+
+  line("The stroke", function(v){
+    num(v, s.jps.toFixed(0) + " J"); txt(v, " of work in every stroke at ");
+    num(v, "r" + s.spm.toFixed(1)); txt(v, ", carrying "); num(v, s.mps.toFixed(2) + " m");
+    txt(v, ". ");
+    var e = econOf(s);
+    if(e != null){
+      txt(v, "For " + s.watts.toFixed(0) + " W that usually costs you r" +
+        S.econ.expected(s.watts).toFixed(1) + ", so this was ");
+      str(v, (e <= -0.4 ? Math.abs(e).toFixed(1) + " strokes a minute cheaper than your norm"
+        : (e >= 0.4 ? e.toFixed(1) + " strokes a minute more expensive than your norm"
+                    : "right on your norm")));
+      txt(v, ".");
     }
   });
 
-  /* the rate / length trade inside the piece */
-  var first = mPerStroke(s.rows[0][1], s.rows[0][3]);
-  var last  = mPerStroke(s.rows[s.rows.length-1][1], s.rows[s.rows.length-1][3]);
-  var dm = last - first, dr = s.rows[s.rows.length-1][3] - s.rows[0][3];
-  line("Inside the piece", function(v){
-    txt(v, "Rep 1 to rep " + s.rows.length + ": pace ");
-    num(v, (s.drift <= 0 ? "−" : "+") + Math.abs(s.drift).toFixed(1) + " s");
-    txt(v, ", rate ");
-    num(v, (dr >= 0 ? "+" : "−") + Math.abs(dr) + " spm");
-    txt(v, ", length ");
-    num(v, (dm >= 0 ? "+" : "−") + Math.abs(dm).toFixed(2) + " m");
-    txt(v, ". ");
-    if(dm < -0.15 && dr > 0)
-      str(v, s.drift < -0.3
-        ? "You got faster, but by rating up and shortening the stroke rather than by pulling harder."
-        : "You held the pace by rating up and shortening the stroke.");
-    else if(dm > 0.1 && s.drift < -0.3)
-      str(v, "You got faster on a longer stroke — the strongest version of this session.");
-    else if(dm > 0.1)
-      str(v, "Length grew as the piece went on, so the stroke was not fading.");
-    else if(dm < -0.15)
-      str(v, "The stroke shortened without the rate rising — fatigue in the drive, not a choice.");
-    else
-      str(v, "Rate and length both held, so the pace came from the same stroke throughout.");
-  });
-
-  /* power */
-  line("Power", function(v){
-    num(v, s.watts.toFixed(0) + " W"); txt(v, " average, ");
-    num(v, s.jps.toFixed(0) + " J"); txt(v, " of work in every stroke at ");
-    num(v, "r" + s.spm.toFixed(1));
-    txt(v, ", carrying ");
-    num(v, s.mps.toFixed(2) + " m");
-    txt(v, ". ");
-    txt(v, s.mps >= 9
-      ? "A long stroke for this kind of work — force is going in early."
-      : (s.mps >= 7.5 ? "Mid-range length for the rate you were at."
-                      : "Short and quick, which is what the rate was for."));
-  });
-
-  /* consistency */
-  line("Consistency", function(v){
-    txt(v, "Fastest to slowest rep spans ");
-    num(v, s.spread.toFixed(1) + " s");
-    txt(v, ". ");
-    str(v, s.spread < 1.5 ? "Very even — the set was run to a number."
-      : (s.spread < 3.5 ? "Normal variation for this length of rep."
-                        : "Wide. Either the opening reps were conservative or the last ones faded."));
+  var first = reps[0], last = reps[reps.length-1];
+  line("Held together?", function(v){
+    txt(v, "Fastest to slowest rep spans "); num(v, s.spread.toFixed(1) + " s");
+    txt(v, ", length went from "); num(v, first.mps.toFixed(2) + " m");
+    txt(v, " to "); num(v, last.mps.toFixed(2) + " m"); txt(v, ". ");
+    var dl = last.mps - first.mps;
+    str(v, dl < -0.3 ? "The stroke shortened noticeably by the end."
+      : (dl > 0.15 ? "Length grew as the piece went on."
+                   : "Length held from the first rep to the last."));
   });
 
   if(s.hrMax){
     line("Heart rate", function(v){
-      txt(v, "Peaked at "); num(v, s.hrMax + " bpm");
-      txt(v, ", "); num(v, Math.round(s.hrMax / VT2 * 100) + "% of VT2");
-      txt(v, " (" + VT2 + "). ");
-      str(v, s.hrMax >= VT2 + 6 ? "Over threshold — this was a hard aerobic day."
-        : (s.hrMax >= VT2 - 4 ? "Right at threshold, which is where this session should top out."
-                              : "Stayed under threshold."));
+      txt(v, "Peaked "); num(v, s.hrMax + " bpm");
+      txt(v, ", "); num(v, Math.round(s.hrMax/VT2*100) + "% of VT2");
+      if(s.hrAvg){
+        txt(v, "; average "); num(v, s.hrAvg.toFixed(0) + " bpm");
+        txt(v, " carried "); num(v, (s.watts/(s.hrAvg/60)).toFixed(1) + " J per beat");
+      }
+      txt(v, ". ");
+      str(v, s.hrMax >= VT2 + 6 ? "Over threshold."
+        : (s.hrMax >= VT2 - 4 ? "Right at threshold." : "Under threshold throughout."));
     });
   }
 
-  /* the same work, earlier */
   var cmp = comparableFor(s);
   if(cmp){
-    var o = cmp.s;
+    var o = cmp.s, dd = decompose(o, s);
     line("Versus " + fmtDay(o.date), function(v){
-      txt(v, cmp.exact ? "Same session (" + o.shape + "): "
-                       : "Closest earlier match — " + o.shape + ", " +
-                         mmssShort(ivSecs(o)) + " reps vs " + mmssShort(ivSecs(s)) + " today: ");
-      var dp = s.pace - o.pace, dw = s.watts - o.watts,
-          ds = s.spm - o.spm, dl = s.mps - o.mps;
-      num(v, (dp <= 0 ? "−" : "+") + Math.abs(dp).toFixed(1) + " s/500m");
-      txt(v, ", "); num(v, (dw >= 0 ? "+" : "−") + Math.abs(dw).toFixed(0) + " W");
-      txt(v, ", "); num(v, (ds >= 0 ? "+" : "−") + Math.abs(ds).toFixed(1) + " spm");
-      txt(v, ", "); num(v, (dl >= 0 ? "+" : "−") + Math.abs(dl).toFixed(2) + " m/stroke");
-      txt(v, ". ");
-      if(dp < -0.5 && dl >= -0.05) str(v, "Faster on the same or a longer stroke — a real step up.");
-      else if(dp < -0.5 && ds > 0.5) str(v, "Faster, but rated up to get there; the stroke is shorter.");
-      else if(dp > 0.5 && dw < -3) str(v, "Slower and producing less — worth checking what else was in that week.");
-      else if(Math.abs(dp) <= 0.5 && dl > 0.05) str(v, "Same pace on a longer stroke — quietly more efficient.");
-      else if(Math.abs(dp) <= 0.5 && dl < -0.05) str(v, "Same pace on a shorter stroke — rate is covering the gap.");
-      else str(v, "Broadly a repeat of that session.");
+      txt(v, cmp.exact ? "Same session (" + o.shape + "). "
+        : "Closest earlier match by interval length — " + o.shape + ", " +
+          mmssShort(ivSecs(o)) + " reps against " + mmssShort(ivSecs(s)) + " here. ");
+      if(dd){
+        txt(v, "Power "); num(v, pctStr(dd.power));
+        txt(v, " — stroke "); num(v, pctStr(dd.stroke));
+        txt(v, ", rate "); num(v, pctStr(dd.rate)); txt(v, ". ");
+        str(v, dd.stroke > 1.5 && dd.rate <= 1
+          ? "More power out of a bigger stroke. That is the improvement you want."
+          : (dd.rate > 1.5 && dd.stroke <= 1
+             ? "More power out of more strokes. The stroke itself has not changed."
+             : (dd.stroke < -1.5
+                ? "The stroke is doing less than it did that day."
+                : "Broadly a repeat of that session.")));
+      }
     });
   }
-
   if(s.note) line("Sync note", function(v){ txt(v, s.note); });
 }
 
-function renderLegend(){
-  var host = document.getElementById("legend");
-  host.textContent = "";
-  ["sprint","vo2","threshold","test"].forEach(function(p){
-    if(S.pillar !== "all" && S.pillar !== p) return;
-    var s = el("span", null);
-    var i = el("i"); i.style.background = COL[p];
-    s.appendChild(i);
-    s.appendChild(document.createTextNode(LABEL[p]));
-    host.appendChild(s);
-  });
-}
-
-function render(){
-  renderTabs();
-  renderTiles();
-  var list = inPillar();
-  lineChart(document.getElementById("cPace"), list,
-    function(s){ return s.pace; },
-    {invert:true, fmt:function(v){ return paceStr(v); }});
-  lineChart(document.getElementById("cEff"), list,
-    function(s){ return s.mps; },
-    {invert:false, fmt:function(v){ return v.toFixed(2) + " m"; }});
-  lineChart(document.getElementById("cJps"), list,
-    function(s){ return s.jps; },
-    {invert:false, fmt:function(v){ return v.toFixed(0) + " J"; }});
-  renderLegend();
-  renderCaps();
-  renderTrend();
-  renderTable();
-  renderDetail();
-}
-
-/* a session card in the console links here as analysis.html#2026-09-11 */
+/* ---------- deep link + boot ---------- */
 function fromHash(){
   var w = (location.hash || "").replace(/^#/, "");
   if(!/^\d{4}-\d{2}-\d{2}$/.test(w)) return null;
@@ -877,7 +1027,14 @@ function scrollToDetail(){
   var d = document.getElementById("detail");
   if(d && d.scrollIntoView) d.scrollIntoView({behavior:"smooth", block:"start"});
 }
-
+function render(){
+  renderTabs();
+  renderScore();
+  renderSplit();
+  renderCharts();
+  renderTable();
+  renderDetail();
+}
 function boot(){
   Promise.all([
     fetch("sync/results.json",   {cache:"no-store"}).then(function(r){ return r.json(); }),
@@ -885,12 +1042,13 @@ function boot(){
     fetch("sync/pillars.json",   {cache:"no-store"}).then(function(r){ return r.json(); })
   ]).then(function(a){
     S.sessions = build(a[0], a[1], a[2]);
+    S.econ = fitEconomy(S.sessions);
     var last = S.sessions[S.sessions.length-1];
     var hit = fromHash();
     S.sel = hit ? hit.date : (last ? last.date : null);
     if(hit) S.pillar = hit.pillar;
-    document.getElementById("hdr").textContent = "";
     var h = document.getElementById("hdr");
+    h.textContent = "";
     h.appendChild(document.createTextNode(
       S.sessions.length + " sessions" + (last ? ", through " + fmtDay(last.date) : "") +
       "  ·  rebuilt by the 9am logbook sync  ·  "));
@@ -906,7 +1064,8 @@ function boot(){
       render(); scrollToDetail();
     });
   }).catch(function(e){
-    document.getElementById("hdr").textContent = "Could not load the sync files (" + e.message + ").";
+    document.getElementById("hdr").textContent =
+      "Could not load the sync files (" + e.message + ").";
   });
 }
 boot();
