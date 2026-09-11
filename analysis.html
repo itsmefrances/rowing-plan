@@ -16,6 +16,7 @@
   --vo2:#0C6F6B;   --vo2-soft:#DBECEB;
   --thr:#2D5AA8;   --thr-soft:#DEE7F5;
   --test:#9A6510;  --test-soft:#F4E9D5;
+  --good:#136F47;  --bad:#A0341A;
   --f-d:"Archivo","Helvetica Neue",Arial,sans-serif;
   --f-m:"IBM Plex Mono",ui-monospace,Menlo,monospace;
 }
@@ -52,6 +53,8 @@ section{background:var(--surface);border-bottom:1px solid var(--rule);padding:14
 svg{display:block;}
 svg text{font-family:var(--f-m);font-size:9px;fill:var(--muted);}
 svg text.lab{fill:var(--ink-2);font-size:9.5px;}
+/* the m/stroke line runs through the bar labels - halo them so both stay readable */
+svg text.bl{paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round;}
 .legend{display:flex;flex-wrap:wrap;gap:11px;margin-top:8px;font-family:var(--f-m);
   font-size:10.5px;color:var(--ink-2);}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;
@@ -75,6 +78,29 @@ tbody tr[aria-selected=true] td{background:var(--surface-3);}
 .rdg{font-family:var(--f-m);font-size:11.5px;line-height:1.55;color:var(--ink-2);margin:9px 0 0;}
 .rdg b{color:var(--ink);font-weight:500;}
 .scroll{overflow-x:auto;}
+.verdict{background:var(--surface-2);border-left:3px solid var(--ink);padding:11px 13px;
+  font-size:13px;line-height:1.55;margin-top:11px;}
+.trend{display:grid;grid-template-columns:repeat(auto-fit,minmax(176px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);margin-top:11px;}
+.tr{background:var(--surface);padding:10px 11px;}
+.tr .k{font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
+.tr .v{font-family:var(--f-m);font-size:13.5px;margin-top:3px;font-variant-numeric:tabular-nums;}
+.tr .v em{font-style:normal;color:var(--muted);}
+.tr .m{font-size:11.5px;line-height:1.45;color:var(--ink-2);margin-top:5px;}
+.up{color:var(--good);font-weight:600;}
+.dn{color:var(--bad);font-weight:600;}
+.flat{color:var(--muted);font-weight:600;}
+.caveat{font-family:var(--f-m);font-size:10.5px;line-height:1.5;color:var(--muted);margin:9px 0 0;}
+.cap{font-size:12px;line-height:1.5;color:var(--ink-2);margin:9px 0 0;}
+.cap b{color:var(--ink);font-weight:600;}
+.reads{display:flex;flex-direction:column;gap:8px;margin-top:11px;}
+.rd{display:grid;grid-template-columns:118px 1fr;gap:11px;align-items:baseline;}
+.rd .rk{font-size:9.5px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;
+  color:var(--muted);}
+.rd .rv{font-size:12.5px;line-height:1.55;color:var(--ink-2);}
+.rd .rv b{color:var(--ink);font-weight:600;}
+.rd .rv em{font-style:normal;font-family:var(--f-m);color:var(--ink);}
+@media(max-width:520px){.rd{grid-template-columns:1fr;gap:2px;}}
 </style>
 </head>
 <body>
@@ -90,6 +116,9 @@ tbody tr[aria-selected=true] td{background:var(--surface-3);}
   <div class="eyebrow" id="tileHead">Summary</div>
   <div class="tiles" id="tiles"></div>
   <p class="rdg" id="readout"></p>
+  <div class="verdict" id="verdict"></div>
+  <div class="trend" id="trend"></div>
+  <p class="caveat" id="caveat"></p>
 </section>
 
 <section>
@@ -97,12 +126,21 @@ tbody tr[aria-selected=true] td{background:var(--surface-3);}
   <div class="chartbox"><svg id="cPace" width="900" height="190" role="img"
     aria-label="Average work pace for each session over time"></svg></div>
   <div class="legend" id="legend"></div>
+  <p class="cap" id="capPace"></p>
 </section>
 
 <section>
   <div class="eyebrow">Metres per stroke &middot; how far each stroke carried you</div>
   <div class="chartbox"><svg id="cEff" width="900" height="170" role="img"
     aria-label="Average distance per stroke for each session over time"></svg></div>
+  <p class="cap" id="capEff"></p>
+</section>
+
+<section>
+  <div class="eyebrow">Work per stroke &middot; how much each stroke actually did</div>
+  <div class="chartbox"><svg id="cJps" width="900" height="170" role="img"
+    aria-label="Average work per stroke in joules for each session over time"></svg></div>
+  <p class="cap" id="capJps"></p>
 </section>
 
 <section>
@@ -115,7 +153,7 @@ tbody tr[aria-selected=true] td{background:var(--surface-3);}
   <div class="chartbox"><svg id="cIv" width="900" height="200" role="img"
     aria-label="Pace, stroke rate and metres per stroke for each interval"></svg></div>
   <div class="scroll"><table id="ivTbl"></table></div>
-  <p class="rdg" id="detRead"></p>
+  <div class="reads" id="detRead"></div>
 </section>
 </div>
 
@@ -197,6 +235,236 @@ function inPillar(){
   return S.sessions.filter(function(s){
     return S.pillar === "all" || s.pillar === S.pillar;
   });
+}
+
+
+function paceSec(str){
+  var m = /(\d+):(\d\d(?:\.\d+)?)/.exec(String(str || ""));
+  return m ? (+m[1]) * 60 + parseFloat(m[2]) : 0;
+}
+function mmssShort(sec){
+  var m = Math.floor(sec / 60), r = Math.round(sec - m * 60);
+  if(r === 60){ m++; r = 0; }
+  return m + ":" + (r < 10 ? "0" : "") + r;
+}
+
+/* ---------- reading the numbers, not just printing them ----------
+   Every figure on this page is paired with what it means. The rule
+   throughout: pace alone says little, because the prescription moves
+   week to week. Length (m/stroke) and work per stroke (J) are what
+   separate real development from buying speed with rate.           */
+
+var SIG = {pace:0.8, watts:4, spm:0.5, mps:0.10, jps:8};
+
+function repSecs(r){ return r[0] / 500 * r[1]; }
+function ivSecs(s){ return mean(s.rows.map(repSecs)); }
+function avgOf(list, f){
+  return mean(list.map(f).filter(function(v){ return v > 0; }));
+}
+function sgn(v, sig){ return v > sig ? 1 : (v < -sig ? -1 : 0); }
+function signed(v, dp, unit){
+  return (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(dp) + (unit || "");
+}
+
+/* first half vs second half of whatever is on screen */
+function trendOf(list){
+  if(list.length < 4) return null;
+  var h = Math.floor(list.length / 2);
+  var A = list.slice(0, h), B = list.slice(list.length - h);
+  function pair(f){ return {a: avgOf(A, f), b: avgOf(B, f)}; }
+  return {
+    n: list.length, na: A.length, nb: B.length,
+    aFrom: A[0].date, aTo: A[A.length-1].date,
+    bFrom: B[0].date, bTo: B[B.length-1].date,
+    pace:  pair(function(s){ return s.pace; }),
+    watts: pair(function(s){ return s.watts; }),
+    spm:   pair(function(s){ return s.spm; }),
+    mps:   pair(function(s){ return s.mps; }),
+    jps:   pair(function(s){ return s.jps; })
+  };
+}
+function dv(o){ return o.b - o.a; }
+
+function verdictText(t){
+  var p = sgn(dv(t.pace),  SIG.pace);    /* + = slower */
+  var w = sgn(dv(t.watts), SIG.watts);
+  var r = sgn(dv(t.spm),   SIG.spm);
+  var m = sgn(dv(t.mps),   SIG.mps);
+  var j = sgn(dv(t.jps),   SIG.jps);
+  if(j > 0 && m > 0)
+    return "Each stroke is doing more work and carrying further. That is power development — " +
+           "the stroke itself got stronger, not just quicker.";
+  if(j > 0 && m < 0)
+    return "Each stroke is doing more work, but it is shorter and the rate is higher. The power " +
+           "is real; some of it is going into rate rather than into length.";
+  if(m > 0 && r < 0)
+    return "Longer stroke at a lower rate. The clock follows whatever was prescribed that week, " +
+           "but the stroke underneath it is more effective than it was — that is the gain to keep.";
+  if(p <= 0 && m < 0 && r > 0)
+    return "Pace is holding or improving, but on a shorter stroke at a higher rate — you are buying " +
+           "the pace with rate. It is the pattern that stops paying at race distance.";
+  if(p < 0 && r <= 0 && m >= 0)
+    return "Faster without rating up, and the stroke has not shortened. That is the cleanest kind " +
+           "of progress in this data.";
+  if(m < 0 && j <= 0)
+    return "The stroke is getting shorter without more work in it. That is the one pattern here " +
+           "that reads as a regression rather than a trade.";
+  if(p > 0 && w < 0)
+    return "Pace and average power have both come off. Some of that is what was prescribed rather " +
+           "than what you can do — read it against the band before calling it a regression.";
+  return "Nothing has moved far enough in either direction to call. Pace, rate and stroke length " +
+         "are all inside normal week-to-week noise.";
+}
+
+function renderTrend(){
+  var list = inPillar();
+  var vHost = document.getElementById("verdict");
+  var host  = document.getElementById("trend");
+  var cav   = document.getElementById("caveat");
+  host.textContent = ""; cav.textContent = "";
+  var t = trendOf(list);
+  if(!t){
+    vHost.textContent = "Four sessions in a group before trends mean anything — " +
+      list.length + " here so far.";
+    return;
+  }
+  vHost.textContent = "";
+  vHost.appendChild(el("b", null, "Across these " + t.n + " sessions: "));
+  vHost.appendChild(document.createTextNode(verdictText(t)));
+
+  function card(k, o, dp, unit, better, meaning){
+    /* better: -1 when a fall is the good direction (pace), +1 when a rise is */
+    var d = dv(o), dir = sgn(d, SIG[k.key]);
+    var cls = dir === 0 ? "flat" : ((dir * better) > 0 ? "up" : "dn");
+    var c = el("div", "tr");
+    c.appendChild(el("div", "k", k.label));
+    var v = el("div", "v");
+    v.appendChild(document.createTextNode(k.fmt(o.a)));
+    v.appendChild(el("em", null, "  →  "));
+    v.appendChild(document.createTextNode(k.fmt(o.b)));
+    v.appendChild(document.createTextNode("  "));
+    v.appendChild(el("span", cls, dir === 0 ? "no change" : signed(d, dp, unit)));
+    c.appendChild(v);
+    c.appendChild(el("div", "m", meaning(dir, Math.abs(d))));
+    host.appendChild(c);
+  }
+
+  card({key:"pace", label:"Pace / 500m", fmt:paceStr}, t.pace, 1, " s", -1,
+    function(dir, a){
+      if(dir < 0) return "Faster by " + a.toFixed(1) + " s per 500m. Some of that is fitness and " +
+        "some is what the plan asked for — the metrics below are the ones that separate the two.";
+      if(dir > 0) return "Slower by " + a.toFixed(1) + " s per 500m. Check what was prescribed " +
+        "before reading this as lost fitness.";
+      return "Holding within " + a.toFixed(1) + " s per 500m — the pace itself has not moved.";
+    });
+
+  card({key:"watts", label:"Average watts", fmt:function(v){ return v.toFixed(0) + " W"; }},
+    t.watts, 0, " W", 1,
+    function(dir, a){
+      if(dir > 0) return "Producing " + a.toFixed(0) + " W more across work intervals. More work " +
+        "done per session at the same kind of effort.";
+      if(dir < 0) return "Down " + a.toFixed(0) + " W. Either the prescriptions eased or you are " +
+        "producing less at the same rate.";
+      return "Power output is steady across the block.";
+    });
+
+  card({key:"spm", label:"Stroke rate", fmt:function(v){ return "r" + v.toFixed(1); }},
+    t.spm, 1, " spm", -1,
+    function(dir, a){
+      if(dir > 0) return "Taking " + a.toFixed(1) + " more strokes a minute. On its own that is " +
+        "neutral — it only matters next to what each stroke is doing.";
+      if(dir < 0) return "Same work on " + a.toFixed(1) + " fewer strokes a minute. That is the " +
+        "direction you want: the boat is moving further per stroke.";
+      return "Rate is unchanged, so any pace change came from the stroke, not from turnover.";
+    });
+
+  card({key:"mps", label:"Metres per stroke", fmt:function(v){ return v.toFixed(2) + " m"; }},
+    t.mps, 2, " m", 1,
+    function(dir, a){
+      if(dir > 0) return "Every stroke carries " + a.toFixed(2) + " m further. Length is improving " +
+        "— the stroke is doing more, not just repeating faster.";
+      if(dir < 0) return "Every stroke carries " + a.toFixed(2) + " m less. Length is giving way; " +
+        "if pace held, rate paid for it.";
+      return "Stroke length is holding. Whatever changed in pace did not cost you length.";
+    });
+
+  card({key:"jps", label:"Work per stroke", fmt:function(v){ return v.toFixed(0) + " J"; }},
+    t.jps, 0, " J", 1,
+    function(dir, a){
+      if(dir > 0) return "Each stroke is doing " + a.toFixed(0) + " J more work. Paired with " +
+        "rising length that is force development; paired with falling length it is rate.";
+      if(dir < 0) return "Each stroke is doing " + a.toFixed(0) + " J less work.";
+      return "Work per stroke is flat — each stroke is doing the same job it was in June.";
+    });
+
+  cav.textContent = "First " + t.na + " sessions (" + fmtDay(t.aFrom) + " – " + fmtDay(t.aTo) +
+    ") against the last " + t.nb + " (" + fmtDay(t.bFrom) + " – " + fmtDay(t.bTo) + ")." +
+    (S.pillar === "all"
+      ? "  This tab mixes sprint, VO₂ and threshold work, so pace and watts move with the mix as " +
+        "well as with you — the per-pillar tabs are the fair comparison."
+      : "  Same pillar throughout, so the prescriptions are comparable.");
+}
+
+/* ---------- chart captions ---------- */
+function slopeText(list, f, dp, unit, better, sig, good, bad, flat){
+  if(list.length < 4) return null;
+  var h = Math.floor(list.length/2);
+  var a = avgOf(list.slice(0,h), f), b = avgOf(list.slice(list.length-h), f);
+  var d = b - a, dir = sgn(d, sig);
+  if(!dir) return flat;
+  return ((dir * better) > 0 ? good : bad).replace("{d}", Math.abs(d).toFixed(dp) + unit);
+}
+function renderCaps(){
+  var list = inPillar();
+  function put(id, txt){
+    var e = document.getElementById(id); e.textContent = "";
+    if(txt) e.appendChild(document.createTextNode(txt));
+  }
+  if(list.length < 4){
+    put("capPace", "Too few sessions in this group to read a direction yet.");
+    put("capEff", ""); put("capJps", "");
+    return;
+  }
+  var neg = list.filter(function(s){ return s.drift < -0.3; }).length;
+  put("capPace", (slopeText(list, function(s){ return s.pace; }, 1, " s/500m", -1, SIG.pace,
+      "Second half of the block is {d} quicker on average.",
+      "Second half is {d} slower on average — check the prescriptions before reading it as form.",
+      "Pace is flat across the block.") || "") +
+    "  " + neg + " of " + list.length + " sessions finished faster than they started, so the " +
+    "within-session pattern is to build rather than fade.");
+  put("capEff", slopeText(list, function(s){ return s.mps; }, 2, " m", 1, SIG.mps,
+      "The stroke is carrying {d} further than it did early in the block — length is being added, " +
+      "which is the durable kind of gain.",
+      "The stroke is {d} shorter than it was early in the block. If pace held anyway, rate is " +
+      "covering for it — that is the thing to correct.",
+      "Stroke length is unchanged across the block."));
+  put("capJps", slopeText(list, function(s){ return s.jps; }, 0, " J", 1, SIG.jps,
+      "Each stroke is doing {d} more work than early in the block. Read it next to the length " +
+      "chart above: more work on a longer stroke is force, more work on a shorter one is rate.",
+      "Each stroke is doing {d} less work than early in the block.",
+      "Work per stroke is unchanged across the block."));
+}
+
+/* ---------- the most comparable earlier session ----------
+   Interval duration decides, not total distance: a 750m rep at threshold
+   is ~3 minutes of work, so a 4-minute rep is a far closer match than a
+   1500m one. An exact plan key beats everything.                        */
+function comparableFor(s){
+  var want = ivSecs(s), best = null, score = 0;
+  S.sessions.forEach(function(o){
+    if(o.date >= s.date) return;
+    var sc;
+    if(s.key && o.key === s.key) sc = 3;
+    else {
+      var a = ivSecs(o);
+      if(!a || !want) return;
+      var r = Math.min(a, want) / Math.max(a, want);
+      if(r < 0.65) return;
+      sc = r * (o.pillar === s.pillar ? 1 : 0.75);
+    }
+    if(sc > score || (sc === score && best && o.date > best.date)){ score = sc; best = o; }
+  });
+  return best ? {s: best, exact: !!(s.key && best.key === s.key)} : null;
 }
 
 /* ---------- charts ---------- */
@@ -285,15 +553,18 @@ function intervalChart(svg, s){
     svg.appendChild(t);
   });
   var col = COL[s.pillar] || "#69727B";
+  /* pace labels go into their own layer, appended last, so the m/stroke
+     line never paints over them */
+  var labs = svgEl("g", {});
   s.rows.forEach(function(r, i){
     var cx = L + bw * i + bw/2, yy = y(r[1]);
     svg.appendChild(svgEl("rect", {x:L + bw*i + bw*0.18, y:yy, width:bw*0.64,
       height:(H - B) - yy, fill:col, opacity:0.22}));
     /* inside the bar, not above it - the m/stroke line runs through that space */
-    var t = svgEl("text", {x:cx, y:yy + 13, "text-anchor":"middle", class:"lab"});
+    var t = svgEl("text", {x:cx, y:yy + 13, "text-anchor":"middle", class:"lab bl"});
     t.setAttribute("fill", "#14171B");
     t.textContent = paceStr(r[1]);
-    svg.appendChild(t);
+    labs.appendChild(t);
     var b = svgEl("text", {x:cx, y:H - 16, "text-anchor":"middle"});
     b.textContent = "r" + r[3];
     svg.appendChild(b);
@@ -319,6 +590,7 @@ function intervalChart(svg, s){
   var rl2 = svgEl("text", {x:W-R+6, y:my(mlo)+3, fill:"#14171B"});
   rl2.textContent = mlo.toFixed(2);
   svg.appendChild(rl2);
+  svg.appendChild(labs);
 }
 
 /* ---------- render ---------- */
@@ -439,24 +711,127 @@ function renderDetail(){
     tb.appendChild(row);
   });
   t.appendChild(tb);
+  var reads = document.getElementById("detRead");
+  function line(label, build){
+    var w = el("div", "rd");
+    w.appendChild(el("div", "rk", label));
+    var v = el("div", "rv");
+    build(v);
+    w.appendChild(v);
+    reads.appendChild(w);
+  }
+  function txt(v, t){ v.appendChild(document.createTextNode(t)); }
+  function num(v, t){ v.appendChild(el("em", null, t)); }
+  function str(v, t){ v.appendChild(el("b", null, t)); }
+
+  /* where the session landed against what was asked for */
+  var bandSecs = (s.band || "").match(/(\d+):(\d\d(?:\.\d)?)/g);
+  line("Pace", function(v){
+    num(v, paceStr(s.pace)); txt(v, " average, ");
+    num(v, s.pct.toFixed(1) + "% of PB");
+    if(bandSecs && bandSecs.length === 2){
+      var lo = paceSec(bandSecs[0]), hi = paceSec(bandSecs[1]);
+      txt(v, ". Target was " + s.band + " — ");
+      if(s.pace < lo) str(v, (lo - s.pace).toFixed(1) + " s/500m faster than the quick end");
+      else if(s.pace > hi) str(v, (s.pace - hi).toFixed(1) + " s/500m slower than the easy end");
+      else {
+        var into = (s.pace - lo) / (hi - lo) * 100;
+        str(v, "inside it, " + into.toFixed(0) + "% of the way down the band");
+      }
+      txt(v, s.pace < lo
+        ? ". Run hot: the session cost more than it was meant to."
+        : (s.pace > hi ? ". Run soft: there was more in it." : "."));
+    } else if(s.band){
+      txt(v, ". Target was " + s.band + ".");
+    }
+  });
+
+  /* the rate / length trade inside the piece */
   var first = mPerStroke(s.rows[0][1], s.rows[0][3]);
   var last  = mPerStroke(s.rows[s.rows.length-1][1], s.rows[s.rows.length-1][3]);
   var dm = last - first, dr = s.rows[s.rows.length-1][3] - s.rows[0][3];
-  rd.appendChild(document.createTextNode("Rep 1 to rep " + s.rows.length + ": pace "));
-  rd.appendChild(el("b", null, (s.drift <= 0 ? "" : "+") + s.drift.toFixed(1) + " s"));
-  rd.appendChild(document.createTextNode(", rate "));
-  rd.appendChild(el("b", null, (dr >= 0 ? "+" : "") + dr + " spm"));
-  rd.appendChild(document.createTextNode(", length "));
-  rd.appendChild(el("b", null, (dm >= 0 ? "+" : "") + dm.toFixed(2) + " m/stroke"));
-  rd.appendChild(document.createTextNode(
-    dm < -0.15 && dr > 0
-      ? " — pace held by adding rate and shortening the stroke."
-      : (dm > 0.1 ? " — length held or improved as the piece went on."
-                  : " — stroke held steady.")));
-  if(s.note){
-    rd.appendChild(document.createElement("br"));
-    rd.appendChild(document.createTextNode(s.note));
+  line("Inside the piece", function(v){
+    txt(v, "Rep 1 to rep " + s.rows.length + ": pace ");
+    num(v, (s.drift <= 0 ? "−" : "+") + Math.abs(s.drift).toFixed(1) + " s");
+    txt(v, ", rate ");
+    num(v, (dr >= 0 ? "+" : "−") + Math.abs(dr) + " spm");
+    txt(v, ", length ");
+    num(v, (dm >= 0 ? "+" : "−") + Math.abs(dm).toFixed(2) + " m");
+    txt(v, ". ");
+    if(dm < -0.15 && dr > 0)
+      str(v, s.drift < -0.3
+        ? "You got faster, but by rating up and shortening the stroke rather than by pulling harder."
+        : "You held the pace by rating up and shortening the stroke.");
+    else if(dm > 0.1 && s.drift < -0.3)
+      str(v, "You got faster on a longer stroke — the strongest version of this session.");
+    else if(dm > 0.1)
+      str(v, "Length grew as the piece went on, so the stroke was not fading.");
+    else if(dm < -0.15)
+      str(v, "The stroke shortened without the rate rising — fatigue in the drive, not a choice.");
+    else
+      str(v, "Rate and length both held, so the pace came from the same stroke throughout.");
+  });
+
+  /* power */
+  line("Power", function(v){
+    num(v, s.watts.toFixed(0) + " W"); txt(v, " average, ");
+    num(v, s.jps.toFixed(0) + " J"); txt(v, " of work in every stroke at ");
+    num(v, "r" + s.spm.toFixed(1));
+    txt(v, ", carrying ");
+    num(v, s.mps.toFixed(2) + " m");
+    txt(v, ". ");
+    txt(v, s.mps >= 9
+      ? "A long stroke for this kind of work — force is going in early."
+      : (s.mps >= 7.5 ? "Mid-range length for the rate you were at."
+                      : "Short and quick, which is what the rate was for."));
+  });
+
+  /* consistency */
+  line("Consistency", function(v){
+    txt(v, "Fastest to slowest rep spans ");
+    num(v, s.spread.toFixed(1) + " s");
+    txt(v, ". ");
+    str(v, s.spread < 1.5 ? "Very even — the set was run to a number."
+      : (s.spread < 3.5 ? "Normal variation for this length of rep."
+                        : "Wide. Either the opening reps were conservative or the last ones faded."));
+  });
+
+  if(s.hrMax){
+    line("Heart rate", function(v){
+      txt(v, "Peaked at "); num(v, s.hrMax + " bpm");
+      txt(v, ", "); num(v, Math.round(s.hrMax / VT2 * 100) + "% of VT2");
+      txt(v, " (" + VT2 + "). ");
+      str(v, s.hrMax >= VT2 + 6 ? "Over threshold — this was a hard aerobic day."
+        : (s.hrMax >= VT2 - 4 ? "Right at threshold, which is where this session should top out."
+                              : "Stayed under threshold."));
+    });
   }
+
+  /* the same work, earlier */
+  var cmp = comparableFor(s);
+  if(cmp){
+    var o = cmp.s;
+    line("Versus " + fmtDay(o.date), function(v){
+      txt(v, cmp.exact ? "Same session (" + o.shape + "): "
+                       : "Closest earlier match — " + o.shape + ", " +
+                         mmssShort(ivSecs(o)) + " reps vs " + mmssShort(ivSecs(s)) + " today: ");
+      var dp = s.pace - o.pace, dw = s.watts - o.watts,
+          ds = s.spm - o.spm, dl = s.mps - o.mps;
+      num(v, (dp <= 0 ? "−" : "+") + Math.abs(dp).toFixed(1) + " s/500m");
+      txt(v, ", "); num(v, (dw >= 0 ? "+" : "−") + Math.abs(dw).toFixed(0) + " W");
+      txt(v, ", "); num(v, (ds >= 0 ? "+" : "−") + Math.abs(ds).toFixed(1) + " spm");
+      txt(v, ", "); num(v, (dl >= 0 ? "+" : "−") + Math.abs(dl).toFixed(2) + " m/stroke");
+      txt(v, ". ");
+      if(dp < -0.5 && dl >= -0.05) str(v, "Faster on the same or a longer stroke — a real step up.");
+      else if(dp < -0.5 && ds > 0.5) str(v, "Faster, but rated up to get there; the stroke is shorter.");
+      else if(dp > 0.5 && dw < -3) str(v, "Slower and producing less — worth checking what else was in that week.");
+      else if(Math.abs(dp) <= 0.5 && dl > 0.05) str(v, "Same pace on a longer stroke — quietly more efficient.");
+      else if(Math.abs(dp) <= 0.5 && dl < -0.05) str(v, "Same pace on a shorter stroke — rate is covering the gap.");
+      else str(v, "Broadly a repeat of that session.");
+    });
+  }
+
+  if(s.note) line("Sync note", function(v){ txt(v, s.note); });
 }
 
 function renderLegend(){
@@ -482,7 +857,12 @@ function render(){
   lineChart(document.getElementById("cEff"), list,
     function(s){ return s.mps; },
     {invert:false, fmt:function(v){ return v.toFixed(2) + " m"; }});
+  lineChart(document.getElementById("cJps"), list,
+    function(s){ return s.jps; },
+    {invert:false, fmt:function(v){ return v.toFixed(0) + " J"; }});
   renderLegend();
+  renderCaps();
+  renderTrend();
   renderTable();
   renderDetail();
 }
