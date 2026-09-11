@@ -537,26 +537,64 @@ function keyParts(k){
   var m = /^([dt])(\d+)x(\d+)$/.exec(String(k || ""));
   return m ? {u:m[1], size:+m[2], reps:+m[3]} : null;
 }
+function mmss(sec){
+  var m = Math.floor(sec / 60), r = Math.round(sec - m * 60);
+  if(r === 60){ m++; r = 0; }
+  return m + ":" + (r < 10 ? "0" : "") + r;
+}
+/* Two sessions are comparable when a single INTERVAL lasts about as long, not
+   when the total volume matches. 8 × 750m and 4 × 1500m are both 6000m, but the
+   piece is twice as long and trains something else entirely. A distance piece is
+   converted to seconds at the middle of that day's own band first, so 750m at
+   threshold reads as ~3:13 and can be matched against a 4:00 interval. Rep count
+   is deliberately ignored. */
+function planIvSecs(s){
+  var p = s && keyParts(s.key);
+  if(!p) return 0;
+  if(p.u === "t") return p.size;
+  return (s.lo && s.hi) ? p.size / 500 * secFromPct((s.lo + s.hi) / 2) : 0;
+}
+function ivSecsOn(dt, key){
+  var s = SESSIONS[dt];
+  return planIvSecs({key:key, lo:s && s.lo, hi:s && s.hi});
+}
+/* 0.65 admits roughly 2:05–4:57 against a 3:13 target — her rule of thumb is
+   "2, 3 or at most 4 minutes", and 1500m at threshold (6:26) lands at 0.50. */
+var SIM_FLOOR = 0.65;
+function ivSimilar(a, b){
+  if(!a || !b) return 0;
+  var r = Math.min(a, b) / Math.max(a, b);
+  return r >= SIM_FLOOR ? r : 0;
+}
+/* Interval length decides. Rep count is worth 15% and only ever breaks a tie:
+   10 × 1:30 should find 10 × 1:20 rather than 2 × 400m, which happens to sit
+   one second closer in duration but is a different session. */
+function ivScore(aKey, aSec, bKey, bSec){
+  var r = ivSimilar(aSec, bSec);
+  if(!r) return 0;
+  var pa = keyParts(aKey), pb = keyParts(bKey);
+  var rr = (pa && pb) ? Math.min(pa.reps, pb.reps) / Math.max(pa.reps, pb.reps) : 1;
+  return r * (0.85 + 0.15 * rr);
+}
 function comparableFor(date, s){
   if(!C2SYNC || !s || !s.key) return null;
-  var want = keyParts(s.key);
-  if(!want) return null;
+  var want = keyParts(s.key), wantSec = planIvSecs(s);
+  if(!want || !wantSec) return null;
   var best = null, bestScore = 0, bestDate = "";
   Object.keys(C2SYNC).forEach(function(dt){
     if(dt.charAt(0) !== "2" || dt >= date) return;
     var w = C2SYNC[dt];
     if(!w || !w.key || !w.pace) return;
     var got = keyParts(w.key);
-    if(!got || got.u !== want.u) return;
-    var sc;
-    if(got.size === want.size && got.reps === want.reps) sc = 100;
-    else {
-      var vw = got.size * got.reps, vt = want.size * want.reps;
-      sc = 40 + 30 * (Math.min(vw,vt)/Math.max(vw,vt)) + 20 * (Math.min(got.size,want.size)/Math.max(got.size,want.size));
-    }
+    if(!got) return;
+    /* the logbook knows the pace actually rowed, so use it for the conversion */
+    var gotSec = got.u === "t" ? got.size : got.size / 500 * paceSec(w.pace);
+    var exact = got.u === want.u && got.size === want.size && got.reps === want.reps;
+    var sc = exact ? 2 : ivScore(s.key, wantSec, w.key, gotSec);
+    if(!sc) return;
     if(sc > bestScore || (sc === bestScore && dt > bestDate)){
       bestScore = sc; bestDate = dt;
-      best = {date:dt, w:w, exact: sc >= 100};
+      best = {date:dt, w:w, exact:exact, sec:gotSec, want:wantSec};
     }
   });
   return best;
@@ -1007,21 +1045,16 @@ function coachFor(date, s){
   if(!COACH) return null;
   if(COACH[date]) return {date:date, n:COACH[date], mode:"today"};
   if(!s) return null;
-  var key = s.key, want = keyParts(key), title = s.title || "";
-  var best = null, bestScore = 75;
+  var key = s.key, title = s.title || "", wantSec = planIvSecs(s);
+  var best = null, bestScore = 0;
   Object.keys(COACH).forEach(function(dt){
     if(dt >= date) return;
     var n = COACH[dt], sc;
-    if(key && n.key === key) sc = 100;
+    if(key && n.key === key) sc = 3;
     /* a lift day has no shape key - Strength A/B/C recur by name instead */
-    else if(title && n.title && n.title === title) sc = 95;
-    else {
-      var got = keyParts(n.key);
-      if(!got || !want || got.u !== want.u) return;
-      var vg = got.size * got.reps, vw = want.size * want.reps;
-      sc = 40 + 30 * (Math.min(vg, vw) / Math.max(vg, vw)) +
-                20 * (Math.min(got.size, want.size) / Math.max(got.size, want.size));
-    }
+    else if(title && n.title && n.title === title) sc = 2;
+    else sc = ivScore(key, wantSec, n.key, ivSecsOn(dt, n.key));
+    if(!sc) return;
     if(sc > bestScore || (sc === bestScore && best && dt > best.date)){
       bestScore = sc; best = {date:dt, n:n, mode:"prior"};
     }
@@ -1062,21 +1095,15 @@ function noteOn(date){
    different session. Without a floor the only note in the sheet lands on every
    rowing day, which is worse than showing nothing. */
 function priorNote(date, key){
-  var want = keyParts(key), best = null, bestScore = 75;
+  var wantSec = ivSecsOn(date, key), best = null, bestScore = 0;
   for(var i = 0; i < SHEET_ROWS.length; i++){
     var r = SHEET_ROWS[i];
     if(r.dtype !== "erg-note" || !r.notes || !r.date || r.date >= date) continue;
-    var sc;
-    if(key && r.pres === key) sc = 100;
-    else {
-      var got = keyParts(r.pres);
-      if(!got || !want || got.u !== want.u) continue;
-      var vg = got.size * got.reps, vw = want.size * want.reps;
-      sc = 40 + 30 * (Math.min(vg, vw) / Math.max(vg, vw)) +
-                20 * (Math.min(got.size, want.size) / Math.max(got.size, want.size));
-    }
+    var sc = (key && r.pres === key) ? 2
+      : ivScore(key, wantSec, r.pres, ivSecsOn(r.date, r.pres));
+    if(!sc) continue;
     if(sc > bestScore || (sc === bestScore && best && r.date > best.date)){
-      bestScore = sc; best = {date:r.date, text:r.notes, exact:sc === 100};
+      bestScore = sc; best = {date:r.date, text:r.notes, exact:sc === 2};
     }
   }
   return best;
@@ -1314,7 +1341,9 @@ function renderSession(){
       if(cmp){
         pDate = fmtDay(cmp.date); pShape = cmp.w.shape || (cmp.w.dist + " m");
         pPace = cmp.w.pace; pRate = cmp.w.rate;
-        pWhy = cmp.exact ? "same shape, straight from your logbook" : "nearest match by work volume";
+        pWhy = cmp.exact ? "same shape, straight from your logbook"
+          : "closest interval length \u2014 " + mmss(cmp.sec) + " of work vs " +
+            mmss(cmp.want) + " today";
         pLink = cmp.w.link || c2Link(cmp.w.id);
       } else {
         pDate = s.prev.date; pShape = s.prev.shape; pPace = s.prev.pace;
