@@ -797,7 +797,7 @@ var SESSIONS = {
   ez:{title:"W1 Wed — VO₂ 10×1:20", intervals:"10 × 1:20\nRest 1:00\nRate 30–34",
       desc:"75–85% of 500m PB."}},
 
-"2026-09-10": {kind:"lift", title:"Strength B — Posterior + pull", chip:"lift", gate:true, broad:true, broadVal:235,
+"2026-09-10": {kind:"lift", title:"Strength B — Posterior + pull", chip:"lift", gate:true,
   ex:[
    {s:"A", n:"Trap bar deadlift", rx:"4 × 5 @ 70% · RPE cap 7 — hard cap, Wednesday was hard",
      load:function(){return r5(M().dl*0.70);}, tier:1},
@@ -817,7 +817,7 @@ var SESSIONS = {
   ez:{title:"W1 Fri — Threshold 8×750m", intervals:"8 × 750m\nRest 2:30\nRate 26–28",
       desc:"65–77% of 500m PB."}},
 
-"2026-09-12": {kind:"lift", title:"Strength C — Press + pump + bracing", chip:"lift", gate:true, peak7:true,
+"2026-09-12": {kind:"lift", title:"Strength C — Press + pump + bracing", chip:"lift", gate:true, broad:true, peak7:true,
   ex:[
    {s:"—", n:"7-stroke peak power test", rx:"Drag 140, best of 3, full recovery — baseline for the block", tier:1, test:true},
    {s:"✦", n:"Unbroken hang challenge", tier:2,
@@ -1173,6 +1173,52 @@ function logCMJ(d, lg){
    row, the number in the weight column, the unit carried in `prescribed`.
    Without this they only lived in memory, so a reload threw them away. */
 function metricCol(unit){ return unit === "W" ? "watts" : "weight"; }
+
+/* One builder per metric, so a day that carries both a broad jump and a peak
+   test renders both. Before this, `broad || peak7` collapsed to one block and
+   the jump vanished on peak days. */
+function metricBlock(d, lg, m){
+  var col = metricCol(m.unit);
+  var mb = el("div","ex");
+  mb.appendChild(el("div","eyebrow", m.label));
+  var ml = el("div","logline");
+  var mi = document.createElement("input");
+  /* text + decimal inputmode, same reason as the CMJ inputs: a number input
+     eats a half-typed decimal point */
+  mi.type = "text"; mi.setAttribute("inputmode","decimal");
+  mi.autocomplete = "off";
+  mi.placeholder = m.ph;
+  if((lg.entries[m.key] == null || lg.entries[m.key] === "") && m.seed != null){
+    lg.entries[m.key] = String(m.seed);
+  }
+  mi.value = lg.entries[m.key] || "";
+  mi.setAttribute("aria-label", m.aria);
+  ml.appendChild(mi);
+
+  var mbtn = document.createElement("button");
+  mbtn.type = "button"; mbtn.className = "logbtn";
+  var mdone = loggedCount(d, m.name);
+  mbtn.textContent = mdone ? "Log again" : m.btn;
+  mbtn.disabled = String(mi.value).trim() === "";
+  mbtn.addEventListener("click", function(){ logMetric(d, lg, m.key, m.name, m.unit); });
+  ml.appendChild(mbtn);
+  if(mdone) ml.appendChild(el("span","status",
+    mdone + " already in the sheet today"));
+
+  mi.addEventListener("input", function(){
+    lg.entries[m.key] = mi.value; queueSave();
+    mbtn.disabled = String(mi.value).trim() === "";
+  });
+  mb.appendChild(ml);
+  if(col === "watts" && !SHEET_HAS.watts) mb.appendChild(el("div","subprev",
+    "Watts get their own column rather than the load column. If recomp-log " +
+    "has no \u201cwatts\u201d header yet, the row will say so."));
+
+  var mprev = lastMetric(d, m.name, col);
+  if(mprev) mb.appendChild(el("div","subprev",
+    "Last time \u00b7 " + fmtDay(mprev.date) + " \u2014 " + mprev.val + " " + m.unit));
+  return mb;
+}
 function logMetric(d, lg, key, name, unit){
   var v = String(lg.entries[key] == null ? "" : lg.entries[key]).trim();
   if(v === "") return;
@@ -1370,6 +1416,16 @@ function renderSession(){
     host.appendChild(g);
   }
 
+  /* The broad jump primes the nervous system, so it belongs before the work -
+     and on a peak-test Saturday it is the warm-up for the test itself. */
+  if(s.broad) host.appendChild(metricBlock(d, lg, {
+    key:"broad", name:"Broad jump", unit:"cm",
+    label: s.peak7 ? "Broad jump \u2014 primer for the peak test \u00b7 distance (cm)"
+                   : "Broad jump \u2014 distance (cm) \u00b7 weekly",
+    ph:"cm", aria:"Broad jump distance (centimetres)",
+    seed:s.broadVal, btn:"Log broad jump"
+  }));
+
   if(s.note){
     var nb = el("div"); nb.style.padding = "13px"; nb.style.borderBottom = "1px solid var(--rule)";
     nb.appendChild(el("p","note w", s.note));
@@ -1558,56 +1614,13 @@ function renderSession(){
     }
   }
 
-  /* extra metric capture */
-  if(s.broad || s.peak7){
-    var isP = !!s.peak7;
-    var mkey = isP ? "peak7" : "broad";
-    var mname = isP ? "7-stroke peak" : "Broad jump";
-    var munit = isP ? "W" : "cm";
-    var mb = el("div","ex");
-    mb.appendChild(el("div","eyebrow",
-      isP ? "7-stroke peak (watts)" : "Broad jump \u2014 distance (cm) \u00b7 weekly"));
-    var ml = el("div","logline");
-    var mi = document.createElement("input");
-    /* text + decimal inputmode, same reason as the CMJ inputs: a number input
-       eats a half-typed decimal point */
-    mi.type = "text"; mi.setAttribute("inputmode","decimal");
-    mi.autocomplete = "off";
-    mi.placeholder = isP ? "peak W" : "cm";
-    if(lg.entries[mkey] == null || lg.entries[mkey] === ""){
-      var seed = isP ? s.peak7Val : s.broadVal;
-      if(seed != null) lg.entries[mkey] = String(seed);
-    }
-    mi.value = lg.entries[mkey] || "";
-    mi.setAttribute("aria-label",
-      isP ? "Peak watts" : "Broad jump distance (centimetres)");
-    ml.appendChild(mi);
-
-    var mcol = metricCol(munit);
-    var mbtn = document.createElement("button");
-    mbtn.type = "button"; mbtn.className = "logbtn";
-    var mdone = loggedCount(d, mname);
-    mbtn.textContent = mdone ? "Log again" : "Log " + (isP ? "peak" : "broad jump");
-    mbtn.disabled = String(mi.value).trim() === "";
-    mbtn.addEventListener("click", function(){ logMetric(d, lg, mkey, mname, munit); });
-    ml.appendChild(mbtn);
-    if(mdone) ml.appendChild(el("span","status",
-      mdone + " already in the sheet today"));
-
-    mi.addEventListener("input", function(){
-      lg.entries[mkey] = mi.value; queueSave();
-      mbtn.disabled = String(mi.value).trim() === "";
-    });
-    mb.appendChild(ml);
-    if(mcol === "watts" && !SHEET_HAS.watts) mb.appendChild(el("div","subprev",
-      "Watts get their own column rather than the load column. If recomp-log " +
-      "has no \u201cwatts\u201d header yet, the row will say so."));
-
-    var mprev = lastMetric(d, mname, mcol);
-    if(mprev) mb.appendChild(el("div","subprev",
-      "Last time \u00b7 " + fmtDay(mprev.date) + " \u2014 " + mprev.val + " " + munit));
-    host.appendChild(mb);
-  }
+  /* The peak number is logged after the test, so its field sits at the foot
+     of the card rather than up with the warm-up. */
+  if(s.peak7) host.appendChild(metricBlock(d, lg, {
+    key:"peak7", name:"7-stroke peak", unit:"W",
+    label:"7-stroke peak (watts)", ph:"peak W", aria:"Peak watts",
+    seed:s.peak7Val, btn:"Log peak"
+  }));
 
   /* The note reads the session, so it sits under it - and it is commentary,
      not prescription, so it is styled as its own object rather than one more
