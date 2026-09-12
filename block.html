@@ -1172,28 +1172,52 @@ function logCMJ(d, lg){
 /* Broad jump and 7-stroke peak reach the sheet the same way a set does: one
    row, the number in the weight column, the unit carried in `prescribed`.
    Without this they only lived in memory, so a reload threw them away. */
+function metricCol(unit){ return unit === "W" ? "watts" : "weight"; }
 function logMetric(d, lg, key, name, unit){
   var v = String(lg.entries[key] == null ? "" : lg.entries[key]).trim();
   if(v === "") return;
-  var prev = lastMetric(d, name), note = "";
+  var col = metricCol(unit);
+  var prev = lastMetric(d, name, col), note = "";
   if(prev && prev.val){
     var dv = parseFloat(v) - prev.val;
     note = (dv >= 0 ? "+" : "\u2212") + Math.abs(dv).toFixed(1) + " " + unit +
            " vs " + prev.date + " (" + prev.val + " " + unit + ")";
   }
-  pushRow({ date:d, day_type:DAYTYPE[d] || "", exercise:name,
-            prescribed:name + " (" + unit + ") \u00b7 weekly",
-            set_num:1, reps:1, weight:v, rir_rpe:"", notes:note });
-  SHEET_ROWS.push({date:d, exercise:name, set_num:1, reps:1,
-                   weight:parseFloat(v) || 0, rir:""});
+  var row = { date:d, day_type:DAYTYPE[d] || "", exercise:name,
+              prescribed:name + " (" + unit + ") \u00b7 weekly",
+              set_num:1, reps:1, weight:"", watts:"", rir_rpe:"", notes:note };
+  row[col] = v;
+  pushRow(row);
+  var mirror = {date:d, exercise:name, set_num:1, reps:1,
+                weight:0, watts:0, rir:""};
+  mirror[col] = parseFloat(v) || 0;
+  SHEET_ROWS.push(mirror);
+  /* recomp-log grew its `height` column the first time a row carried one, so
+     watts may well create itself the same way. Try the write, then look - do
+     not refuse up front and leave her unable to log a test she just did. */
+  if(col === "watts" && !SHEET_HAS.watts){
+    setTimeout(function(){
+      jsonp({}, function(rows){
+        var head = (rows && rows[0]) || [];
+        if(head.indexOf("watts") < 0){
+          setStatus("Row written, but recomp-log has no watts column, so the number " +
+                    "did not land. Add a header cell called watts, then log it again.");
+        } else {
+          SHEET_HAS.watts = true;
+          loadSheet();
+        }
+      }, function(){});
+    }, 1800);
+  }
   renderSession();
 }
-function lastMetric(before, name){
+function lastMetric(before, name, col){
+  col = col || "weight";
   var best = null;
   for(var i = 0; i < SHEET_ROWS.length; i++){
     var r = SHEET_ROWS[i];
-    if(r.exercise !== name || r.date >= before || !r.weight) continue;
-    if(!best || r.date > best.date) best = {date:r.date, val:r.weight};
+    if(r.exercise !== name || r.date >= before || !r[col]) continue;
+    if(!best || r.date > best.date) best = {date:r.date, val:r[col]};
   }
   return best;
 }
@@ -1559,6 +1583,7 @@ function renderSession(){
       isP ? "Peak watts" : "Broad jump distance (centimetres)");
     ml.appendChild(mi);
 
+    var mcol = metricCol(munit);
     var mbtn = document.createElement("button");
     mbtn.type = "button"; mbtn.className = "logbtn";
     var mdone = loggedCount(d, mname);
@@ -1574,8 +1599,11 @@ function renderSession(){
       mbtn.disabled = String(mi.value).trim() === "";
     });
     mb.appendChild(ml);
+    if(mcol === "watts" && !SHEET_HAS.watts) mb.appendChild(el("div","subprev",
+      "Watts get their own column rather than the load column. If recomp-log " +
+      "has no \u201cwatts\u201d header yet, the row will say so."));
 
-    var mprev = lastMetric(d, mname);
+    var mprev = lastMetric(d, mname, mcol);
     if(mprev) mb.appendChild(el("div","subprev",
       "Last time \u00b7 " + fmtDay(mprev.date) + " \u2014 " + mprev.val + " " + munit));
     host.appendChild(mb);
@@ -1722,6 +1750,10 @@ document.getElementById("convSeg").addEventListener("click", function(e){
 /* ---------- persistence: the sheet is the store ---------- */
 var ENDPOINT = "https://script.google.com/macros/s/AKfycbyq0ZEWv8ZfkL8XhESm5gU7APsIVvm86VRGt8HFbTVepVQJEixQ4Lk_P9GGdEvodsw/exec";
 var SHEET_ROWS = [];
+/* which columns recomp-log actually carries - watts arrived later than the
+   rest, so the peak-power control checks for it rather than writing a number
+   into a column that means something else */
+var SHEET_HAS = {watts:false};
 function jsonp(params, cb, onErr){
   var name = "cb_" + Math.random().toString(36).slice(2);
   var t = setTimeout(function(){ cleanup(); if(onErr) onErr("timeout"); }, 15000);
@@ -1744,7 +1776,8 @@ function pushRow(r){
   setStatus("Writing to recomp-log…");
   jsonp({write:1, date:r.date, day_type:r.day_type, exercise:r.exercise,
     prescribed:r.prescribed, set_num:r.set_num, reps:r.reps, weight:r.weight,
-    height:r.height || "", rir_rpe:r.rir_rpe, notes:r.notes, source:"block-console"},
+    height:r.height || "", watts:r.watts || "",
+    rir_rpe:r.rir_rpe, notes:r.notes, source:"block-console"},
     function(res){
       if(res && res.ok === false) setStatus("Sheet rejected the row: " + (res.error || "unknown"));
       else setStatus(sheetStatus());
@@ -1757,11 +1790,13 @@ function loadSheet(){
     if(!Array.isArray(rows)){ setStatus("Unexpected response from the sheet."); return; }
     var head = rows[0] || [], ix = {};
     head.forEach(function(h,k){ ix[String(h)] = k; });
+    SHEET_HAS.watts = ix.watts !== undefined;
     SHEET_ROWS = rows.slice(1).map(function(r){
       return { date:String(r[ix.date]||"").slice(0,10), exercise:String(r[ix.exercise]||""),
                set_num:Number(r[ix.set_num])||0, reps:Number(r[ix.reps])||0,
                weight:parseFloat(r[ix.weight])||0, rir:String(r[ix.rir_rpe]||""),
-               height:parseFloat(r[ix.height])||0, notes:String(r[ix.notes]||""),
+               height:parseFloat(r[ix.height])||0, watts:parseFloat(r[ix.watts])||0,
+               notes:String(r[ix.notes]||""),
                pres:String(r[ix.prescribed]||""), dtype:String(r[ix.day_type]||"") };
     });
     setStatus(sheetStatus());
