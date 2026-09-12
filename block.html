@@ -797,7 +797,7 @@ var SESSIONS = {
   ez:{title:"W1 Wed — VO₂ 10×1:20", intervals:"10 × 1:20\nRest 1:00\nRate 30–34",
       desc:"75–85% of 500m PB."}},
 
-"2026-09-10": {kind:"lift", title:"Strength B — Posterior + pull", chip:"lift", gate:true, broad:true,
+"2026-09-10": {kind:"lift", title:"Strength B — Posterior + pull", chip:"lift", gate:true, broad:true, broadVal:235,
   ex:[
    {s:"A", n:"Trap bar deadlift", rx:"4 × 5 @ 70% · RPE cap 7 — hard cap, Wednesday was hard",
      load:function(){return r5(M().dl*0.70);}, tier:1},
@@ -1169,6 +1169,35 @@ function logCMJ(d, lg){
 
 
 
+/* Broad jump and 7-stroke peak reach the sheet the same way a set does: one
+   row, the number in the weight column, the unit carried in `prescribed`.
+   Without this they only lived in memory, so a reload threw them away. */
+function logMetric(d, lg, key, name, unit){
+  var v = String(lg.entries[key] == null ? "" : lg.entries[key]).trim();
+  if(v === "") return;
+  var prev = lastMetric(d, name), note = "";
+  if(prev && prev.val){
+    var dv = parseFloat(v) - prev.val;
+    note = (dv >= 0 ? "+" : "\u2212") + Math.abs(dv).toFixed(1) + " " + unit +
+           " vs " + prev.date + " (" + prev.val + " " + unit + ")";
+  }
+  pushRow({ date:d, day_type:DAYTYPE[d] || "", exercise:name,
+            prescribed:name + " (" + unit + ") \u00b7 weekly",
+            set_num:1, reps:1, weight:v, rir_rpe:"", notes:note });
+  SHEET_ROWS.push({date:d, exercise:name, set_num:1, reps:1,
+                   weight:parseFloat(v) || 0, rir:""});
+  renderSession();
+}
+function lastMetric(before, name){
+  var best = null;
+  for(var i = 0; i < SHEET_ROWS.length; i++){
+    var r = SHEET_ROWS[i];
+    if(r.exercise !== name || r.date >= before || !r.weight) continue;
+    if(!best || r.date > best.date) best = {date:r.date, val:r.weight};
+  }
+  return best;
+}
+
 /* ---------- render ---------- */
 function renderDays(){
   var host = document.getElementById("days");
@@ -1507,19 +1536,48 @@ function renderSession(){
 
   /* extra metric capture */
   if(s.broad || s.peak7){
+    var isP = !!s.peak7;
+    var mkey = isP ? "peak7" : "broad";
+    var mname = isP ? "7-stroke peak" : "Broad jump";
+    var munit = isP ? "W" : "cm";
     var mb = el("div","ex");
-    mb.appendChild(el("div","eyebrow", s.peak7 ? "7-stroke peak (watts)" : "Broad jump — distance (in) · weekly"));
+    mb.appendChild(el("div","eyebrow",
+      isP ? "7-stroke peak (watts)" : "Broad jump \u2014 distance (cm) \u00b7 weekly"));
     var ml = el("div","logline");
     var mi = document.createElement("input");
-    mi.type = "number"; mi.step = "0.1";
-    mi.placeholder = s.peak7 ? "peak W" : "inches";
-    mi.value = lg.entries[s.peak7 ? "peak7" : "broad"] || "";
-    mi.setAttribute("aria-label", s.peak7 ? "Peak watts" : "Broad jump distance (inches)");
-    mi.addEventListener("input", function(){
-      lg.entries[s.peak7 ? "peak7" : "broad"] = mi.value; queueSave();
-    });
+    /* text + decimal inputmode, same reason as the CMJ inputs: a number input
+       eats a half-typed decimal point */
+    mi.type = "text"; mi.setAttribute("inputmode","decimal");
+    mi.autocomplete = "off";
+    mi.placeholder = isP ? "peak W" : "cm";
+    if(lg.entries[mkey] == null || lg.entries[mkey] === ""){
+      var seed = isP ? s.peak7Val : s.broadVal;
+      if(seed != null) lg.entries[mkey] = String(seed);
+    }
+    mi.value = lg.entries[mkey] || "";
+    mi.setAttribute("aria-label",
+      isP ? "Peak watts" : "Broad jump distance (centimetres)");
     ml.appendChild(mi);
+
+    var mbtn = document.createElement("button");
+    mbtn.type = "button"; mbtn.className = "logbtn";
+    var mdone = loggedCount(d, mname);
+    mbtn.textContent = mdone ? "Log again" : "Log " + (isP ? "peak" : "broad jump");
+    mbtn.disabled = String(mi.value).trim() === "";
+    mbtn.addEventListener("click", function(){ logMetric(d, lg, mkey, mname, munit); });
+    ml.appendChild(mbtn);
+    if(mdone) ml.appendChild(el("span","status",
+      mdone + " already in the sheet today"));
+
+    mi.addEventListener("input", function(){
+      lg.entries[mkey] = mi.value; queueSave();
+      mbtn.disabled = String(mi.value).trim() === "";
+    });
     mb.appendChild(ml);
+
+    var mprev = lastMetric(d, mname);
+    if(mprev) mb.appendChild(el("div","subprev",
+      "Last time \u00b7 " + fmtDay(mprev.date) + " \u2014 " + mprev.val + " " + munit));
     host.appendChild(mb);
   }
 
@@ -1744,7 +1802,8 @@ function loadBlockPlan(){
   }).then(function(j){
     Object.keys(j).forEach(function(dt){
       var src = j[dt], s = SESSIONS[dt] || {};
-      ["kind","title","chip","raw","rate","lo","hi","key","note","gate","broad","peak7"].forEach(function(f){
+      ["kind","title","chip","raw","rate","lo","hi","key","note","gate","broad","peak7",
+       "broadVal","peak7Val"].forEach(function(f){
         if(src[f] !== undefined && s[f] === undefined) s[f] = src[f];
       });
       if(src.wid && !s.ezUrl){ s.ezUrl = ezFromId(src.wid); if(!s.ezId) s.ezId = src.wid; }
