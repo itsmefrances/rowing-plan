@@ -322,10 +322,11 @@ svg.spark{width:100%;height:38px;display:block;}
 .cpt{font-family:var(--f-m);font-size:12px;line-height:1.55;color:#BDC7CF;
   padding-left:14px;position:relative;}
 .cpt:before{content:"\2014";position:absolute;left:0;color:#5A646D;}
-.cwatch,.cnext{font-family:var(--f-m);font-size:12px;line-height:1.5;color:#DDE4EA;
+.cwatch,.cnext,.cdiff{font-family:var(--f-m);font-size:12px;line-height:1.5;color:#DDE4EA;
   background:#1E242A;border-radius:4px;padding:7px 9px;}
 .cwatch{border-left:2px solid #C08A2C;}
 .cnext{border-left:2px solid #3E9E97;}
+.cdiff{border-left:2px solid #8FA7C4;}
 .clabel{display:block;margin-bottom:3px;font-family:var(--f-d);font-size:9.5px;
   font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#828D96;}
 .notewrap{display:flex;flex-direction:column;gap:6px;padding:11px 13px;
@@ -1076,7 +1077,9 @@ function coachCard(cn){
   var wrap = el("div","coachwrap"), cb = el("div","coachbox");
   var eb = el("div","ceyebrow");
   eb.appendChild(el("b", null, "Coach note"));
-  eb.appendChild(el("span", null, fmtDay(cn.date) +
+  /* the bare date read as "written on", not "about" - say which it is */
+  eb.appendChild(el("span", null,
+    (cn.mode === "prior" ? "Last effort \u00b7 " : "Review \u00b7 ") + fmtDay(cn.date) +
     (cn.mode === "prior" && cn.n.session ? "  \u00b7  " + cn.n.session : "")));
   cb.appendChild(eb);
   if(cn.n.headline) cb.appendChild(el("div","chead", cn.n.headline));
@@ -1087,8 +1090,10 @@ function coachCard(cn){
     b.appendChild(document.createTextNode(text));
     cb.appendChild(b);
   }
+  /* carried forward, the first question is what is different this time */
+  if(cn.mode === "prior" && cn.n.diff) panel("cdiff", "What's changed", cn.n.diff);
   if(cn.n.watch) panel("cwatch", "Watch", cn.n.watch);
-  if(cn.n.next) panel("cnext", cn.mode === "today" ? "Next time" : "Today", cn.n.next);
+  if(cn.n.next) panel("cnext", cn.mode === "today" ? "Next time" : "This week", cn.n.next);
   wrap.appendChild(cb);
   return wrap;
 }
