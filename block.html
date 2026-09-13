@@ -318,6 +318,13 @@ svg.spark{width:100%;height:38px;display:block;}
   font-family:var(--f-d);font-size:10px;font-weight:700;letter-spacing:0.13em;
   text-transform:uppercase;color:#7E8991;}
 .ceyebrow b{color:#4FB3AC;}
+button.ceyebrow{width:100%;text-align:left;background:none;border:0;padding:0;
+  cursor:pointer;color:#7E8991;}
+button.ceyebrow:focus-visible{outline:2px solid #4FB3AC;outline-offset:3px;}
+.ccaret{margin-left:auto;font-family:var(--f-m);font-size:13px;line-height:1;color:#4FB3AC;}
+.cbody{display:flex;flex-direction:column;gap:9px;}
+/* a class rule beats the UA [hidden] rule, so say it explicitly */
+.cbody[hidden]{display:none;}
 .chead{font-family:var(--f-d);font-size:14px;font-weight:600;line-height:1.35;color:#FFF;}
 .cpt{font-family:var(--f-m);font-size:12px;line-height:1.55;color:#BDC7CF;
   padding-left:14px;position:relative;}
@@ -428,6 +435,7 @@ var state = {
   week: activeWeek(),
   sel: 0,
   log: {},
+  coachOpen: false,  /* the coach note rides at the top, so it starts folded */
   fold: {},          /* date|exercise → collapsed to the title, set by hand only */
   sub: {},           /* date|exercise → what she swapped that slot for */
   rows: [],          /* sheet-shaped rows awaiting sync */
@@ -1075,25 +1083,47 @@ function coachFor(date, s){
 
 function coachCard(cn){
   var wrap = el("div","coachwrap"), cb = el("div","coachbox");
-  var eb = el("div","ceyebrow");
-  eb.appendChild(el("b", null, "Coach note"));
+
+  /* The note sits at the top of the card, so it opens collapsed: the eyebrow
+     and the headline are the summary, everything else is behind the caret. */
+  var btn = document.createElement("button");
+  btn.type = "button"; btn.className = "ceyebrow";
+  btn.appendChild(el("b", null, "Coach note"));
   /* the bare date read as "written on", not "about" - say which it is */
-  eb.appendChild(el("span", null,
+  btn.appendChild(el("span", null,
     (cn.mode === "prior" ? "Last effort \u00b7 " : "Review \u00b7 ") + fmtDay(cn.date) +
     (cn.mode === "prior" && cn.n.session ? "  \u00b7  " + cn.n.session : "")));
-  cb.appendChild(eb);
+  var caret = el("span","ccaret", state.coachOpen ? "\u2212" : "+");
+  btn.appendChild(caret);
+  cb.appendChild(btn);
+
   if(cn.n.headline) cb.appendChild(el("div","chead", cn.n.headline));
-  (cn.n.points || []).forEach(function(t){ cb.appendChild(el("div","cpt", t)); });
+
+  var body = el("div","cbody");
+  (cn.n.points || []).forEach(function(t){ body.appendChild(el("div","cpt", t)); });
   function panel(cls, label, text){
     var b = el("div", cls);
     b.appendChild(el("span","clabel", label));
     b.appendChild(document.createTextNode(text));
-    cb.appendChild(b);
+    body.appendChild(b);
   }
   /* carried forward, the first question is what is different this time */
   if(cn.mode === "prior" && cn.n.diff) panel("cdiff", "What's changed", cn.n.diff);
   if(cn.n.watch) panel("cwatch", "Watch", cn.n.watch);
   if(cn.n.next) panel("cnext", cn.mode === "today" ? "Next time" : "This week", cn.n.next);
+  cb.appendChild(body);
+
+  function sync(){
+    body.hidden = !state.coachOpen;
+    caret.textContent = state.coachOpen ? "\u2212" : "+";
+    btn.setAttribute("aria-expanded", state.coachOpen ? "true" : "false");
+  }
+  sync();
+  btn.addEventListener("click", function(){
+    state.coachOpen = !state.coachOpen;
+    sync();
+  });
+
   wrap.appendChild(cb);
   return wrap;
 }
@@ -1316,6 +1346,12 @@ function renderSession(){
   else if(s.chip) top.appendChild(el("span","chip " + s.chip, s.chip === "erg" ? "Rowfit · locked" : "Strength"));
   h.appendChild(top);
   host.appendChild(h);
+
+  /* Commentary, not prescription, so it stays its own object - but it belongs
+     at the top of the card, folded, where she reads it before the work rather
+     than after it. */
+  var cn = coachFor(d, s);
+  if(cn) host.appendChild(coachCard(cn));
 
   if(c2){
     var f = c2Fields(c2);
@@ -1626,12 +1662,6 @@ function renderSession(){
     label:"7-stroke peak (watts)", ph:"peak W", aria:"Peak watts",
     seed:s.peak7Val, btn:"Log peak"
   }));
-
-  /* The note reads the session, so it sits under it - and it is commentary,
-     not prescription, so it is styled as its own object rather than one more
-     row in the list. */
-  var cn = coachFor(d, s);
-  if(cn) host.appendChild(coachCard(cn));
 
   /* done */
   var f = el("div"); f.style.padding = "13px";
