@@ -465,5 +465,19 @@
   "shape": "8 × 750m",
   "key": "d750x8",
   "v": 2
+ },
+ "2026-09-14": {
+  "id": 120558645,
+  "link": "https://log.concept2.com/profile/2198296/log/120558645",
+  "dist": 723,
+  "time": "9:23.0",
+  "pace": "1:38.9",
+  "rate": 38,
+  "band": "",
+  "verdict": "na",
+  "note": "Erg Power Series — Horsepower. 88s then 55s off 7:00 rest — 444m and 280m, 724m total. Avg work pace 1:38.9 /500m, max effort with no target band. Rate 38/40 s/m, drag 127.",
+  "shape": "88s / 55s max efforts",
+  "key": "m0x2",
+  "v": 2
  }
 }
