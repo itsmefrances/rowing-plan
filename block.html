@@ -72,15 +72,6 @@ header{border-bottom:2px solid var(--rule-strong);padding-bottom:12px;margin-bot
 
 /* panels */
 .panel{background:var(--surface);border:1px solid var(--rule);margin-bottom:14px;}
-.panel-h{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:10px 13px;background:var(--surface-2);border-bottom:1px solid var(--rule);
-  cursor:pointer;user-select:none;width:100%;text-align:left;border-left:0;border-right:0;border-top:0;
-  font-family:var(--f-d);color:var(--ink);
-}
-.panel-h:focus-visible{outline:2px solid var(--erg);outline-offset:-2px;}
-.panel-b{padding:13px;}
-.caret{font-family:var(--f-m);font-size:11px;color:var(--muted);}
 
 /* chips */
 .chip{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:600;
@@ -229,15 +220,6 @@ svg.spark{width:100%;height:38px;display:block;}
   background:var(--surface);color:var(--ink);border:1px solid var(--rule-strong);border-radius:0;
   max-width:min(62vw,260px);}
 .weeknav .wnow{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:7px 9px;}
-.arow{display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:9px 0;border-bottom:1px solid var(--rule);}
-.arow:last-child{border-bottom:0;}
-.arow .al{display:flex;flex-direction:column;gap:2px;min-width:0;}
-.arow .aw{font-size:13.5px;font-weight:600;}
-.arow .as{font-family:var(--f-m);font-size:11.5px;color:var(--muted);}
-.arow button{font-family:var(--f-d);font-size:12px;font-weight:600;color:var(--erg);
-  background:none;border:1px solid var(--erg);padding:5px 9px;cursor:pointer;white-space:nowrap;}
-.arow button:hover{background:var(--erg-soft);}
 .nopub{padding:13px;display:flex;flex-direction:column;gap:6px;}
 .prog{display:flex;flex-direction:column;gap:2px;padding:8px 10px;
   background:var(--surface-2);border-left:3px solid var(--lift);}
@@ -384,13 +366,6 @@ button.ceyebrow:focus-visible{outline:2px solid #4FB3AC;outline-offset:3px;}
 <div class="days" id="days" role="tablist" aria-label="Days of the selected week"></div>
 
 <div class="panel" id="sessionPanel"></div>
-
-<section class="panel" id="archivePanel" hidden>
-  <button class="panel-h" type="button" data-toggle="archiveBody" aria-expanded="false">
-    <span>Archive &mdash; weeks already run</span><span class="caret" aria-hidden="true">+</span>
-  </button>
-  <div class="panel-b" id="archiveBody" hidden></div>
-</section>
 
 
 
@@ -1735,65 +1710,13 @@ function renderWeekNav(){
   document.getElementById("wNow").disabled = state.week === aw;
 }
 
-function weekResults(n){
-  var ds = datesFor(n), rows = 0, done = 0, paces = [], lifts = 0;
-  ds.forEach(function(d){
-    var s = SESSIONS[d];
-    if(s && s.kind === "erg"){
-      rows++;
-      var hit = c2On(d);
-      if(hit){ done++; paces.push(c2Fields(hit).pace); }
-    }
-    if(s && s.kind === "lift"){
-      for(var i=0;i<SHEET_ROWS.length;i++){ if(SHEET_ROWS[i].date === d){ lifts++; break; } }
-    }
-  });
-  return {rows:rows, done:done, paces:paces, lifts:lifts};
-}
-
-function renderArchive(){
-  var panel = document.getElementById("archivePanel");
-  var body = document.getElementById("archiveBody");
-  var aw = activeWeek(), any = false;
-  body.textContent = "";
-  for(var n=1;n<aw;n++){
-    if(!weekHasPlan(n)) continue;
-    any = true;
-    var r = weekResults(n);
-    var row = el("div","arow");
-    var l = el("div","al");
-    l.appendChild(el("span","aw","Week " + n + "  \u00b7  " + weekLabel(n)));
-    var bits = [r.done + " of " + r.rows + " rows logged"];
-    if(r.paces.length) bits.push(r.paces.join("  /  "));
-    if(r.lifts) bits.push(r.lifts + " lift day" + (r.lifts > 1 ? "s" : "") + " logged");
-    l.appendChild(el("span","as", bits.join("  \u00b7  ")));
-    row.appendChild(l);
-    var go = document.createElement("button");
-    go.type = "button"; go.textContent = "Open";
-    (function(k){ go.addEventListener("click", function(){ setWeek(k); window.scrollTo({top:0, behavior:"smooth"}); }); })(n);
-    row.appendChild(go);
-    body.appendChild(row);
-  }
-  panel.hidden = !any;
-}
-
-function render(){ renderWeekNav(); renderDays(); renderSession(); renderArchive(); }
+function render(){ renderWeekNav(); renderDays(); renderSession(); }
 
 document.getElementById("wPrev").addEventListener("click", function(){ setWeek(state.week - 1); });
 document.getElementById("wNext").addEventListener("click", function(){ setWeek(state.week + 1); });
 document.getElementById("wNow").addEventListener("click", function(){ setWeek(activeWeek()); });
 document.getElementById("wSel").addEventListener("change", function(){ setWeek(Number(this.value)); });
 
-/* ---------- panels ---------- */
-document.querySelectorAll("[data-toggle]").forEach(function(btn){
-  btn.addEventListener("click", function(){
-    var t = document.getElementById(btn.dataset.toggle);
-    var open = btn.getAttribute("aria-expanded") === "true";
-    btn.setAttribute("aria-expanded", open ? "false" : "true");
-    t.hidden = open;
-    btn.querySelector(".caret").textContent = open ? "+" : "–";
-  });
-});
 document.getElementById("convSeg").addEventListener("click", function(e){
   var b = e.target.closest("button"); if(!b) return;
   state.conv = b.dataset.c;
