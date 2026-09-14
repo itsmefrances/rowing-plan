@@ -280,9 +280,13 @@ def inspect(wid):
 
 
 
-def pillar_of(title, pace_s):
-    """sprint / vo2 / threshold / test. The block names the session; where it
-       doesn't, intensity as a share of the 1:39.9 PB decides."""
+def pillar_of(title, pace_s, override=None):
+    """sprint / vo2 / threshold / test. An explicit `pillar` on the plan day wins
+       - a traded-in challenge piece is not a Rowfit session and should not be
+       filed by whatever its name happens to contain. Otherwise the block names
+       the session; where it doesn't, intensity as a share of the PB decides."""
+    if override:
+        return override
     t = (title or "").lower()
     for k, v in (("sprint", "sprint"), ("vo", "vo2"), ("threshold", "threshold")):
         if k in t:
@@ -463,7 +467,8 @@ def main():
         rows = iv_rows(w)
         if rows:
             intervals_by_day[pd] = rows
-        pil = pillar_of((block.get(pd) or {}).get("title"), pace_secs(wp))
+        day = block.get(pd) or {}
+        pil = pillar_of(day.get("title"), pace_secs(wp), day.get("pillar"))
         if pil:
             pillars[pd] = pil
         taken.add(w["id"])
