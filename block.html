@@ -1343,7 +1343,8 @@ function renderSession(){
   left.appendChild(el("div","t", s.title));
   top.appendChild(left);
   if(c2) top.appendChild(el("span","chip done","Complete"));
-  else if(s.chip) top.appendChild(el("span","chip " + s.chip, s.chip === "erg" ? "Rowfit · locked" : "Strength"));
+  else if(s.chip) top.appendChild(el("span","chip " + s.chip,
+    s.chipLabel || (s.chip === "erg" ? "Rowfit · locked" : "Strength")));
   h.appendChild(top);
   host.appendChild(h);
 
@@ -1482,16 +1483,23 @@ function renderSession(){
   if(s.kind === "erg"){
     var b = el("div"); b.style.padding = "13px";
     b.appendChild(el("pre","erg-txt", s.raw));
-    var bd = band(s.lo, s.hi);
     var pbx = el("div","paceband");
     function pcell(k,v,sub){ var c = el("div","pb"); c.appendChild(el("span","k",k));
       c.appendChild(el("span","v",v)); if(sub) c.appendChild(el("span","s",sub)); return c; }
-    pbx.appendChild(pcell("Target pace /500m", bd.paceLo + " – " + bd.paceHi,
-      "Rowcalc " + (state.conv === "power" ? "Power" : "Pace") + " mode"));
-    pbx.appendChild(pcell("Target watts", bd.wLo + " – " + bd.wHi + " W",
-      "PB " + fmtTime(state.pb) + " = " + Math.round(basePower()) + " W"));
-    pbx.appendChild(pcell("Rate", s.rate, ""));
-    b.appendChild(pbx);
+    /* a test or a traded-in challenge piece has no band - without this the
+       three cells render NaN:NaN and read as a broken prescription */
+    if(s.lo && s.hi){
+      var bd = band(s.lo, s.hi);
+      pbx.appendChild(pcell("Target pace /500m", bd.paceLo + " – " + bd.paceHi,
+        "Rowcalc " + (state.conv === "power" ? "Power" : "Pace") + " mode"));
+      pbx.appendChild(pcell("Target watts", bd.wLo + " – " + bd.wHi + " W",
+        "PB " + fmtTime(state.pb) + " = " + Math.round(basePower()) + " W"));
+    } else {
+      pbx.appendChild(pcell("Target", "Max effort",
+        "no band \u2014 the score is the target"));
+    }
+    if(s.rate) pbx.appendChild(pcell("Rate", s.rate, ""));
+    if(pbx.firstChild) b.appendChild(pbx);
     var cmp = comparableFor(d, s);
     if((cmp || s.prev) && !c2On(d)){
       var pb2 = el("div","prevbox");
@@ -1885,8 +1893,8 @@ function loadBlockPlan(){
   }).then(function(j){
     Object.keys(j).forEach(function(dt){
       var src = j[dt], s = SESSIONS[dt] || {};
-      ["kind","title","chip","raw","rate","lo","hi","key","note","gate","broad","peak7",
-       "broadVal","peak7Val"].forEach(function(f){
+      ["kind","title","chip","chipLabel","raw","rate","lo","hi","key","note","gate",
+       "broad","peak7","broadVal","peak7Val"].forEach(function(f){
         if(src[f] !== undefined && s[f] === undefined) s[f] = src[f];
       });
       if(src.wid && !s.ezUrl){ s.ezUrl = ezFromId(src.wid); if(!s.ezId) s.ezId = src.wid; }
