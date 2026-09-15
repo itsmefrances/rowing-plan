@@ -1402,13 +1402,21 @@ function bootSquat(){
     SQ.data = d;
     SQ.sel = d.sessions[0].date;
     renderSquat();
+    /* boot() rebuilds the header from scratch and can finish after this
+       fetch does, so appending once is a race we lose about half the time.
+       Poll briefly instead, and stop the moment the link is in. */
+    var tries = 0;
+    var iv = setInterval(function(){
     var h = document.getElementById("hdr");
-    if(h && h.querySelector("a")){
+    if(++tries > 25) clearInterval(iv);
+    if(h && h.querySelector("a") && !SQ.linked){
+      SQ.linked = true; clearInterval(iv);
       h.appendChild(document.createTextNode("  ·  "));
       var a = document.createElement("a");
       a.href = "#squat"; a.textContent = "back squat";
       h.appendChild(a);
     }
+    }, 400);
   }).catch(function(){
     var sec = document.getElementById("squat");
     if(sec) sec.hidden = true;
