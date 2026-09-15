@@ -1,0 +1,37 @@
+{
+ "mvt": 0.30,
+ "note": "Barbell velocity tracker, back squat. v = mean concentric velocity of the set; vbest = fastest rep in the set, which is what the load-velocity fit uses. wpk = peak power. Watts are corrected where the device was set to the wrong load.",
+ "sessions": [
+  {
+   "date": "2026-09-15",
+   "sets": [
+    {"n": 1,  "load": 125, "reps": 3, "phase": "ramp",   "v": 0.53, "vbest": 0.60, "vpk": 0.92, "rom": 23.3, "w": 299, "wpk": 564, "tpv": 0.84},
+    {"n": 2,  "load": 145, "reps": 2, "phase": "ramp",   "v": 0.51, "vbest": 0.52, "vpk": 0.79, "rom": 23.7, "w": 330, "wpk": 561, "tpv": 0.86},
+    {"n": 3,  "load": 175, "reps": 2, "phase": "ramp",   "v": 0.43, "vbest": 0.47, "vpk": 0.80, "rom": 23.9, "w": 339, "wpk": 699, "tpv": 1.15},
+    {"n": 4,  "load": 195, "reps": 1, "phase": "ramp",   "v": 0.39, "vbest": 0.39, "vpk": 0.65, "rom": 23.4, "w": 338, "wpk": 593, "tpv": 1.26},
+    {"n": 5,  "load": 205, "reps": 1, "phase": "single", "v": 0.32, "vbest": 0.32, "vpk": 0.55, "rom": 23.5, "w": 295, "wpk": 523, "tpv": 1.51},
+    {"n": 6,  "load": 175, "reps": 5, "phase": "work",   "v": 0.42, "vbest": 0.46, "vpk": 0.73, "rom": 22.5, "w": 332, "wpk": 616, "tpv": 1.08, "fix": "device logged 185"},
+    {"n": 7,  "load": 175, "reps": 5, "phase": "work",   "v": 0.45, "vbest": 0.50, "vpk": 0.74, "rom": 22.8, "w": 356, "wpk": 629, "tpv": 1.02, "fix": "device logged 185"},
+    {"n": 8,  "load": 175, "reps": 5, "phase": "work",   "v": 0.44, "vbest": 0.48, "vpk": 0.77, "rom": 22.9, "w": 344, "wpk": 650, "tpv": 1.06, "fix": "device logged 185"},
+    {"n": 9,  "load": 185, "reps": 5, "phase": "work",   "v": 0.41, "vbest": 0.44, "vpk": 0.75, "rom": 23.3, "w": 343, "wpk": 670, "tpv": 1.18},
+    {"n": 10, "load": 170, "reps": 3, "phase": "pin",    "v": 0.45, "vbest": 0.47, "vpk": 0.93, "rom": 23.8, "w": 346, "wpk": 808, "tpv": 1.12},
+    {"n": 11, "load": 170, "reps": 3, "phase": "pin",    "v": 0.48, "vbest": 0.49, "vpk": 1.05, "rom": 24.5, "w": 365, "wpk": 931, "tpv": 1.12},
+    {"n": 12, "load": 170, "reps": 3, "phase": "pin",    "v": 0.48, "vbest": 0.52, "vpk": 0.99, "rom": 23.9, "w": 366, "wpk": 883, "tpv": 1.07}
+   ]
+  },
+  {
+   "date": "2026-09-08",
+   "partial": "Two warm-up sets were not recorded, so this day has no load-velocity fit.",
+   "sets": [
+    {"n": 3,  "load": 205, "reps": 1, "phase": "single", "v": 0.33, "vbest": 0.33, "vpk": 0.82, "rom": 25.5, "w": 298, "wpk": 811, "tpv": 1.78},
+    {"n": 4,  "load": 180, "reps": 5, "phase": "work",   "v": 0.37, "vbest": 0.37, "vpk": 0.65, "rom": 23.2, "w": 304, "wpk": 551},
+    {"n": 5,  "load": 180, "reps": 5, "phase": "work",   "v": 0.43, "vbest": 0.43, "vpk": 0.84, "rom": 24.1, "w": 346, "wpk": 746},
+    {"n": 6,  "load": 180, "reps": 5, "phase": "work",   "v": 0.44, "vbest": 0.44, "rom": 24.7, "wpk": 755},
+    {"n": 7,  "load": 180, "reps": 5, "phase": "work",   "v": 0.44, "vbest": 0.44, "rom": 24.7, "wpk": 806},
+    {"n": 8,  "load": 175, "reps": 3, "phase": "pin",    "v": 0.36, "vbest": 0.36, "wpk": 739, "tpv": 1.35},
+    {"n": 9,  "load": 160, "reps": 3, "phase": "pin",    "v": 0.47, "vbest": 0.54, "wpk": 813, "tpv": 1.07},
+    {"n": 10, "load": 160, "reps": 3, "phase": "pin",    "v": 0.50, "vbest": 0.54, "wpk": 892, "tpv": 0.99}
+   ]
+  }
+ ]
+}
