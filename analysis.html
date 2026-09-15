@@ -1295,6 +1295,9 @@ function lvChart(sets, fit, est, mvt){
     g.appendChild(yl);
   }
   for(t = Math.ceil(x0/20)*20; t <= x1; t += 20){
+    /* the estimate carries its own label under the axis - drop any tick that
+       would print on top of it */
+    if(est && Math.abs(X(t) - X(est)) < 18) continue;
     var xl = sqe("text", {x:X(t).toFixed(1), y:mt+ih+16, "text-anchor":"middle"});
     xl.textContent = t;
     g.appendChild(xl);
@@ -1347,7 +1350,9 @@ function pwChart(sets){
   svg.textContent = "";
   var list = sets.filter(function(s){ return s.wpk > 0; });
   if(!list.length) return;
-  var W = 920, H = 250, ml = 46, mr = 18, mt = 16, mb = 44;
+  /* mt leaves room for the axis label above the top gridline, which the
+     tallest bar otherwise collides with */
+  var W = 920, H = 250, ml = 46, mr = 18, mt = 28, mb = 44;
   svg.setAttribute("viewBox", "0 0 " + W + " " + H);
   var iw = W - ml - mr, ih = H - mt - mb;
   var top = Math.ceil(Math.max.apply(null, list.map(function(s){ return s.wpk; }))/100)*100;
@@ -1361,7 +1366,7 @@ function pwChart(sets){
     yl.textContent = t;
     svg.appendChild(yl);
   }
-  var ay = sqe("text", {x:ml-8, y:mt-4, "text-anchor":"end", class:"lab"});
+  var ay = sqe("text", {x:ml-8, y:12, "text-anchor":"end", class:"lab"});
   ay.textContent = "peak W";
   svg.appendChild(ay);
   list.forEach(function(s, i){
