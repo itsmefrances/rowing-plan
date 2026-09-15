@@ -119,6 +119,31 @@ tbody tr[aria-selected=true] td{background:var(--surface-3);}
 .rd .rv em{font-style:normal;font-family:var(--f-m);color:var(--ink);}
 .caveat{font-family:var(--f-m);font-size:10.5px;line-height:1.5;color:var(--muted);margin:10px 0 0;}
 @media(max-width:520px){.rd{grid-template-columns:1fr;gap:2px;}}
+/* back squat */
+.sqbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-bottom:12px;}
+.sqbar select{font-family:var(--f-m);font-size:12px;padding:5px 8px;background:var(--surface);
+  border:1px solid var(--rule-strong);color:var(--ink);border-radius:0;}
+.sqbar .sqnote{font-family:var(--f-m);font-size:10.5px;color:var(--muted);}
+.sqtop{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);margin-bottom:14px;}
+.sqt{background:var(--surface);padding:10px 11px 11px;}
+.sqt .k{font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
+.sqt .v{font-family:var(--f-m);font-size:20px;line-height:1.15;margin-top:4px;
+  font-variant-numeric:tabular-nums;color:var(--ink);}
+.sqt .s{font-size:11px;line-height:1.45;color:var(--ink-2);margin-top:4px;}
+.sqsub{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--muted);margin:18px 0 9px;}
+#sqTbl tbody tr{cursor:default;}
+#sqTbl tbody tr:hover td{background:transparent;}
+#sqTbl tr.gap td{border-top:1px solid var(--rule-strong);}
+#sqTbl td.dim{color:var(--muted);}
+.ph{display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.06em;
+  text-transform:uppercase;padding:1px 5px;font-family:var(--f-d);}
+.ph-ramp{background:var(--surface-3);color:var(--ink-2);}
+.ph-single{background:#D7EDEA;color:#00695F;}
+.ph-work{background:var(--thr-soft);color:var(--thr);}
+.ph-pin{background:var(--sprint-soft);color:var(--sprint);}
+
 </style>
 </head>
 <body>
@@ -178,6 +203,29 @@ tbody tr[aria-selected=true] td{background:var(--surface-3);}
   <p class="cap" id="capRep"></p>
   <div class="scroll"><table id="ivTbl"></table></div>
   <div class="reads" id="detRead"></div>
+</section>
+
+<section id="squat">
+  <div class="eyebrow">Back squat &middot; every set, by phase</div>
+  <div class="sqbar">
+    <select id="sqPick" aria-label="Which squat session to show"></select>
+    <span class="sqnote" id="sqNote"></span>
+  </div>
+  <div class="sqtop" id="sqTop"></div>
+  <div class="scroll"><table id="sqTbl"></table></div>
+
+  <div class="sqsub">Load&ndash;velocity profile</div>
+  <div class="chartbox"><svg id="cLV" width="920" height="250" role="img"
+    aria-label="Mean concentric velocity of the fastest rep against bar load, with the fitted line"></svg>
+    <div class="tip" id="tipLV"></div></div>
+  <div class="legend" id="legSq"></div>
+  <p class="cap" id="capLV"></p>
+
+  <div class="sqsub">Peak power, set by set</div>
+  <div class="chartbox"><svg id="cPW" width="920" height="250" role="img"
+    aria-label="Peak power of each set in session order"></svg>
+    <div class="tip" id="tipPW"></div></div>
+  <p class="cap" id="capPW"></p>
 </section>
 </div>
 <script>
@@ -1023,6 +1071,350 @@ function renderReads(s, reps, host){
   if(s.note) line("Sync note", function(v){ txt(v, s.note); });
 }
 
+/* ---------- back squat ----------------------------------------------
+   The velocity tracker gives four numbers per rep that are not the same
+   measurement twice: mean concentric velocity, peak velocity, range of
+   motion, and peak power. Average watts is NOT one of them - it is
+   exactly load x mean velocity, so it carries nothing the velocity does
+   not already say, and it is left out of the tiles for that reason.
+   Peak watts does include the acceleration term, which is why it is the
+   one that moves when she is warm.
+   -------------------------------------------------------------------- */
+var SQ = {data:null, sel:null};
+var PHN = {ramp:"Ramp", single:"Top single", work:"Work sets", pin:"Pin squats"};
+var PHC = {ramp:"#69727B", single:"#008C7E", work:"#2D5AA8", pin:"#B23D0B"};
+var PHO = ["ramp","single","work","pin"];
+
+function sqe(n, a){
+  var e = document.createElementNS("http://www.w3.org/2000/svg", n);
+  for(var k in a) if(Object.prototype.hasOwnProperty.call(a, k)) e.setAttribute(k, a[k]);
+  return e;
+}
+function sqSession(){
+  if(!SQ.data) return null;
+  var l = SQ.data.sessions;
+  for(var i=0;i<l.length;i++) if(l[i].date === SQ.sel) return l[i];
+  return l[0] || null;
+}
+/* OLS on the fastest rep of each ramp / top-single set. Those are the
+   sets taken with profiling intent; work sets and pins are plotted but
+   never fitted, or the warm-up effect would bend the line. */
+function sqFit(sets){
+  var pts = sets.filter(function(s){
+    return (s.phase === "ramp" || s.phase === "single") && s.vbest > 0 && s.load > 0;
+  });
+  if(pts.length < 3) return null;
+  var n = pts.length, mx = 0, my = 0, i, dx, dy;
+  for(i=0;i<n;i++){ mx += pts[i].load; my += pts[i].vbest; }
+  mx /= n; my /= n;
+  var sxy = 0, sxx = 0, syy = 0;
+  for(i=0;i<n;i++){
+    dx = pts[i].load - mx; dy = pts[i].vbest - my;
+    sxy += dx*dy; sxx += dx*dx; syy += dy*dy;
+  }
+  if(!sxx || !syy) return null;
+  var m = sxy/sxx;
+  return { m:m, b:my - m*mx, r2:(m*m*sxx)/syy, n:n,
+           at:function(load){ return m*load + (my - m*mx); },
+           loadAt:function(v){ return m ? (v - (my - m*mx))/m : 0; } };
+}
+/* The same load, twice, far apart in the session. The EARLIEST set at a
+   given load is the reference, never the weakest one - anchoring on the
+   worst set of the day would inflate the swing. Both loads and both set
+   numbers get named in the caption, so this can never quietly compare
+   two different lifts. */
+function sqWarm(sets){
+  for(var i=0;i<sets.length;i++){
+    var a = sets[i], best = null;
+    if(!a.wpk) continue;
+    for(var j=i+4;j<sets.length;j++){
+      var b = sets[j];
+      if(!b.wpk || Math.abs(a.load - b.load) > 6) continue;
+      if(!best || b.wpk > best.wpk) best = b;
+    }
+    if(best) return {a:a, b:best, g:best.wpk/a.wpk};
+  }
+  return null;
+}
+function sqTile(host, k, v, s){
+  var d = el("div","sqt");
+  d.appendChild(el("div","k", k));
+  d.appendChild(el("div","v", v));
+  if(s) d.appendChild(el("div","s", s));
+  host.appendChild(d);
+  return d;
+}
+function renderSquat(){
+  var sec = document.getElementById("squat");
+  if(!sec) return;
+  if(!SQ.data){ sec.hidden = true; return; }
+  sec.hidden = false;
+  var ses = sqSession();
+  if(!ses) return;
+  var sets = ses.sets.slice(), mvt = SQ.data.mvt || 0.30;
+  var fit = sqFit(sets), est = fit ? Math.round(fit.loadAt(mvt)) : null;
+
+  /* picker */
+  var pick = document.getElementById("sqPick");
+  pick.textContent = "";
+  SQ.data.sessions.forEach(function(s){
+    var o = document.createElement("option");
+    o.value = s.date; o.textContent = fmtDay(s.date) + "  ·  " + s.sets.length + " sets";
+    if(s.date === ses.date) o.selected = true;
+    pick.appendChild(o);
+  });
+  pick.onchange = function(){ SQ.sel = pick.value; renderSquat(); };
+  document.getElementById("sqNote").textContent = ses.partial || "";
+
+  /* tiles */
+  var top = document.getElementById("sqTop");
+  top.textContent = "";
+  var single = sets.filter(function(s){ return s.phase === "single"; })[0];
+  var bestW = sets.reduce(function(a,b){ return (b.wpk||0) > (a.wpk||0) ? b : a; }, sets[0]);
+  var deep  = sets.reduce(function(a,b){ return (b.rom||0) > (a.rom||0) ? b : a; }, sets[0]);
+  var warm  = sqWarm(sets);
+
+  if(est) sqTile(top, "Estimated 1RM", est + " lb",
+    "where the fit crosses " + mvt.toFixed(2) + " m/s · R² " + fit.r2.toFixed(2) +
+    " on " + fit.n + " sets");
+  else sqTile(top, "Estimated 1RM", "—", "needs three or more ramp sets");
+  if(single) sqTile(top, "Top single", single.load + " lb",
+    single.v.toFixed(2) + " m/s" + (est ? "  ·  " + Math.round(single.load/est*100) + "% of the estimate" : ""));
+  if(bestW && bestW.wpk) sqTile(top, "Best peak power", bestW.wpk + " W",
+    PHN[bestW.phase] + " · set " + bestW.n + " at " + bestW.load + " lb");
+  if(warm) sqTile(top, "Warm-up swing", (warm.g >= 1 ? "+" : "\u2212") + Math.abs(Math.round((warm.g-1)*100)) + "%",
+    "peak power, " + warm.a.load + " lb at set " + warm.a.n + " vs " +
+    warm.b.load + " lb at set " + warm.b.n);
+  if(deep && deep.rom) sqTile(top, "Deepest set", deep.rom.toFixed(1) + " in",
+    PHN[deep.phase] + " · set " + deep.n + "  ·  shallowest " +
+    sets.reduce(function(a,b){ return (b.rom && b.rom < a) ? b.rom : a; }, 99).toFixed(1) + " in");
+
+  /* table, grouped by phase in session order */
+  var tbl = document.getElementById("sqTbl");
+  tbl.textContent = "";
+  var thead = document.createElement("thead"), hr = document.createElement("tr");
+  ["Set","Phase","Load","Reps","Avg m/s","Best rep","Peak m/s","Peak W","ROM in","TPV s"]
+    .forEach(function(h){ var th = document.createElement("th"); th.textContent = h; hr.appendChild(th); });
+  thead.appendChild(hr); tbl.appendChild(thead);
+  var tb = document.createElement("tbody"), prev = null;
+  sets.forEach(function(s){
+    var tr = document.createElement("tr");
+    if(prev && prev !== s.phase) tr.className = "gap";
+    prev = s.phase;
+    function td(t, dim){
+      var c = document.createElement("td");
+      if(dim) c.className = "dim";
+      c.textContent = (t === null || t === undefined || t === "") ? "—" : t;
+      tr.appendChild(c); return c;
+    }
+    td(s.n);
+    var pc = document.createElement("td");
+    pc.appendChild(el("span","ph ph-" + s.phase, PHN[s.phase]));
+    tr.appendChild(pc);
+    var lc = td(s.load + " lb");
+    if(s.fix) lc.title = s.fix;
+    td(s.reps);
+    td(s.v ? s.v.toFixed(2) : null);
+    td(s.vbest ? s.vbest.toFixed(2) : null, true);
+    td(s.vpk ? s.vpk.toFixed(2) : null);
+    td(s.wpk || null);
+    td(s.rom ? s.rom.toFixed(1) : null);
+    td(s.tpv ? s.tpv.toFixed(2) : null, true);
+    tb.appendChild(tr);
+  });
+  tbl.appendChild(tb);
+
+  /* legend, shared by both charts */
+  var leg = document.getElementById("legSq");
+  leg.textContent = "";
+  PHO.forEach(function(p){
+    if(!sets.some(function(s){ return s.phase === p; })) return;
+    var w = el("span");
+    var i = el("i"); i.style.background = PHC[p];
+    w.appendChild(i); w.appendChild(document.createTextNode(PHN[p]));
+    leg.appendChild(w);
+  });
+
+  lvChart(sets, fit, est, mvt);
+  pwChart(sets);
+
+  /* captions */
+  var cl = document.getElementById("capLV");
+  cl.textContent = "";
+  if(fit){
+    cl.appendChild(document.createTextNode("Fitted on the " + fit.n +
+      " ramp and top-single sets only — R² "));
+    cl.appendChild(el("b", null, fit.r2.toFixed(2)));
+    cl.appendChild(document.createTextNode(". The line crosses " + mvt.toFixed(2) +
+      " m/s at "));
+    cl.appendChild(el("b", null, est + " lb"));
+    cl.appendChild(document.createTextNode(
+      ", which is the 1RM estimate. Work sets and pins are drawn but never fitted: they are taken warm, " +
+      "and letting them into the line would price the warm-up effect in as strength. A point sitting " +
+      "above the line moved faster than that load should."));
+  } else {
+    cl.textContent = "No fit for this day — a load-velocity profile needs at least three ramp sets " +
+      "taken with profiling intent.";
+  }
+  var cp = document.getElementById("capPW");
+  cp.textContent = "";
+  cp.appendChild(document.createTextNode("Peak power includes the acceleration term, so unlike average " +
+    "watts it is not just load × velocity — the gap between them is rate of force development. "));
+  if(warm){
+    cp.appendChild(el("b", null, warm.a.load + " lb at set " + warm.a.n + " made " + warm.a.wpk +
+      " W; " + warm.b.load + " lb at set " + warm.b.n + " made " + warm.b.wpk + " W"));
+    cp.appendChild(document.createTextNode(" — " + Math.round((warm.g-1)*100) +
+      "% more at the same load, later in the session. That is the size of the warm-up effect, and it is " +
+      "the reason a top single taken early reads low."));
+  }
+}
+function lvChart(sets, fit, est, mvt){
+  var svg = document.getElementById("cLV"), tip = document.getElementById("tipLV");
+  svg.textContent = "";
+  var W = 920, H = 250, ml = 46, mr = 104, mt = 16, mb = 36;
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  var iw = W - ml - mr, ih = H - mt - mb;
+  var pts = sets.filter(function(s){ return s.vbest > 0 && s.load > 0; });
+  if(!pts.length) return;
+  var loads = pts.map(function(s){ return s.load; });
+  var vs = pts.map(function(s){ return s.vbest; });
+  var x0 = Math.min.apply(null, loads) - 14;
+  var x1 = Math.max(Math.max.apply(null, loads), est || 0) + 14;
+  var y0 = Math.min(mvt, Math.min.apply(null, vs)) - 0.05;
+  var y1 = Math.max.apply(null, vs) + 0.05;
+  function X(v){ return ml + (v - x0)/(x1 - x0)*iw; }
+  function Y(v){ return mt + ih - (v - y0)/(y1 - y0)*ih; }
+
+  var g = sqe("g", {});
+  var t;
+  for(t = Math.ceil(y0/0.1)*0.1; t <= y1 + 1e-9; t += 0.1){
+    g.appendChild(sqe("line", {x1:ml, x2:ml+iw, y1:Y(t).toFixed(1), y2:Y(t).toFixed(1),
+      stroke:"#D3DAE0", "stroke-width":1}));
+    var yl = sqe("text", {x:ml-8, y:(Y(t)+3).toFixed(1), "text-anchor":"end"});
+    yl.textContent = t.toFixed(2);
+    g.appendChild(yl);
+  }
+  for(t = Math.ceil(x0/20)*20; t <= x1; t += 20){
+    var xl = sqe("text", {x:X(t).toFixed(1), y:mt+ih+16, "text-anchor":"middle"});
+    xl.textContent = t;
+    g.appendChild(xl);
+  }
+  var ax = sqe("text", {x:ml, y:mt+ih+30, "text-anchor":"start"});
+  ax.textContent = "bar load, lb";
+  g.appendChild(ax);
+  var ay = sqe("text", {x:ml-8, y:mt-4, "text-anchor":"end", class:"lab"});
+  ay.textContent = "m/s";
+  g.appendChild(ay);
+  svg.appendChild(g);
+
+  if(fit){
+    svg.appendChild(sqe("line", {x1:X(x0), x2:X(x1), y1:Y(fit.at(x0)).toFixed(1),
+      y2:Y(fit.at(x1)).toFixed(1), stroke:"#69727B", "stroke-width":1.5}));
+    svg.appendChild(sqe("line", {x1:ml, x2:ml+iw, y1:Y(mvt).toFixed(1), y2:Y(mvt).toFixed(1),
+      stroke:"#8A1C3B", "stroke-width":1, "stroke-dasharray":"4 3"}));
+    var ml2 = sqe("text", {x:ml+iw+6, y:(Y(mvt)+3.5).toFixed(1), class:"end", fill:"#8A1C3B"});
+    ml2.textContent = mvt.toFixed(2) + " m/s";
+    svg.appendChild(ml2);
+    if(est){
+      svg.appendChild(sqe("line", {x1:X(est).toFixed(1), x2:X(est).toFixed(1),
+        y1:Y(mvt).toFixed(1), y2:mt+ih, stroke:"#8A1C3B", "stroke-width":1, "stroke-dasharray":"2 3"}));
+      var el2 = sqe("text", {x:X(est).toFixed(1), y:mt+ih+16, "text-anchor":"middle",
+        class:"end", fill:"#8A1C3B"});
+      el2.textContent = "≈" + est;
+      svg.appendChild(el2);
+    }
+  }
+  pts.forEach(function(s){
+    var fitted = (s.phase === "ramp" || s.phase === "single");
+    var c = sqe("circle", {cx:X(s.load).toFixed(1), cy:Y(s.vbest).toFixed(1),
+      r:fitted ? 5 : 4.5, fill:fitted ? PHC[s.phase] : "#FFF",
+      stroke:PHC[s.phase], "stroke-width":2});
+    c.style.cursor = "crosshair";
+    c.addEventListener("mouseenter", function(){
+      tip.textContent = "Set " + s.n + " · " + PHN[s.phase] + "\n" + s.load + " lb × " + s.reps +
+        "\nbest rep " + s.vbest.toFixed(2) + " m/s" + (s.wpk ? "\npeak " + s.wpk + " W" : "");
+      tip.style.whiteSpace = "pre";
+      tip.style.left = Math.min(X(s.load) + 10, W - 130) + "px";
+      tip.style.top = (Y(s.vbest) - 10) + "px";
+      tip.style.opacity = 1;
+    });
+    c.addEventListener("mouseleave", function(){ tip.style.opacity = 0; });
+    svg.appendChild(c);
+  });
+}
+function pwChart(sets){
+  var svg = document.getElementById("cPW"), tip = document.getElementById("tipPW");
+  svg.textContent = "";
+  var list = sets.filter(function(s){ return s.wpk > 0; });
+  if(!list.length) return;
+  var W = 920, H = 250, ml = 46, mr = 18, mt = 16, mb = 44;
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  var iw = W - ml - mr, ih = H - mt - mb;
+  var top = Math.ceil(Math.max.apply(null, list.map(function(s){ return s.wpk; }))/100)*100;
+  function Y(v){ return mt + ih - v/top*ih; }
+  var step = iw/list.length, bw = Math.min(46, step*0.62);
+  var t;
+  for(t = 0; t <= top; t += 200){
+    svg.appendChild(sqe("line", {x1:ml, x2:ml+iw, y1:Y(t).toFixed(1), y2:Y(t).toFixed(1),
+      stroke:t === 0 ? "#B5BFC8" : "#D3DAE0", "stroke-width":1}));
+    var yl = sqe("text", {x:ml-8, y:(Y(t)+3).toFixed(1), "text-anchor":"end"});
+    yl.textContent = t;
+    svg.appendChild(yl);
+  }
+  var ay = sqe("text", {x:ml-8, y:mt-4, "text-anchor":"end", class:"lab"});
+  ay.textContent = "peak W";
+  svg.appendChild(ay);
+  list.forEach(function(s, i){
+    var cx = ml + step*i + step/2;
+    var r = sqe("rect", {x:(cx-bw/2).toFixed(1), y:Y(s.wpk).toFixed(1),
+      width:bw.toFixed(1), height:(mt+ih-Y(s.wpk)).toFixed(1), fill:PHC[s.phase]});
+    r.style.cursor = "crosshair";
+    r.addEventListener("mouseenter", function(){
+      tip.textContent = "Set " + s.n + " · " + PHN[s.phase] + "\n" + s.load + " lb × " + s.reps +
+        "\npeak " + s.wpk + " W" + (s.rom ? "\nROM " + s.rom.toFixed(1) + " in" : "");
+      tip.style.whiteSpace = "pre";
+      tip.style.left = Math.min(cx + 10, W - 130) + "px";
+      tip.style.top = (Y(s.wpk) - 10) + "px";
+      tip.style.opacity = 1;
+    });
+    r.addEventListener("mouseleave", function(){ tip.style.opacity = 0; });
+    svg.appendChild(r);
+    var vl = sqe("text", {x:cx.toFixed(1), y:(Y(s.wpk)-5).toFixed(1), "text-anchor":"middle", class:"end"});
+    vl.textContent = s.wpk;
+    svg.appendChild(vl);
+    var xl = sqe("text", {x:cx.toFixed(1), y:mt+ih+15, "text-anchor":"middle"});
+    xl.textContent = s.load;
+    svg.appendChild(xl);
+    var x2 = sqe("text", {x:cx.toFixed(1), y:mt+ih+26, "text-anchor":"middle"});
+    x2.textContent = "×" + s.reps;
+    svg.appendChild(x2);
+  });
+  var ax = sqe("text", {x:ml, y:mt+ih+39, "text-anchor":"start"});
+  ax.textContent = "sets in the order they were done";
+  svg.appendChild(ax);
+}
+function bootSquat(){
+  fetch("sync/squat.json", {cache:"no-store"}).then(function(r){
+    if(!r.ok) throw new Error(r.status);
+    return r.json();
+  }).then(function(d){
+    if(!d || !d.sessions || !d.sessions.length) throw new Error("empty");
+    SQ.data = d;
+    SQ.sel = d.sessions[0].date;
+    renderSquat();
+    var h = document.getElementById("hdr");
+    if(h && h.querySelector("a")){
+      h.appendChild(document.createTextNode("  ·  "));
+      var a = document.createElement("a");
+      a.href = "#squat"; a.textContent = "back squat";
+      h.appendChild(a);
+    }
+  }).catch(function(){
+    var sec = document.getElementById("squat");
+    if(sec) sec.hidden = true;
+  });
+}
+
 /* ---------- deep link + boot ---------- */
 function fromHash(){
   var w = (location.hash || "").replace(/^#/, "");
@@ -1075,6 +1467,7 @@ function boot(){
   });
 }
 boot();
+bootSquat();
 </script>
 </body>
 </html>
