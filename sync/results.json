@@ -479,5 +479,20 @@
   "shape": "88s / 55s max efforts",
   "key": "m0x2",
   "v": 2
+ },
+ "2026-09-16": {
+  "id": 0,
+  "link": "",
+  "dist": 3842,
+  "time": "15:00.0",
+  "pace": "1:57.1",
+  "rate": 30,
+  "band": "1:54.9–2:04.9",
+  "verdict": "in",
+  "note": "10 × 1:30 — avg work pace 1:57.1 /500m vs 1:54.9–2:04.9 target: in zone. Rate 30 s/m. Entered by hand from the PM5: the erg did not sync, so there is no logbook link. 28:20.0 elapsed with 1:20 rest; fastest rep last at 1:54.2.",
+  "shape": "10 × 1:30",
+  "key": "t90x10",
+  "manual": true,
+  "v": 2
  }
 }
