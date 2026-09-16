@@ -510,7 +510,11 @@ var C2LOG = [
 ["2026-06-30",900,"13:02.5","1:41.4",39,126,"VariableInterval"]
 ];
 var C2SYNC = null;   /* sync/results.json, refreshed daily at 9am ET by c2sync.yml */
-function c2Link(id){ return "https://log.concept2.com/profile/2198296/log/" + id; }
+function c2Link(id){
+  /* a hand-entered session has no logbook row and carries id 0 - return no
+     link at all rather than one that 404s */
+  return id ? "https://log.concept2.com/profile/2198296/log/" + id : "";
+}
 /* The sync files a result under the plan day it belongs to, not the erg's own
    date, so this looks that date up exactly. The old ±1 day tolerance repeated
    work the sync already does — and it searched backwards first, which put
