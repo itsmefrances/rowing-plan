@@ -489,7 +489,7 @@
   "rate": 30,
   "band": "1:54.9–2:04.9",
   "verdict": "in",
-  "note": "10 × 1:30 — avg work pace 1:57.1 /500m vs 1:54.9–2:04.9 target: in zone. Rate 30 s/m. Entered by hand from the PM5: the erg did not sync, so there is no logbook link. 28:20.0 elapsed with 1:20 rest; fastest rep last at 1:54.2. Watch HR over the whole 47:53 session (FITIV, wrist not strap): 132 avg, 169 max, 1-minute HR recovery 52. Per-rep HR is not available, so the interval rows carry none.",
+  "note": "10 × 1:30 — avg work pace 1:57.1 /500m vs 1:54.9–2:04.9 target: in zone. Rate 30 s/m. Entered by hand from the PM5: the erg did not sync, so there is no logbook link. 28:20.0 elapsed with 1:20 rest; fastest rep last at 1:54.2. Heart rate from the FITIV export (wrist), aligned to the piece: work-window means 130→159 and peaks 153→169, both climbing every rep; 47% of the piece in zone 4, none in zone 5, 78 s at or above the 167 threshold. 196.5 kJ of work for 87.6 J per working heartbeat.",
   "shape": "10 × 1:30",
   "key": "t90x10",
   "manual": true,
