@@ -481,18 +481,32 @@
   "v": 2
  },
  "2026-09-16": {
-  "id": 0,
-  "link": "",
+  "id": 120693675,
+  "link": "https://log.concept2.com/profile/2198296/log/120693675",
   "dist": 3842,
   "time": "15:00.0",
   "pace": "1:57.1",
   "rate": 30,
   "band": "1:54.9–2:04.9",
   "verdict": "in",
-  "note": "10 × 1:30 — avg work pace 1:57.1 /500m vs 1:54.9–2:04.9 target: in zone. Rate 30 s/m. Entered by hand from the PM5: the erg did not sync, so there is no logbook link. 28:20.0 elapsed with 1:20 rest; fastest rep last at 1:54.2. Heart rate from the FITIV export (wrist), aligned to the piece: work-window means 130→159 and peaks 153→169, both climbing every rep; 47% of the piece in zone 4, none in zone 5, 78 s at or above the 167 threshold. 196.5 kJ of work for 87.6 J per working heartbeat.",
+  "note": "10 × 1:30 — avg work pace 1:57.1 /500m vs 1:54.9–2:04.9 target: in zone. Rate 30 s/m. Entered by hand from the PM5: the erg only reached the logbook for the first three intervals (1,143 m, unverified), so the linked logbook row is a fragment, not the session. 28:20.0 elapsed with 1:20 rest; fastest rep last at 1:54.2. Heart rate from the FITIV export (wrist), aligned to the piece: work-window means 130→159 and peaks 153→169, both climbing every rep; 47% of the piece in zone 4, none in zone 5, 78 s at or above the 167 threshold. 196.5 kJ of work for 87.6 J per working heartbeat.",
   "shape": "10 × 1:30",
   "key": "t90x10",
   "manual": true,
+  "v": 2
+ },
+ "2026-09-18": {
+  "id": 120721447,
+  "link": "https://log.concept2.com/profile/2198296/log/120721447",
+  "dist": 6746,
+  "time": "28:00.0",
+  "pace": "2:04.5",
+  "rate": 27,
+  "band": "2:09.9–2:14.9",
+  "verdict": "above",
+  "note": "7 × 4:00 — avg work pace 2:04.5 /500m vs 2:09.9–2:14.9 target: faster than target (above zone). Rate 27 s/m, drag 116. Reps 1–6 landed within 3 m of each other (960–963); fastest rep last at 2:02.6.",
+  "shape": "7 × 4:00",
+  "key": "t240x7",
   "v": 2
  }
 }
