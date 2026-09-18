@@ -438,6 +438,13 @@ function secFromPct(pct){                       /* pct as a fraction, e.g. 0.95 
   }
   return secFromWatts(Math.round(basePower() * (P/100)));
 }
+/* The exact inverse of secFromPct, computed in whichever convention the
+   card's band was built with - otherwise the percentage and the pace range
+   on the same line would disagree with each other. */
+function pctFromSec(sec){
+  if(state.conv === "pace") return (2 - sec/state.pb) * 100;
+  return wattsFromSec(sec) / basePower() * 100;
+}
 function band(lo, hi){
   var slow = secFromPct(lo), fast = secFromPct(hi);
   return {
@@ -1345,6 +1352,10 @@ function renderSession(){
       if(ps >= fast && ps <= slow) done.appendChild(el("span","c2d","Inside the " + tb.paceLo + " \u2013 " + tb.paceHi + " target."));
       else if(ps < fast) done.appendChild(el("span","c2d",(fast - ps).toFixed(1) + " s/500m faster than the " + tb.paceLo + " \u2013 " + tb.paceHi + " target."));
       else done.appendChild(el("span","c2d",(ps - slow).toFixed(1) + " s/500m slower than the " + tb.paceLo + " \u2013 " + tb.paceHi + " target."));
+      /* the seconds tell her how far off she was; the percentage tells her
+         where that sits against the band she was actually given */
+      done.appendChild(el("span","c2d", pctFromSec(ps).toFixed(1) + "% of 500m PB  \u00b7  prescribed " +
+        Math.round(s.lo*100) + "\u2013" + Math.round(s.hi*100) + "%"));
     }
     if(s.prev && f.pace){
       var dlt = paceSec(s.prev.pace) - paceSec(f.pace);
