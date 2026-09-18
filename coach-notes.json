@@ -87,5 +87,21 @@
   "watch": "I was wrong about the 52. FITIV's one-minute HR recovery card read 52 and I called it double-Elite; the exported series does not support it. Measured off your own data it is 21 bpm in the 60 s after your peak of 169, and 24 bpm in the 60 s after the last stroke — \"Fit\" on that same scale, not \"Elite\". Good, not extraordinary. Whatever FITIV is computing there, it is not a one-minute drop from peak.",
   "next": "You have proved you can hold the stroke for 90 seconds. Now extend it — the same discipline at 2:00+ reps, which is where length normally goes first, and where heart rate finally gets time to sit at the top instead of spiking.",
   "diff": "Sep 23 is VO₂ 8×500m, not 10×1:30: reps run about 2:00 instead of 1:30, a third longer under load, and the band tightens to 1:59.9–2:04.9 (75–80%), midpoint 2:02.4. Today's 1:57.1 is 2.8 s/500m quicker than the fast end of that — do not carry today's split across. Take the band and spend the difference on holding 8.4+ m/stroke to the last rep."
+ },
+ "2026-09-18": {
+  "key": "t240x7",
+  "title": "Rowfit — Threshold 7×4min",
+  "session": "Threshold 7×4min",
+  "headline": "Flattest set in the log — and I am the reason it was five seconds a rep too fast.",
+  "points": [
+   "6,746 m in 28:00 of work at 2:04.5 /500m, r27, 181 W, drag 116. Reps 1–6 came in at 960, 960, 963, 960, 961, 962 metres — a spread of 0.31%. Total pace range across all seven reps was 2.4 s/500m, and 2.0 s of that was rep 7 going faster. Nothing in your log is this flat.",
+   "The band was 2:09.9–2:14.9 (65–70%) and you rowed 2:04.5 — 75.4% of PB, 5.4 s/500m past the fast end and 7.9 s past the 2:12.4 midpoint. Before you ran it I told you “open at 2:03 and hold it,” which was wrong by about nine seconds a rep, and I corrected it afterwards. If you were working from the first number, this pace is on me, not on you.",
+   "Rep 7 is the one to look at: +5.7% power over the average of reps 1–6, and the split was stroke +5.0%, rate +0.6%. You finished by pulling harder, not by turning over faster. Sep 16's last rep was stroke +3.5% / rate +6.9%; today it is +5.0% / +0.6%. Three sessions running with a fast last rep, and the stroke's share of it has gone from none to most.",
+   "8.97 m per stroke, your longest of the week, at 26–27 s/m against a 26–28 prescription — bottom of the rate band again, holding pace with length instead of turnover. Economy residual −0.28 spm: sitting on your own line, with reps 1, 2, 4, 5 and 6 inside ±0.06 of it.",
+   "Second threshold session in a row above band — Sep 11's 8×750 ran 77.8%. On a polarized week, Friday is the volume day that pays for Monday's sprints and Wednesday's VO₂. Run at 75% it stops being that and becomes a third hard day, three weeks out from Oct 10."
+  ],
+  "watch": "Which number you are pacing off. The card carries the band; I gave you a contradictory one and you rowed closer to mine. From here, trust the band on the card — for a 65–70% day that is 2:09.9–2:14.9, midpoint 2:12.4, and it should feel conversational and slightly boring. If a threshold day leaves you satisfied rather than under-worked, it was probably too fast.",
+  "next": "Row the band. The discipline you just showed holding six reps inside 3 metres is exactly what is needed at 2:12 — it is a harder skill at the slower pace, not an easier one, because there is nothing to hide behind.",
+  "diff": "Sep 25 is Threshold 2×15min, not 7×4min — two long grinders instead of seven short ones, and the band widens to 2:04.9–2:17.9 (62–75%), midpoint 2:11.4. Today's 2:04.5 sits right at the FAST end of that, so the pace you just held is legal there — but over 15 minutes rather than 4, which is a different proposition entirely. Start at the midpoint and earn your way down."
  }
 }
