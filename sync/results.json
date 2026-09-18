@@ -504,7 +504,7 @@
   "rate": 27,
   "band": "2:09.9–2:14.9",
   "verdict": "above",
-  "note": "7 × 4:00 — avg work pace 2:04.5 /500m vs 2:09.9–2:14.9 target: faster than target (above zone). Rate 27 s/m, drag 116. Reps 1–6 landed within 3 m of each other (960–963); fastest rep last at 2:02.6.",
+  "note": "7 × 4:00 — avg work pace 2:04.5 /500m vs 2:09.9–2:14.9 target: faster than target (above zone). Rate 27 s/m, drag 116. Reps 1–6 landed within 3 m of each other (960–963); fastest rep last at 2:02.6. Heart rate from the FITIV export, aligned on the logbook end stamp: rep peaks 151 → 169 and closing plateaus 149 → 168, both climbing every rep; rest floors 91 → 118. 35% of the piece in zone 4, none in zone 5, 85 s at or above the 167 threshold. 304.5 kJ for 73.9 J per working heartbeat across 6,393 beats. Rep 1's mean is largely interpolated across a 221-second gap in the recording.",
   "shape": "7 × 4:00",
   "key": "t240x7",
   "v": 2
