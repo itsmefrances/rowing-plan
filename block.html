@@ -1408,6 +1408,9 @@ function renderSession(){
     lb.appendChild(cbtn);
     if(already) lb.appendChild(el("span","status",
       already + " jump" + (already > 1 ? "s" : "") + " already in the sheet today"));
+    /* the history reads the same sheet this button writes to, so it is
+       current the moment a jump is logged - no sync file sits in between */
+    lb.appendChild(extLink("analysis.html#jumps", "Jump history →"));
     g.appendChild(lb);
 
     /* The verdict repaints in place as she types. Calling renderSession() from
