@@ -1927,7 +1927,12 @@ var PLYO = {
 var PLYO_DROP = {
   "Box jump, step down": ["2026-09-22","2026-09-29","2026-10-06","2026-10-13",
                           "2026-10-20","2026-10-27","2026-11-03"],
-  "Transformer bar squat": ["2026-09-26","2026-10-03","2026-10-17","2026-10-24"]
+  "Transformer bar squat": ["2026-09-26","2026-10-03","2026-10-17","2026-10-24"],
+  /* From Oct 6 her own block opens Tuesday with a PAP contrast pair - pin squat
+     at 80% into trap bar jumps, 12 loaded jumps a session. Running that beside
+     the coach's Thursday would be two maximal jump days a week, one of them on
+     the day she is least able to jump. Thursday keeps the jumping. */
+  "Contrast pair": ["2026-10-06","2026-10-13","2026-10-20","2026-10-27"]
 };
 
 var PLYO_NOTE = {
@@ -1959,10 +1964,21 @@ function applyPlyo(){
   Object.keys(PLYO).forEach(function(dt){
     var s = SESSIONS[dt], p = PLYO[dt];
     if(!s || !s.ex || s.plyo) return;
-    s.ex = p.ex.concat(s.ex);
+    /* A test goes first or it is not a test. The 7-stroke retest sits at the
+       top of two of these Saturdays, and 25 hurdle hops in front of it would
+       measure the hurdle hops. */
+    var at = 0;
+    while(at < s.ex.length && (s.ex[at].test || s.ex[at].s === "—")) at++;
+    s.ex = s.ex.slice(0, at).concat(p.ex, s.ex.slice(at));
     if(p.mode === "int"){
       s.ex.forEach(function(x){
-        if(x.n === "Hip thrust" && /3 × 10/.test(x.rx)) x.rx = x.rx.replace("3 × 10", "2 × 10");
+        /* One set off the hip thrust pays for the jumps that now open the day.
+           The prescription changes shape across the block (3 × 10 in September,
+           4 × 8 from October), so take a set off whatever it currently says
+           rather than matching one spelling of it. */
+        if(x.n === "Hip thrust") x.rx = x.rx.replace(/^([0-9]+)/, function(m){
+          return String(Math.max(2, Number(m) - 1));
+        });
       });
     }
     plyoRelabel(s.ex);
