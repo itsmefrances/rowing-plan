@@ -1745,13 +1745,19 @@ function jpReads(S2, fit){
     (late >= 2 ? "The last attempt is now winning, so the current count no longer finds your ceiling - a fourth and fifth jump would."
                : "The best jump still lands early, so the current count is enough."));
 
-  var rec = Math.round(jpMed(S2.map(function(s){ return s.best; })) * 2) / 2;
+  /* The console scores green at or above -5%, amber down to -10%, red below
+     that. So the baseline has to sit near a good day rather than a typical one:
+     anchored on the median, a session like Sep 15 - the day after a maximal erg
+     - reads green and the gate never fires at all. Mean of the three best
+     sessions is high enough to discriminate and hard for one fluke to move. */
+  var tops = S2.map(function(s){ return s.best; }).sort(function(a, b){ return b - a; }).slice(0, 3);
+  var rec = Math.round(mean(tops) * 2) / 2;
   line("Readiness",
-    "On this series <em>" + rec.toFixed(1) + "&Prime;</em> is the sensible console baseline - the median of every session best. " +
-    "Set it in the block console and the gate starts scoring: " +
+    "Set <em>" + rec.toFixed(1) + "&Prime;</em> as the console baseline - the mean of your three best sessions. " +
+    "The gate scores green at or above &minus;5%, amber down to &minus;10%, red below that, so an anchor near a good day is what makes it fire at all: " +
     S2.slice(-3).map(function(s){
       var p = (s.best - rec)/rec*100;
-      return fmtDay(s.date) + " " + (p >= -2 ? "green" : p >= -8 ? "amber" : "red") + " at " + pctStr(p);
+      return fmtDay(s.date) + " " + (p >= -5 ? "green" : p >= -10 ? "amber" : "red") + " at " + pctStr(p);
     }).join(", ") + ".");
 
   line("Protocol",
