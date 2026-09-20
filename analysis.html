@@ -1472,7 +1472,8 @@ var JPDATE = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 
 function jpJsonp(cb, onErr){
   var name = "jpcb_" + Math.random().toString(36).slice(2), sc = null;
-  var t = setTimeout(function(){ done(); onErr("timeout"); }, 15000);
+  /* Apps Script cold-starts; 15s was not enough and the panel hid itself */
+  var t = setTimeout(function(){ done(); onErr("timeout"); }, 30000);
   function done(){
     clearTimeout(t);
     try{ delete window[name]; }catch(e){ window[name] = undefined; }

@@ -208,6 +208,47 @@ footer{margin-top:38px;padding-top:13px;border-top:1px solid var(--rule);
   </p>
 </section>
 
+<section id="plyo">
+  <div class="shead">
+    <h2>Plyometric block</h2>
+    <span class="note" id="plyoRange">Six weeks · programmed by her jump coach, adapted here</span>
+  </div>
+  <p class="lede">
+    This block is not mine. The progression, the exercise selection and the week-to-week
+    shape are the jump coach's, run as written apart from three things, set out below:
+    the day it lands on, the entry point, and one pause for a race. Each has a reason and
+    each is reversible — if any of them is wrong, this is the part to say so about.
+  </p>
+  <div class="tw"><table id="plyoTable">
+    <thead><tr><th>Coach wk</th><th>Intensive · Thursday</th><th>Extensive · Saturday</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <div class="shead" style="margin-top:24px;"><h2>What was adapted, and why</h2></div>
+  <div class="grid g3" id="plyoAdapt"></div>
+
+  <div class="shead" style="margin-top:24px;"><h2>What came out to make room</h2>
+    <span class="note">Her own programming, displaced by this block</span></div>
+  <div class="tw"><table id="plyoDrops">
+    <thead><tr><th>Removed</th><th>When</th><th>Reason</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <div class="shead" style="margin-top:24px;"><h2>Measurement</h2>
+    <span class="note" id="plyoCmjHead">Countermovement jump, read live from the training log</span></div>
+  <div class="grid g4" id="plyoCmj"></div>
+  <p class="lede" style="margin-top:12px;">
+    Three jumps, 30 s apart, hands on hips, before anything else touches her legs, with a few
+    low-effort jumps first so the test reads readiness and not warm-up state. The <strong>mean</strong>
+    of the three is scored, not the best — averaged jump height tracks neuromuscular status more
+    sensitively than peak, and her best attempt has been drifting later in the set, which is
+    exactly the noise a mean sees through. Against a baseline set at the mean of her three best
+    sessions, the session scores green at or above &minus;5%, amber to &minus;10%, red below.
+    On an intensive day amber removes one set from each jump and leaves the lifting alone;
+    red removes the max-intent jumping altogether.
+  </p>
+</section>
+
 <section>
   <div class="shead">
     <h2>Week by week</h2>
@@ -245,6 +286,7 @@ footer{margin-top:38px;padding-top:13px;border-top:1px solid var(--rule);
 <footer id="foot">Generated from the live block plan.</footer>
 </div>
 
+<script src="plyo.js"></script>
 <script>
 /* ------------------------------------------------------------------
    Reads block-plan.json — the same file the training console renders
@@ -615,6 +657,160 @@ function renderTests(plan){
   if(!any) document.getElementById("testSec").hidden = true;
 }
 
+
+/* ---------- plyometric block ----------
+   The schedule itself comes from plyo.js, the same file the training console
+   applies, so this table cannot drift from the week she actually runs. */
+function plyoCell(dt, ex){
+  var d = el("div");
+  d.appendChild(el("div","mono", fmtDay(dt)));
+  ex.forEach(function(x){
+    var r = el("div", null, x.n + "  ·  " + String(x.rx).split(" · ")[0]);
+    r.style.fontSize = "13px"; r.style.color = "var(--ink-2)";
+    d.appendChild(r);
+  });
+  return d;
+}
+function renderPlyo(){
+  var sec = document.getElementById("plyo");
+  if(!sec) return;
+  if(typeof PLYO === "undefined"){ sec.hidden = true; return; }
+  var dates = Object.keys(PLYO).sort();
+  document.getElementById("plyoRange").textContent =
+    "Six weeks · " + fmtDay(dates[0]) + " – " + fmtDay(dates[dates.length-1]) +
+    " · programmed by her jump coach, adapted here";
+
+  var byWk = {};
+  dates.forEach(function(dt){
+    var p = PLYO[dt];
+    if(!byWk[p.wk]) byWk[p.wk] = {};
+    byWk[p.wk][p.mode] = {dt:dt, ex:p.ex};
+  });
+  var tb = document.querySelector("#plyoTable tbody");
+  Object.keys(byWk).map(Number).sort(function(a,b){ return a-b; }).forEach(function(wk){
+    var r = byWk[wk], tr = document.createElement("tr");
+    var c0 = document.createElement("td");
+    c0.className = "mono"; c0.textContent = wk;
+    tr.appendChild(c0);
+    ["int","ext"].forEach(function(m){
+      var td = document.createElement("td");
+      if(r[m]) td.appendChild(plyoCell(r[m].dt, r[m].ex));
+      else {
+        var n = el("div", null, "paused — ATHX race, Sat 10 Oct");
+        n.style.color = "var(--muted)"; n.style.fontSize = "13px";
+        td.appendChild(n);
+      }
+      tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+
+  var ADAPT = [
+    ["Thursday and Saturday, not Tuesday and Thursday",
+     "Monday is a maximal erg session on a squad programme that cannot be moved. Both Tuesdays on record after one are her two lowest jump sessions — 17.90 and 18.87 inch means, against 19.50 to 19.80 on Thursdays and Saturdays. The intensive day was moved off the back of that erg. Spacing is unchanged: two days to the extensive session, five back to the next intensive."],
+    ["Entered at week 3, at the bottom of every range",
+     "Weeks 1 and 2 were not run, so weeks 3 and 4 take the low end of each written rep range. The consecutive broad jumps start lower still — 2 x 5 against the written 3 x 5-7 — because of a proximal hamstring tendinopathy that is roughly 80 percent resolved. They are titrated on their own and meet the written volume once a week passes with no next-morning soreness at the origin."],
+    ["One pause for a race, not a skipped step",
+     "ATHX on 10 October is a race day and falls on an extensive Saturday. That session is dropped and the extensive track resumes at coach week 5 on 17 October rather than skipping ahead and landing on the heaviest week cold. The intensive track keeps its own dates; 8 October is trimmed to two sets of each as a sharpener 48 hours out."]
+  ];
+  var ah = document.getElementById("plyoAdapt");
+  ADAPT.forEach(function(a){
+    var c = el("div","card");
+    c.appendChild(el("h3", null, a[0]));
+    var p = el("p", null, a[1]);
+    p.style.marginTop = "7px"; p.style.fontSize = "13.5px"; p.style.color = "var(--ink-2)";
+    c.appendChild(p);
+    ah.appendChild(c);
+  });
+
+  var DROPS = [
+    ["Box jump, step down — 4 x 3", "Tue 22 and 29 Sep",
+     "Non-reactive by design — she steps down rather than rebounding. The same slot this block fills better."],
+    ["Contrast pair — pin squat at 80% into trap bar jump x 3, 4 rounds", "Tue 6, 13, 20 and 27 Oct",
+     "Twelve loaded jumps a session. Kept alongside the intensive Thursday it would have made two maximal jump days a week, one of them on her weakest jumping day."],
+    ["Transformer bar squat — 3 x 5 at 50-60%, paused", "Sat 26 Sep, 3, 17 and 24 Oct",
+     "Bracing work, the lowest-specificity item on the day. Restored for weeks 7 and 8 when extensive volume drops."],
+    ["Hip thrust — one set", "Every intensive Thursday",
+     "Pays for the jumps that now open the day."]
+  ];
+  var dt2 = document.querySelector("#plyoDrops tbody");
+  DROPS.forEach(function(d){
+    var tr = document.createElement("tr");
+    [d[0], d[1], d[2]].forEach(function(v, k){
+      var td = document.createElement("td");
+      td.textContent = v;
+      if(k === 1) td.className = "mono";
+      tr.appendChild(td);
+    });
+    dt2.appendChild(tr);
+  });
+}
+
+/* ---------- jump numbers, read live from the training log ---------- */
+var CMJ_EP = "https://script.google.com/macros/s/AKfycbyq0ZEWv8ZfkL8XhESm5gU7APsIVvm86VRGt8HFbTVepVQJEixQ4Lk_P9GGdEvodsw/exec";
+function cmjTile(host, k, v, s){
+  var d = el("div","card");
+  var a = el("div","eyebrow", k); d.appendChild(a);
+  var b = el("div","mono", v); b.style.fontSize = "21px"; b.style.marginTop = "5px"; d.appendChild(b);
+  if(s){ var c = el("div", null, s); c.style.fontSize = "12.5px"; c.style.color = "var(--muted)"; c.style.marginTop = "4px"; d.appendChild(c); }
+  host.appendChild(d);
+}
+function bootCmj(){
+  var host = document.getElementById("plyoCmj");
+  if(!host) return;
+  var name = "cmjcb_" + Math.random().toString(36).slice(2), sc = null;
+  /* Apps Script cold-starts; 15s was not enough and the panel silently gave up */
+  var t = setTimeout(function(){ done(); fail(); }, 30000);
+  function done(){
+    clearTimeout(t);
+    try{ delete window[name]; }catch(e){ window[name] = undefined; }
+    if(sc && sc.parentNode) sc.parentNode.removeChild(sc);
+  }
+  function fail(){
+    document.getElementById("plyoCmjHead").textContent =
+      "Countermovement jump — live figures unavailable right now";
+  }
+  window[name] = function(rows){
+    done();
+    try{
+      if(!Array.isArray(rows) || rows.length < 2) return fail();
+      var head = rows[0] || [], ix = {};
+      head.forEach(function(h,k){ ix[String(h)] = k; });
+      var by = {};
+      rows.slice(1).forEach(function(r){
+        if(String(r[ix.exercise] || "").toUpperCase() !== "CMJ") return;
+        var v = parseFloat(r[ix.weight]), d = String(r[ix.date] || "").slice(0,10);
+        var n = Number(r[ix.set_num]) || 0;
+        if(!(v > 0) || !/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(d) || !n) return;
+        if(!by[d]) by[d] = {};
+        by[d][n] = v;
+      });
+      var ds = Object.keys(by).sort();
+      if(!ds.length) return fail();
+      var ses = ds.map(function(d){
+        var j = Object.keys(by[d]).map(Number).sort(function(a,b){return a-b;}).map(function(k){ return by[d][k]; });
+        var sum = 0; j.forEach(function(x){ sum += x; });
+        return {d:d, j:j, best:Math.max.apply(null, j), mean:sum/j.length};
+      });
+      var f = ses[0], l = ses[ses.length-1];
+      var all = []; ses.forEach(function(s){ all = all.concat(s.j); });
+      var blockBest = Math.max.apply(null, all);
+      var tops = ses.map(function(s){ return s.best; }).sort(function(a,b){ return b-a; }).slice(0,3);
+      var tsum = 0; tops.forEach(function(x){ tsum += x; });
+      var dB = l.best - f.best;
+      cmjTile(host, "Sessions", String(ses.length), fmtDay(f.d) + " – " + fmtDay(l.d));
+      cmjTile(host, "Latest", l.mean.toFixed(2) + " in", "mean of three · best " + l.best.toFixed(1));
+      cmjTile(host, "Block best", blockBest.toFixed(1) + " in", "single attempt");
+      cmjTile(host, "Change", (dB >= 0 ? "+" : "\u2212") + Math.abs(dB).toFixed(1) + " in",
+        "on best jump since " + fmtDay(f.d));
+    }catch(e){ fail(); }
+  };
+  sc = document.createElement("script");
+  sc.src = CMJ_EP + "?callback=" + name;
+  sc.onerror = function(){ done(); fail(); };
+  document.head.appendChild(sc);
+}
+
 fetch("block-plan.json", {cache:"no-store"})
   .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
   .then(function(plan){
@@ -622,12 +818,18 @@ fetch("block-plan.json", {cache:"no-store"})
     document.getElementById("range").textContent =
       fmtDay(ds[0]) + " – " + fmtDay(ds[ds.length-1]) + " 2026  ·  " + BLOCK_N + " weeks";
     PLAN = plan;
+    /* the console applies this at runtime, so without it this page would show a
+       week she is not running - his block absent, and exercises listed that were
+       dropped to make room for it */
+    if(typeof applyPlyoTo === "function") applyPlyoTo(plan);
     renderPhases(plan);
     renderWeekShape(plan);   /* fills WEEKSHAPE, which labels the filter */
     renderFilter();
     renderErg(plan);
     renderProg(plan);
     renderTests(plan);
+    renderPlyo();
+    bootCmj();
     document.getElementById("foot").textContent =
       "Generated from the live block plan · " + ds.length + " programmed days.";
   })
