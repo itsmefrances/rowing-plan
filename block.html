@@ -1432,10 +1432,12 @@ function renderSession(){
            the gate protects. A jump taken tired does not merely fail to train
            power, it trains the opposite; the lift is the thing that holds. */
         var pInt = s.plyo === "int";
+        var pErg = s.kind === "erg";
         var txt = (pInt
           ? {g:"Run the session as written",
-             a:"Drop one set from each jump \u2014 the lift stays as written",
-             r:"No max-intent jumping today. Skip the top set, technical work at 70%, keep the accessories."}
+             a:"Drop one set from each jump \u2014 the " + (pErg ? "erg piece" : "lift") + " stays as written",
+             r: pErg ? "No max-intent jumping today. The sprint piece stays; the jumps wait a week."
+                     : "No max-intent jumping today. Skip the top set, technical work at 70%, keep the accessories."}
           : {g:"Run the session as written",
              a:"Drop the last set of the main lift \u2014 keep everything else",
              r:"Skip the top set. Technical work at 70%, keep the accessories."})[r.lvl];
@@ -1443,7 +1445,8 @@ function renderSession(){
         v.appendChild(el("div","vd", "Best " + r.best + "\u2033 vs baseline " + state.baseline.cmj + "\u2033" +
           " \u2014 " + (r.pct>=0?"+":"") + r.pct.toFixed(1) + "%"));
         if(r.lvl === "r") v.appendChild(el("div","vd", pInt
-          ? "The jumps and the heavy single are both off. Neither one buys anything on a day that reads like this."
+          ? (pErg ? "A jump taken on a day that reads like this trains the opposite of what it is for."
+                  : "The jumps and the heavy single are both off. Neither one buys anything on a day that reads like this.")
           : "The heavy single is off. A heavy single on a bad day is all cost and no adaptation."));
         if(r.lvl === "a") v.appendChild(el("div","vd", pInt
           ? "Jump quality is what is being protected \u2014 a jump more than 10% off your best is not a working rep."
@@ -1564,9 +1567,12 @@ function renderSession(){
     }
     b.style.display = "flex"; b.style.flexDirection = "column"; b.style.gap = "11px";
     host.appendChild(b);
+    var ergBox = b;
   }
 
-  if(s.kind === "lift"){
+  /* an erg day can carry jump work too: the intensive plyo day sits in front
+     of Monday's sprint piece */
+  if(s.kind === "lift" || (s.ex && s.ex.length)){
     var showAll = !!state.showAll;
     var hidden = 0;
     s.ex.forEach(function(x, i){
@@ -1673,6 +1679,10 @@ function renderSession(){
       host.appendChild(tg);
     }
   }
+
+  /* on a jumps-plus-sprint Monday the jumps are done first, so the erg piece
+     moves below them - the card reads in the order she does it */
+  if(s.kind === "erg" && s.ex && s.ex.length && ergBox) host.appendChild(ergBox);
 
   /* The peak number is logged after the test, so its field sits at the foot
      of the card rather than up with the warm-up. */

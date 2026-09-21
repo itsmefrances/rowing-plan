@@ -220,7 +220,7 @@ footer{margin-top:38px;padding-top:13px;border-top:1px solid var(--rule);
     each is reversible — if any of them is wrong, this is the part to say so about.
   </p>
   <div class="tw"><table id="plyoTable">
-    <thead><tr><th>Coach wk</th><th>Intensive · Thursday</th><th>Extensive · Saturday</th></tr></thead>
+    <thead><tr><th>Coach wk</th><th>Intensive · with the week's sprint work</th><th>Extensive</th></tr></thead>
     <tbody></tbody>
   </table></div>
 
@@ -244,7 +244,7 @@ footer{margin-top:38px;padding-top:13px;border-top:1px solid var(--rule);
     sensitively than peak, and her best attempt has been drifting later in the set, which is
     exactly the noise a mean sees through. Against a baseline set at the mean of her three best
     sessions, the session scores green at or above &minus;5%, amber to &minus;10%, red below.
-    On an intensive day amber removes one set from each jump and leaves the lifting alone;
+    On an intensive day amber removes one set from each jump and leaves the lift or the erg piece alone;
     red removes the max-intent jumping altogether.
   </p>
 </section>
@@ -484,6 +484,11 @@ function sessionCard(dt, s, dayLabel){
   } else if(isTest){
     c.appendChild(el("div", null, "")).appendChild(el("span","tgt","Test — row it out"));
   }
+  /* the intensive jumps sit in front of Monday's sprint piece */
+  if(s.ex && s.ex.length){
+    c.appendChild(el("div","rx", "Jumps first — " + s.ex.map(function(x){
+      return x.n + " " + String(x.rx).split(" · ")[0]; }).join(" · ")));
+  }
   return c;
 }
 
@@ -663,7 +668,7 @@ function renderTests(plan){
    applies, so this table cannot drift from the week she actually runs. */
 function plyoCell(dt, ex){
   var d = el("div");
-  d.appendChild(el("div","mono", fmtDay(dt)));
+  d.appendChild(el("div","mono", ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date(dt + "T12:00:00Z").getUTCDay()] + " " + fmtDay(dt)));
   ex.forEach(function(x){
     var r = el("div", null, x.n + "  ·  " + String(x.rx).split(" · ")[0]);
     r.style.fontSize = "13px"; r.style.color = "var(--ink-2)";
@@ -706,12 +711,12 @@ function renderPlyo(){
   });
 
   var ADAPT = [
-    ["Thursday and Saturday, not Tuesday and Thursday",
-     "Monday is a maximal erg session on a squad programme that cannot be moved. Both Tuesdays on record after one are her two lowest jump sessions — 17.90 and 18.87 inch means, against 19.50 to 19.80 on Thursdays and Saturdays. The intensive day was moved off the back of that erg. Spacing is unchanged: two days to the extensive session, five back to the next intensive."],
+    ["Monday, paired with the sprint erg",
+     "Per your note that the intensive jumps belong alongside other CNS-intensive work. There is no Olympic lifting in her week and her only true sprint day is Monday's erg piece, so the intensive jumps open Monday, fresh off a rest day, and the sprint piece follows. It also removes the reason they had been moved off Tuesday: both Tuesdays on record after a maximal Monday erg were her two lowest jump sessions, 17.90 and 18.87 inch means against 19.50 to 19.80 on other days. Week 3 stays on Thursday 24 September as the bridge; the Monday pattern starts 28 September, with the extensive session three days later on Thursday, close to your original Tuesday-to-Thursday spacing."],
     ["Entered at week 3, at the bottom of every range",
-     "Weeks 1 and 2 were not run, so weeks 3 and 4 take the low end of each written rep range. The consecutive broad jumps start lower still — 2 x 5 against the written 3 x 5-7 — because of a proximal hamstring tendinopathy that is roughly 80 percent resolved. They are titrated on their own and meet the written volume once a week passes with no next-morning soreness at the origin."],
-    ["One pause for a race, not a skipped step",
-     "ATHX on 10 October is a race day and falls on an extensive Saturday. That session is dropped and the extensive track resumes at coach week 5 on 17 October rather than skipping ahead and landing on the heaviest week cold. The intensive track keeps its own dates; 8 October is trimmed to two sets of each as a sharpener 48 hours out."]
+     "Weeks 1 and 2 were not run, so weeks 3 and 4 take the low end of each written rep range. The consecutive broad jumps start lower still, 2 x 5 against the written 3 x 5-7, because of a proximal hamstring tendinopathy that is roughly 80 percent resolved. They are titrated on their own and meet the written volume once a week passes with no next-morning soreness at the origin."],
+    ["Two test Mondays and one race",
+     "5 and 19 October are erg test days, so the intensive work drops to two sets of each and still goes first, as a primer rather than a session. ATHX on 10 October falls two days after an extensive Thursday; that session is dropped and the extensive track resumes at coach week 5 on 15 October rather than skipping ahead and landing on the heaviest week cold."]
   ];
   var ah = document.getElementById("plyoAdapt");
   ADAPT.forEach(function(a){
@@ -725,13 +730,13 @@ function renderPlyo(){
 
   var DROPS = [
     ["Box jump, step down — 4 x 3", "Tue 22 and 29 Sep",
-     "Non-reactive by design — she steps down rather than rebounding. The same slot this block fills better."],
+     "Non-reactive by design, since she steps down rather than rebounding, and Tuesday now follows the week's max-intent jumping."],
     ["Contrast pair — pin squat at 80% into trap bar jump x 3, 4 rounds", "Tue 6, 13, 20 and 27 Oct",
-     "Twelve loaded jumps a session. Kept alongside the intensive Thursday it would have made two maximal jump days a week, one of them on her weakest jumping day."],
-    ["Transformer bar squat — 3 x 5 at 50-60%, paused", "Sat 26 Sep, 3, 17 and 24 Oct",
-     "Bracing work, the lowest-specificity item on the day. Restored for weeks 7 and 8 when extensive volume drops."],
-    ["Hip thrust — one set", "Every intensive Thursday",
-     "Pays for the jumps that now open the day."]
+     "It pairs jumps with heavy lifting, which fits the principle, but 24 hours after the Monday session it would be a second maximal jump day. It can come back in place of something else if you would rather keep it."],
+    ["Transformer bar squat — 3 x 5 at ~50%, paused", "Sat 26 Sep",
+     "Bracing work, the lowest-specificity item on the one Saturday that still carries extensive volume."],
+    ["Hip thrust — one set", "Every Thursday carrying jump work",
+     "Pays for the jumps that now share the day."]
   ];
   var dt2 = document.querySelector("#plyoDrops tbody");
   DROPS.forEach(function(d){
