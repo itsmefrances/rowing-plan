@@ -149,8 +149,18 @@
    "Metres per stroke 8.40 → 8.89 (+5.9%); work per stroke 431 → 456 J (+5.8%). The whole gain is length, not power.",
    "Your own economy model predicts 30.1 spm for 219 W. You held 28.9, about 4% under. On Aug 5 you were 1.7% over it.",
    "Reps 1–7 inside 0.6 s of each other, then 1:54.3 on the last — fastest rep of the day, the same warm-in signature as everywhere else.",
-   "Rowed at 27–31 spm against a prescribed 28–32, so the pace came from the stroke rather than the rating."
+   "Rowed at 27–31 spm against a prescribed 28–32, so the pace came from the stroke rather than the rating.",
+   "Watch HR (Apple Watch Ultra, clean trace through the work sets): average 138, peak 173. Per-rep peaks climbed 160 → 173 while pace held inside 0.6 s — cardiac cost per watt rose as the stroke shortened, so the economy gain in reps 1–4 was being paid for by rep 8.",
+   "Peak 173 is 90% of the 192 configured as lifetime max in FITIV. The last rep of a VO₂ session should land at 95–98% of true max, which puts the real ceiling near 176–180 and means every zone boundary in the app reads about 14 bpm high. 1-minute HR recovery 51 bpm."
   ],
+  "hr": {
+   "src": "Apple Watch Ultra",
+   "avg": 138,
+   "max": 173,
+   "hrr60": 51,
+   "peaks": "160 → 173 across the eight reps",
+   "flag": "FITIV lifetime max configured at 192 is too high; observed ceiling implies 176–180. Re-measure on the Oct 14 2 km."
+  },
   "watch": "Rate discipline held while fatigue accumulated: rate drifted 27 → 31 across the session but pace never moved more than 0.6 s until the last rep. That is the control that was missing on Sep 9.",
   "next": "Another session beating a band built off a 1:39.9 PB that is now stale, at a lower rate than prescribed. Re-anchor the pace model after the Oct 5 400 m test rather than guessing at it now."
  }
