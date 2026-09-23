@@ -122,5 +122,36 @@
   ],
   "watch": "The pacing calls. My first plan (1:35–1:36) was too hot; my revised one (1:39.5) was too cautious — you beat it by 2.3 s/500m on every scored rep. Your own rules were the right ones: ease the unscored reps, cap the last at a proven finish. The calibration to carry forward is ~382 W for 30 s off 70 s rest when the reps alternate.",
   "next": "Your 1:39.9 500 m PB is now the stale number the whole pace model hangs on — on Sep 14 you held 1:39.0 for 444 m, and today 1:37 three times. The Oct 5 400 m test and the Nov 16 500 m will reset it; until then, read the sprint bands as slightly soft."
+ },
+ "2026-09-22": {
+  "title": "Strength A — Leg drive",
+  "session": "Back squat 4 × 5 @ 190, single 205, pins 3 × 3 @ 175",
+  "headline": "Heavier and faster than last week — and we found where your parallel actually is.",
+  "points": [
+   "Work sets 190 × 5: 0.43, 0.46, 0.45, 0.42 m/s. Set 2 was the fastest set of fives in the block, at the heaviest load of the block. Sep 15 was 0.42–0.45 at 175, Sep 8 was 0.37–0.44 at 180.",
+   "Video calibrated the tracker: ~23.0 in of bar travel is above parallel, 23.8–24.1 in is at parallel, 24.9 in is clearly below. That is now the rule — 23.8 in or more counts as a rep.",
+   "By that rule the four work sets had 0, 1, 3 and 5 reps at depth. Depth improved every set, and the only full-depth set was the one you rated 9.5/10. Depth, not load, is what made it hard.",
+   "205 single taken after the work sets: 0.36 m/s at 24.9 in. Sep 15's was 0.32 at 23.5 in taken fresh — deeper and faster, after 20 working reps.",
+   "Pins 175 × 3 × 3 at 0.44, 0.44, 0.46 — 5 lb up on Sep 15 at the same speed, and peak power up to 956 W. Rep 1 was fastest in every set, so the resets between reps are still short.",
+   "Load-velocity fit on the ramp plus the single: 229 lb at 0.30 m/s, R² 0.96 — the first fit that matches your true 230."
+  ],
+  "watch": "The pre-registered test was inconclusive: 0.36 landed between the 0.38 line for confirming the cold single and the 0.32 that would have refuted it. No permanent reorder. From Oct 6 the work sets outweigh the single anyway, so the question closes itself.",
+  "next": "Sep 15's work sets averaged 22.5–22.9 in, so most of them were above parallel — earlier speed numbers flatter you. From here, compare full-depth reps only. Set the pins at parallel height so the depth is enforced, and take a full breath and re-brace between pin reps."
+ },
+ "2026-09-23": {
+  "key": "d500x8",
+  "title": "Rowfit — VO₂ 8×500m",
+  "session": "VO₂ 8×500m off 2:00",
+  "headline": "Same pace as Aug 5 at nearly two strokes a minute fewer.",
+  "points": [
+   "4,000 m in 15:34.8 of work at 1:56.8 /500m, r28, drag 117. Band 1:59.9–2:04.9 — 3.1 s/500m faster than the top of it.",
+   "Aug 5, same session: 1:56.8 at r30.6. Identical average pace and watts (220 vs 219), 1.7 fewer strokes per minute.",
+   "Metres per stroke 8.40 → 8.89 (+5.9%); work per stroke 431 → 456 J (+5.8%). The whole gain is length, not power.",
+   "Your own economy model predicts 30.1 spm for 219 W. You held 28.9, about 4% under. On Aug 5 you were 1.7% over it.",
+   "Reps 1–7 inside 0.6 s of each other, then 1:54.3 on the last — fastest rep of the day, the same warm-in signature as everywhere else.",
+   "Rowed at 27–31 spm against a prescribed 28–32, so the pace came from the stroke rather than the rating."
+  ],
+  "watch": "Rate discipline held while fatigue accumulated: rate drifted 27 → 31 across the session but pace never moved more than 0.6 s until the last rep. That is the control that was missing on Sep 9.",
+  "next": "Another session beating a band built off a 1:39.9 PB that is now stale, at a lower rate than prescribed. Re-anchor the pace model after the Oct 5 400 m test rather than guessing at it now."
  }
 }
