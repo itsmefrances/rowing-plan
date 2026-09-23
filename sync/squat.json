@@ -3,6 +3,25 @@
  "note": "Barbell velocity tracker, back squat. v = mean concentric velocity of the set; vbest = fastest rep in the set, which is what the load-velocity fit uses. wpk = peak power. Watts are corrected where the device was set to the wrong load.",
  "sessions": [
   {
+   "date": "2026-09-22",
+   "depth": "From this session on, 23.8 in of bar travel or more counts as a rep to parallel, checked against video. The four sets of fives had 0, 1, 3 and 5 reps at depth; the 205 single was 24.9 in, clearly below parallel.",
+   "warmup": "85 x 5 general warm-up (0.67 m/s avg) left out of the fit, as on Sep 15, whose ramp also began at 125.",
+   "sets": [
+    {"n": 2,  "load": 125, "reps": 3, "phase": "ramp",   "v": 0.64, "vbest": 0.66, "vpk": 1.05, "rom": 24.3, "w": 354, "wpk": 679, "tpv": 0.73},
+    {"n": 3,  "load": 145, "reps": 3, "phase": "ramp",   "v": 0.56, "vbest": 0.59, "vpk": 0.93, "rom": 23.4, "w": 367, "wpk": 684, "tpv": 0.81},
+    {"n": 4,  "load": 165, "reps": 3, "phase": "ramp",   "v": 0.50, "vbest": 0.52, "vpk": 0.95, "rom": 23.5, "w": 372, "wpk": 790, "tpv": 0.97},
+    {"n": 5,  "load": 185, "reps": 2, "phase": "ramp",   "v": 0.48, "vbest": 0.49, "vpk": 0.94, "rom": 23.4, "w": 394, "wpk": 887, "tpv": 1.04},
+    {"n": 6,  "load": 190, "reps": 5, "phase": "work",   "v": 0.43, "vbest": 0.47, "vpk": 0.81, "rom": 23.2, "w": 367, "wpk": 756, "tpv": 1.12, "fix": "device logged 195"},
+    {"n": 7,  "load": 190, "reps": 5, "phase": "work",   "v": 0.46, "vbest": 0.50, "vpk": 0.88, "rom": 23.3, "w": 388, "wpk": 838, "tpv": 1.12},
+    {"n": 8,  "load": 190, "reps": 5, "phase": "work",   "v": 0.45, "vbest": 0.51, "vpk": 0.95, "rom": 23.4, "w": 386, "wpk": 936, "tpv": 1.12},
+    {"n": 9,  "load": 190, "reps": 5, "phase": "work",   "v": 0.42, "vbest": 0.48, "vpk": 0.84, "rom": 24.3, "w": 354, "wpk": 787, "tpv": 1.29},
+    {"n": 10, "load": 205, "reps": 1, "phase": "single", "v": 0.36, "vbest": 0.36, "vpk": 0.79, "rom": 24.9, "w": 327, "wpk": 760, "tpv": 1.58, "fix": "taken after the work sets, not before"},
+    {"n": 11, "load": 175, "reps": 3, "phase": "pin",    "v": 0.44, "vbest": 0.46, "vpk": 0.97, "rom": 23.8, "w": 343, "wpk": 874, "tpv": 1.19},
+    {"n": 12, "load": 175, "reps": 3, "phase": "pin",    "v": 0.44, "vbest": 0.48, "vpk": 0.98, "rom": 23.7, "w": 347, "wpk": 887, "tpv": 1.15},
+    {"n": 13, "load": 175, "reps": 3, "phase": "pin",    "v": 0.46, "vbest": 0.49, "vpk": 1.04, "rom": 23.7, "w": 356, "wpk": 956, "tpv": 1.12}
+   ]
+  },
+  {
    "date": "2026-09-15",
    "sets": [
     {"n": 1,  "load": 125, "reps": 3, "phase": "ramp",   "v": 0.53, "vbest": 0.60, "vpk": 0.92, "rom": 23.3, "w": 299, "wpk": 564, "tpv": 0.84},

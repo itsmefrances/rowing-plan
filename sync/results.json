@@ -522,5 +522,19 @@
   "shape": "140→190m ladder off 1:10",
   "key": "lad140x6",
   "v": 2
+ },
+ "2026-09-23": {
+  "id": 120896009,
+  "link": "https://log.concept2.com/profile/2198296/log/120896009",
+  "dist": 4000,
+  "time": "29:34.8",
+  "pace": "1:56.8",
+  "rate": 28,
+  "band": "1:59.9–2:04.9",
+  "verdict": "above",
+  "note": "Rowfit VO₂ 8×500m off 2:00. Same shape as Aug 5 and the same average pace (1:56.8), at 28.9 spm against 30.6 — 8.89 m per stroke vs 8.40, 456 J per stroke vs 431. Last rep fastest again at 1:54.3. Drag 117.",
+  "shape": "8 × 500m off 2:00",
+  "key": "d500x8",
+  "v": 2
  }
 }
