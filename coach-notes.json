@@ -151,15 +151,39 @@
    "Reps 1–7 inside 0.6 s of each other, then 1:54.3 on the last — fastest rep of the day, the same warm-in signature as everywhere else.",
    "Rowed at 27–31 spm against a prescribed 28–32, so the pace came from the stroke rather than the rating.",
    "Watch HR (Apple Watch Ultra, clean trace through the work sets): average 138, peak 173. Per-rep peaks climbed 160 → 173 while pace held inside 0.6 s — cardiac cost per watt rose as the stroke shortened, so the economy gain in reps 1–4 was being paid for by rep 8.",
-   "Peak 173 is 90% of the 192 configured as lifetime max in FITIV. The last rep of a VO₂ session should land at 95–98% of true max, which puts the real ceiling near 176–180 and means every zone boundary in the app reads about 14 bpm high. 1-minute HR recovery 51 bpm."
+   "Peak 173 is 90% of the 191 configured as lifetime max in FITIV. Fitting the eight rep peaks (163, 167, 168, 169, 170, 172, 172, 173) to an exponential gives an asymptote of 174.5 bpm (SSE 2.2), so true max is about 175 — not the 178 first estimated from the single peak value. Every zone boundary in the app reads roughly 14 bpm high.",
+   "Recovery floor rose 23 bpm across the piece: the trough before each rep ran 116, 117, 122, 130, 129, 137, 139. Same 2:00 rest and the same work each time, progressively less complete recovery — the quantitative version of the stroke shortening.",
+   "FITIV's \"1-minute HR recovery 51\" is mislabelled. The true 60 s drop from the end of the final effort is 20.4 bpm; 51 is about the 3-minute figure. It was also taken during an active cool-down, so it is not comparable to a standard passive HRR test in either direction."
   ],
   "hr": {
-   "src": "Apple Watch Ultra",
-   "avg": 138,
+   "src": "Apple Watch Ultra, beat-level export (581 samples, 52:48)",
+   "avg": 137.9,
    "max": 173,
-   "hrr60": 51,
-   "peaks": "160 → 173 across the eight reps",
-   "flag": "FITIV lifetime max configured at 192 is too high; observed ceiling implies 176–180. Re-measure on the Oct 14 2 km."
+   "avgPiece": 151.8,
+   "warmup": "19.2 min, avg 116.7, peak 152",
+   "repPeaks": [
+    163,
+    167,
+    168,
+    169,
+    170,
+    172,
+    172,
+    173
+   ],
+   "repFloors": [
+    116,
+    117,
+    122,
+    130,
+    129,
+    137,
+    139
+   ],
+   "asymptote": 174.5,
+   "hrr60": 20.4,
+   "setting": "Set FITIV to %HRR with max 175, resting 58. Zones: Z1 116-127, Z2 128-139, Z3 140-151, Z4 152-162, Z5 163+.",
+   "flag": "Configured max of 191 is far too high. 175 is this session's asymptote; the Nov 25 unrestricted 2 km may push it to 177-178."
   },
   "watch": "Rate discipline held while fatigue accumulated: rate drifted 27 → 31 across the session but pace never moved more than 0.6 s until the last rep. That is the control that was missing on Sep 9.",
   "next": "Another session beating a band built off a 1:39.9 PB that is now stale, at a lower rate than prescribed. Re-anchor the pace model after the Oct 5 400 m test rather than guessing at it now."
