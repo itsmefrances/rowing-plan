@@ -536,5 +536,19 @@
   "shape": "8 × 500m off 2:00",
   "key": "d500x8",
   "v": 2
+ },
+ "2026-09-25": {
+  "id": 120980394,
+  "link": "https://log.concept2.com/profile/2198296/log/120980394",
+  "dist": 7024,
+  "time": "30:00.0",
+  "pace": "2:08.1",
+  "rate": 25,
+  "band": "2:04.9–2:17.9",
+  "verdict": "in",
+  "note": "Rowfit Threshold 2×15:00 off 5:00. Rep 1 2:08.8 / 164 W, rep 2 2:07.4 / 169 W — 71.8% of PB, inside the band and 3.3 s/500m quicker than the 2:11.4 midpoint. r25 on both reps against 26–28. Heart rate from the FITIV export: rep 1 settled 160–166, rep 2 held 169–173 for ten minutes and peaked at 176, a new observed max. Rep 2’s figures come from the 612 s the watch captured; it dropped the first 208 s. Drag 116.",
+  "shape": "2 × 15:00 off 5:00",
+  "key": "t900x2",
+  "v": 2
  }
 }
