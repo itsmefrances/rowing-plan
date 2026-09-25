@@ -183,9 +183,47 @@
    "asymptote": 174.5,
    "hrr60": 20.4,
    "setting": "Set FITIV to %HRR with max 175, resting 58. Zones: Z1 116-127, Z2 128-139, Z3 140-151, Z4 152-162, Z5 163+.",
-   "flag": "Configured max of 191 is far too high. 175 is this session's asymptote; the Nov 25 unrestricted 2 km may push it to 177-178."
+   "flag": "Configured max of 191 is far too high. 175 is this session's asymptote; the Nov 25 unrestricted 2 km may push it to 177-178.",
+   "superseded": "Superseded Sep 25: the 2×15 held 171–173 for ten minutes and peaked at 176, so 175 was too low. The asymptote described 2-minute reps, not the heart's ceiling. Current estimate ~182."
   },
   "watch": "Rate discipline held while fatigue accumulated: rate drifted 27 → 31 across the session but pace never moved more than 0.6 s until the last rep. That is the control that was missing on Sep 9.",
   "next": "Another session beating a band built off a 1:39.9 PB that is now stale, at a lower rate than prescribed. Re-anchor the pace model after the Oct 5 400 m test rather than guessing at it now."
+ },
+ "2026-09-25": {
+  "key": "t900x2",
+  "title": "Rowfit — Threshold 2×15min",
+  "session": "Threshold 2×15min off 5:00",
+  "headline": "Held the band on legs that had nothing left — and the heart rate settled the max question.",
+  "points": [
+   "7,024 m in 30:00 of work at 2:08.1 /500m, r25, 166 W, drag 116. Rep 1 2:08.8 / 164 W, rep 2 2:07.4 / 169 W. 71.8% of PB: inside the 2:04.9–2:17.9 band, 3.3 s/500m quicker than the 2:11.4 midpoint. Negative split by 1.4 s, the usual shape.",
+   "Pacing, on me again. Before the session I said to row 2:05–2:07 and not 2:08–2:10. That repeated the Sep 18 mistake — that day's note says to trust the card and keep Friday as the volume day. Your own target was closer to right than mine, and on fatigued legs 2:08 was the correct ceiling.",
+   "Why it was the legs: Thursday was posterior-chain strength plus the intensive jump bridge, and the rowing stroke is a posterior-chain movement. A threshold day that follows it will be muscle-limited. That is the week's ordering, not a problem to fix.",
+   "Rate: r25 on both reps against a 26–28 prescription, under the floor for the third threshold session running. At 166 W that is 398 J per stroke over 9.4 m — the work done in fewer, heavier strokes, all of it landing on the tired muscles. r27 at the same watts is 369 J per stroke, about 7% lighter each, and moves some of the cost onto the cardiovascular side, which had headroom.",
+   "Heart rate: rep 1 took five minutes to settle, then held 160–166 (minutes 5–15 mean 162). Rep 2 held 169–173 for ten minutes (mean 171) and peaked at 176 in the final minute. Of the 9 bpm rise between reps, roughly 2–3 is the extra 5 W and 6–7 is drift.",
+   "Max HR: 176 is the new observed maximum and a floor, not a ceiling. Ten minutes at 171–173 on a sub-threshold power, with muscle rather than breathing the limiter, rules it out as the true max. The Sep 23 asymptote of 174.5 described 2-minute reps, where heart rate never has time to catch up — it was a lower bound. Best estimate now ~182 (180–185).",
+   "LTHR ≈ 168: rep 2's heart rate taken back to rep 1's power. The pre-session prediction of 150–160 was wrong in the same direction as the max estimate, for the same reason.",
+   "Against Sep 18: that day's early reps plateaued in the low 150s at 179 W and the last reached 168 at 190 W. Today rep 1 settled at 160–166 on 164 W and rep 2 sat at 171–173 on 169 W. More heart rate for less power — the cost of Thursday.",
+   "Data: the watch dropped 89 s early in rep 1 and the first 208 s of rep 2, so rep 2's figures come from the 612 s it captured. Heart rate fell 31 bpm in the minute after rep 2 (active cool-down) against 20 after Wednesday's last rep."
+  ],
+  "hr": {
+   "src": "Apple Watch Ultra, FITIV beat-level export",
+   "sessionAvg": 126,
+   "max": 176,
+   "rep1": {
+    "mean": 156.4,
+    "min5to15": 162.2
+   },
+   "rep2": {
+    "meanCaptured": 170.2,
+    "min5to15": 171.3,
+    "captured_s": 612
+   },
+   "hrr60": 31,
+   "maxEstimate": 182,
+   "lthrEstimate": 168,
+   "setting": "FITIV Manual: max 182, LTHR 168, resting 58. Zones Z1 120–131, Z2 132–144, Z3 145–156, Z4 157–169, Z5 170+. 176 stays the proven floor; the Oct 14 2 km gets closer and Nov 25 decides."
+  },
+  "watch": "Rate. Three threshold sessions in a row under the 26 floor. On a day the legs are cooked, the fix is turnover rather than grit — r27 at the same watts takes about 7% off every stroke.",
+  "next": "Oct 2 is Threshold 7×4min and Oct 9 repeats this 2×15. Row the card, 2:08–2:11 at r26–27. On Oct 9, compare rep 2's heart rate at matched watts: lower than 171 at ~169 W means the aerobic side is adapting."
  }
 }
