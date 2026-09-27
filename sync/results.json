@@ -550,5 +550,19 @@
   "shape": "2 × 15:00 off 5:00",
   "key": "t900x2",
   "v": 2
+ },
+ "2026-09-28": {
+  "id": 121038385,
+  "link": "https://log.concept2.com/profile/2198296/log/121038385",
+  "dist": 210,
+  "time": "0:37.8",
+  "pace": "1:30.0",
+  "rate": 48,
+  "band": "",
+  "verdict": "na",
+  "note": "Erg Power Series · The Gallop. 210 m in 0:37.8 at 1:30.0, 480 W. Score A (first 100 m) 0:18.0; the next 110 m in 0:19.8 — both halves at exactly 1:30.0. r50 then r48, drag 127. Rowed Sun Sep 27 at 07:02, filed under Monday's slot.",
+  "shape": "100m + 110m, no rest",
+  "key": "d210x1",
+  "v": 2
  }
 }
