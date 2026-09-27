@@ -238,9 +238,17 @@
    "The two 1:30.0 halves hide what happened inside them. The first two strokes came in at 319 and 399 W; strokes 3–13 then held 480–530 W, peaking at 530 W — 98% of your 540 W seven-stroke baseline. The second 110 m faded stroke by stroke from 502 W to 431 W at the line, down 17%. The cost of the start in the first half and the fade in the second happened to cancel.",
    "Nothing else in the log comes close: Aug 29's 4×100 m averaged 1:32.7 at r46, Sep 21's scored reps ran 1:37.0–1:37.3, Sep 14's Horsepower averaged 1:38.9. 480 W is 137% of the power at your 1:39.9 500 m PB (351 W).",
    "The warm-up did its job. At 7am, the hour when your first effort is usually your worst, the scored piece was the best you have rowed.",
+   "Heart rate (FITIV): the three biggest warm-up efforts reached 132–133 at 06:43, 06:48 and 06:52. Three and a half minutes of near-rest then dropped you to the low 80s before a final six minutes of lighter rowing, and you started the piece at about 120 bpm. It peaked at 163 right at the end — heart rate cannot catch up with a 38-second effort, so that number says nothing about max. It fell 31 bpm in the next minute, the same as after Friday's 2×15.",
    "Drag 127 against 123 on Sep 21. Small, but hold it at one number across the series so the scores stay comparable."
   ],
   "watch": "Where the next second is. Score A: the first two strokes, which gave away most of the start. Score B: the 17% fade over the last 110 m.",
-  "next": "Oct 5's 400 m + 5×100 m test is the first chance to replace the 1:39.9 PB behind every band; after today it is almost certainly stale. For the Nov 2 1-minute test, 1:30.0 is not a 60-second pace — today's fade starts about 20 seconds in. Aug 29's even pacing is the template; the gain is in more watts per stroke, not a harder start."
+  "next": "Oct 5's 400 m + 5×100 m test is the first chance to replace the 1:39.9 PB behind every band; after today it is almost certainly stale. For the Nov 2 1-minute test, 1:30.0 is not a 60-second pace — today's fade starts about 20 seconds in. Aug 29's even pacing is the template; the gain is in more watts per stroke, not a harder start.",
+  "hr": {
+   "src": "Apple Watch Ultra, FITIV beat-level export",
+   "preStart": 120,
+   "peak": 163,
+   "hrr60": 31,
+   "warmup": "40 min from first reading to the start. Biggest warm-up efforts 132–133 at 06:43, 06:48, 06:52; 3½ min near-rest at 77–87 bpm from 06:53; lighter rowing 06:56–07:02."
+  }
  }
 }
