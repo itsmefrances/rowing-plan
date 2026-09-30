@@ -44,6 +44,7 @@ ERGZONE_TOKEN = os.environ.get("ERGZONE_TOKEN", "").strip()
 ERGZONE_TRACK = os.environ.get("ERGZONE_TRACK", "68afa180-10d1-4ca1-8d3a-dff940e147b2").strip()
 ERGZONE_CREATE_URL = os.environ.get("ERGZONE_CREATE_URL", "").strip()
 C2_PROFILE    = os.environ.get("C2_PROFILE", "2198296").strip()
+C2_TOKEN      = os.environ.get("C2_TOKEN", "").strip()   # Concept2 logbook API token (Edit Profile -> Applications)
 PB_500        = float(os.environ.get("PB_500", "99.9"))
 
 try:
@@ -310,8 +311,26 @@ def concept2_get_workout(workout_id: str, profile_id: str = "") -> str:
 def concept2_strokes(workout_id: str, profile_id: str = "") -> str:
     """Stroke-by-stroke data for one logbook workout (the logbook's CSV export:
     time, distance, pace, watts, stroke rate, heart rate per stroke)."""
+    if C2_TOKEN:
+        raw = _http(f"https://log.concept2.com/api/users/me/results/{workout_id}/strokes",
+                    {"Authorization": "Bearer " + C2_TOKEN,
+                     "Accept": "application/vnd.c2logbook.v1+json", "User-Agent": UA})
+        data = json.loads(raw).get("data", [])
+        rows = []
+        for st in data:
+            p = st.get("p") or 0                      # tenths of a second per 500 m
+            pace = p / 10.0
+            rows.append({"t": round((st.get("t") or 0) / 10.0, 1),     # seconds
+                         "d": round((st.get("d") or 0) / 10.0, 1),     # metres
+                         "pace": pace, "watts": round(2.8 / (pace / 500.0) ** 3) if pace else None,
+                         "spm": st.get("spm"), "hr": st.get("hr")})
+        return json.dumps({"id": workout_id, "source": "api", "units": "t s, d m, pace s/500m",
+                           "count": len(rows), "strokes": rows}, ensure_ascii=False)
     pid = profile_id or C2_PROFILE
-    return _c2_fetch(f"https://log.concept2.com/profile/{pid}/log/{workout_id}/export/csv")
+    csv = _c2_fetch(f"https://log.concept2.com/profile/{pid}/log/{workout_id}/export/csv")
+    if "<html" in csv[:500].lower():
+        raise ApiError("Concept2 returned its login page: set C2_TOKEN (run mcp/set-c2-token.sh) for stroke data.")
+    return csv
 
 
 # --------------------------------------------------------------------------- #
