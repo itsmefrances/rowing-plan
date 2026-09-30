@@ -564,5 +564,19 @@
   "shape": "100m + 110m, no rest",
   "key": "d210x1",
   "v": 2
+ },
+ "2026-09-30": {
+  "id": 121155744,
+  "link": "https://log.concept2.com/profile/2198296/log/121155744",
+  "dist": 4486,
+  "time": "18:00.0",
+  "pace": "2:00.3",
+  "rate": 28,
+  "band": "1:59.9–2:09.9",
+  "verdict": "in",
+  "note": "Rowfit VO₂ 6×3:00 off 3:00. Reps 2:00.9, 2:00.6, 2:00.6, 2:00.6, 2:00.4, 1:58.8 — 79.6% of PB, at the fast edge of the band; the card's midpoint was 2:04.9. 201 W at r28 (27, 27, 28, 29, 29, 29 against 28–32). Heart rate from the FITIV export: final-minute means 161, 164, 168, 170, 170, 170; peak 171. Drag 116.",
+  "shape": "6 × 3:00 off 3:00",
+  "key": "t180x6",
+  "v": 2
  }
 }

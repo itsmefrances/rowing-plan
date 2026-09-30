@@ -3,6 +3,18 @@
  "note": "Barbell velocity tracker, back squat. v = mean concentric velocity of the set; vbest = fastest rep in the set, which is what the load-velocity fit uses. wpk = peak power. Watts are corrected where the device was set to the wrong load.",
  "sessions": [
   {
+   "date": "2026-09-29",
+   "partial": "Deload week. Warm-up sets were not recorded, so this day has no load-velocity fit; sets are numbered from the first work set. Every back-squat rep was 24.8-26.0 in of travel, below parallel.",
+   "sets": [
+    {"n": 1, "load": 160, "reps": 5, "phase": "work", "v": 0.47, "vbest": 0.51, "rom": 25.7, "w": 325, "wpk": 593, "tpv": 1.11},
+    {"n": 2, "load": 160, "reps": 5, "phase": "work", "v": 0.45, "vbest": 0.50, "rom": 25.4, "w": 324, "wpk": 571, "tpv": 1.12},
+    {"n": 3, "load": 160, "reps": 5, "phase": "work", "v": 0.50, "vbest": 0.52, "rom": 25.6, "w": 355, "wpk": 773, "tpv": 1.10},
+    {"n": 4, "load": 175, "reps": 3, "phase": "pin",  "v": 0.41, "vbest": 0.43, "rom": 23.3, "w": 321, "wpk": 825, "tpv": 1.25},
+    {"n": 5, "load": 175, "reps": 3, "phase": "pin",  "v": 0.42, "vbest": 0.46, "rom": 23.1, "w": 329, "wpk": 840, "tpv": 1.24},
+    {"n": 6, "load": 175, "reps": 3, "phase": "pin",  "v": 0.40, "vbest": 0.42, "rom": 22.8, "w": 314, "wpk": 766, "tpv": 1.24}
+   ]
+  },
+  {
    "date": "2026-09-22",
    "depth": "From this session on, 23.8 in of bar travel or more counts as a rep to parallel, checked against video. The four sets of fives had 0, 1, 3 and 5 reps at depth; the 205 single was 24.9 in, clearly below parallel.",
    "warmup": "85 x 5 general warm-up (0.67 m/s avg) left out of the fit, as on Sep 15, whose ramp also began at 125.",
