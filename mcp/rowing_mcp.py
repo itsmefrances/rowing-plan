@@ -306,6 +306,14 @@ def concept2_get_workout(workout_id: str, profile_id: str = "") -> str:
     return json.dumps(w, ensure_ascii=False, indent=2)
 
 
+@mcp.tool()
+def concept2_strokes(workout_id: str, profile_id: str = "") -> str:
+    """Stroke-by-stroke data for one logbook workout (the logbook's CSV export:
+    time, distance, pace, watts, stroke rate, heart rate per stroke)."""
+    pid = profile_id or C2_PROFILE
+    return _c2_fetch(f"https://log.concept2.com/profile/{pid}/log/{workout_id}/export/csv")
+
+
 # --------------------------------------------------------------------------- #
 # 3. ErgZone  (build spec from text / HubFit, then create)
 # --------------------------------------------------------------------------- #
