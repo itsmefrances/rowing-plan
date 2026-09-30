@@ -14,8 +14,8 @@ mkdir -p "$HOME/rowing-mcp"
 curl -fsSL https://raw.githubusercontent.com/itsmefrances/rowing-plan/main/mcp/rowing_mcp.py \
   -o "$HOME/rowing-mcp/rowing_mcp.py"
 
-# 3. pre-warm the dependencies so the first start is quick
-"$UV" run --quiet --python 3.12 --with "mcp[cli]" --with certifi python -c "import mcp, certifi; print('deps ok')"
+# 3. pre-warm the dependencies so the first start is quick (mcp<2: the server uses v1 FastMCP)
+"$UV" run --quiet --python 3.12 --with "mcp[cli]<2" --with certifi python -c "from mcp.server.fastmcp import FastMCP; import certifi; print('deps ok')"
 
 # 4. register it with the Claude desktop app (keeps anything already there; backs up first)
 CFG="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
@@ -27,7 +27,7 @@ cfg, home = sys.argv[1], sys.argv[2]
 d = json.load(open(cfg)) if os.path.exists(cfg) and os.path.getsize(cfg) else {}
 d.setdefault("mcpServers", {})["rowing"] = {
     "command": f"{home}/.local/bin/uv",
-    "args": ["run", "--quiet", "--python", "3.12", "--with", "mcp[cli]", "--with", "certifi",
+    "args": ["run", "--quiet", "--python", "3.12", "--with", "mcp[cli]<2", "--with", "certifi",
              f"{home}/rowing-mcp/rowing_mcp.py"],
     "env": {"C2_PROFILE": "2198296"},
 }
