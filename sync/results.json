@@ -578,5 +578,19 @@
   "shape": "6 × 3:00 off 3:00",
   "key": "t180x6",
   "v": 2
+ },
+ "2026-10-02": {
+  "id": 121235349,
+  "link": "https://log.concept2.com/profile/2198296/log/121235349",
+  "dist": 6552,
+  "time": "28:00.0",
+  "pace": "2:08.2",
+  "rate": 26,
+  "band": "2:09.9–2:14.9",
+  "verdict": "above",
+  "note": "Rowfit Threshold 7×4:00 off 3:00. Reps 1–6 at 2:09.4, 2:09.0, 2:08.8, 2:08.7, 2:08.6, 2:08.3 (927→935 m, a metre or two more each rep) and rep 7 at 2:04.4. Reps 1–6 sat 0.5–1.6 s/500m quicker than the fast edge of the band, 163–166 W at r25–27; 71.7% of PB overall. Sep 18's same session was 2:04.5 at 181 W. The watch only recorded the rests: heart rate at the end of each rep 141, 153, 159, 155, 153, 157, 164, dropping 24–38 bpm in the first minute. Drag 116.",
+  "shape": "7 × 4:00 off 3:00",
+  "key": "t240x7",
+  "v": 2
  }
 }

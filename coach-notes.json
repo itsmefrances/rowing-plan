@@ -373,5 +373,101 @@
     1.9
    ]
   }
+ },
+ "2026-10-02": {
+  "key": "t240x7",
+  "title": "Rowfit — Threshold 7×4min",
+  "session": "Threshold 7×4min off 3:00",
+  "headline": "The card, nearly to the letter: six level reps a second inside the band's fast edge, then one to empty the tank.",
+  "points": [
+   "6,552 m in 28:00 of work at 2:08.2 /500m, 166 W, r26, drag 116. Reps 1–6: 2:09.4, 2:09.0, 2:08.8, 2:08.7, 2:08.6, 2:08.3 — 927, 930, 931, 932, 933, 935 m, a metre or two more each rep. Rep 7: 2:04.4, 964 m, 181 W.",
+   "Against the card: the band was 2:09.9–2:14.9 (65–70%). Reps 1–6 were 0.5–1.6 s/500m quicker than its fast edge at 163–166 W, about 71% of PB. Sep 18's same session was 2:04.5 at 181 W, 5.4 s past the edge. This is the threshold day rowed as a threshold day.",
+   "Stroke length (logbook stroke data, 726 strokes inside the reps): 9.18, 9.12, 9.04, 9.05, 8.72, 8.90, 9.18 m per stroke at 25.2, 25.5, 25.8, 25.8, 26.8, 26.2, 26.2 spm. About 382 J per stroke on reps 1–4, 369–378 on reps 5–6. Rate came up a beat on rep 5 and the stroke shortened to match; power kept rising a watt a rep.",
+   "Rep 7 was pulled, not spun: +10% power over reps 1–6 on +1% rate. 415 J per stroke against ~379, at the same 9.18 m length as rep 1. Same signature as Sep 18's last rep (stroke +5.0%, rate +0.6%), only bigger.",
+   "Pacing inside each rep, bank and coast as usual: reps 1–4 were 3.7–4.6 m ahead of even pace at 200 s and eased to 150–158 W over the last 30 s; reps 5–6 banked more (7.6 and 6.7 m) and coasted further, to 142–144 W. Rep 7 ran the other way: 3.4 m behind even pace at 200 s, then 198 W over the final 30 s.",
+   "Heart rate: the watch dropped out during every rep and recorded only the rests, so there is no in-rep trace. First reading after each rep: 141, 153, 159, 155, 153, 157, 164. Reps 2–6 ended in the 150s at ~164 W, below the 168 LTHR estimate; only rep 7 reached 164.",
+   "Recovery was flat all session: heart rate fell 34, 24, 38, 35, 32 and 36 bpm in the first minute after reps 1–6, and the rest floors were 88, 106, 93, 97, 100, 94 with no upward creep. On Sep 18 the floors climbed 91 → 118. Less accumulated load, as intended two days after the VO₂ session and three before a test.",
+   "Warm-up: 10:00 on the erg (1,652 m), steady at 136–142 bpm, then two short pushes to 144 and 148 and about five minutes down to the high 70s before rep 1."
+  ],
+  "watch": "Rate under the floor on reps 1–4 (25.2–25.8 against 26–28), the fourth threshold session in a row. Reps 5–6 at r26–27 are what the card asks for. And the heart-rate strap or watch fit: seven dropouts, each exactly one rep long.",
+  "next": "Monday is the test: 400 m from a race start, 10 minutes off, then 5 × 100 m at r42+. It re-anchors the 1:39.9 PB behind every band. Saturday's bench and bracing work stays as written; keep the Zone 2 row at 132–144 and no harder.",
+  "hr": {
+   "src": "Apple Watch Ultra, FITIV beat-level export — rests only; no samples during the seven reps",
+   "sessionAvg": 115,
+   "max": 164,
+   "repEnd": [
+    141,
+    153,
+    159,
+    155,
+    153,
+    157,
+    164
+   ],
+   "hrr60": [
+    34,
+    24,
+    38,
+    35,
+    32,
+    36
+   ],
+   "restFloors": [
+    88,
+    106,
+    93,
+    97,
+    100,
+    94
+   ]
+  },
+  "strokes": {
+   "src": "Concept2 logbook API, 749 strokes (726 inside the reps)",
+   "strokesPerRep": [
+    101,
+    102,
+    103,
+    103,
+    107,
+    105,
+    105
+   ],
+   "spm": [
+    25.2,
+    25.5,
+    25.8,
+    25.8,
+    26.8,
+    26.2,
+    26.2
+   ],
+   "mPerStroke": [
+    9.18,
+    9.12,
+    9.04,
+    9.05,
+    8.72,
+    8.9,
+    9.18
+   ],
+   "jPerStroke": [
+    383,
+    383,
+    381,
+    382,
+    369,
+    378,
+    415
+   ],
+   "aheadAt200sM": [
+    3.7,
+    4.6,
+    4.2,
+    3.8,
+    7.6,
+    6.7,
+    -3.4
+   ]
+  }
  }
 }
