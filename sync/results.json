@@ -592,5 +592,19 @@
   "shape": "7 × 4:00 off 3:00",
   "key": "t240x7",
   "v": 2
+ },
+ "2026-10-05": {
+  "id": 121325330,
+  "link": "https://log.concept2.com/profile/2198296/log/121325330",
+  "dist": 1601,
+  "time": "5:50.0",
+  "pace": "1:49.2",
+  "rate": 33,
+  "band": "",
+  "verdict": "na",
+  "note": "6 mixed intervals — avg work pace 1:49.2 /500m vs  target: logged. Rate 33 s/m.",
+  "shape": "6 mixed intervals",
+  "key": "m0x6",
+  "v": 2
  }
 }
