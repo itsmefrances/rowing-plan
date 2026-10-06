@@ -1874,6 +1874,7 @@ function loadBlockPlan(){
           var o = {s:x.s, n:x.n, rx:x.rx, tier:x.tier};
           if(x.star) o.star = true;
           if(x.test) o.test = true;
+          if(x.meta) o.meta = x.meta;
           var f = mkLoad(x);
           if(f) o.load = f;
           return o;
