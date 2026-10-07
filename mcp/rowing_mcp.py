@@ -253,9 +253,15 @@ def _parse_c2_workout(html: str) -> dict:
     out["time"] = stat(r"Time", r"((?:\d+:)?\d{1,2}:\d\d(?:\.\d)?)")
     out["pace"] = stat(r"Pace", r"(\d+:\d\d(?:\.\d)?)")
     out["rate"] = stat(r"(?:Average\s+)?Stroke\s*Rate", r"(\d+)", int, lambda v: 10 <= v <= 60)
-    drag = stat(r"Drag\s*Factor", r"(\d+)", int, lambda v: 50 <= v <= 250)
-    if drag:
-        out["drag"] = drag
+    # Drag Factor's value FOLLOWS its label. stat() looks at the line before the
+    # label first, which on this page is the stroke count - so read forward only.
+    for i, ln in enumerate(lines):
+        if re.fullmatch(r"Drag\s*Factor", ln, re.I):
+            for c in lines[i + 1:i + 3]:
+                if re.fullmatch(r"\d+", c) and 50 <= int(c) <= 250:
+                    out["drag"] = int(c)
+                    break
+            break
     intervals = []
     if "Intervals" in lines:
         start = lines.index("Intervals") + 1
@@ -307,8 +313,8 @@ def concept2_get_workout(workout_id: str, profile_id: str = "") -> str:
     w = _parse_c2_workout(_c2_fetch(f"https://log.concept2.com/profile/{pid}/log/{workout_id}"))
     w["id"] = workout_id
     w["link"] = f"https://log.concept2.com/profile/{pid}/log/{workout_id}"
-    if C2_TOKEN and not w.get("drag"):
-        # the public page does not always show drag; the logbook API does
+    if C2_TOKEN:
+        # the logbook API is the authority for drag; the page parse is the fallback
         try:
             raw = _http(f"https://log.concept2.com/api/users/me/results/{workout_id}",
                         {"Authorization": "Bearer " + C2_TOKEN,
