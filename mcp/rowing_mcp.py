@@ -253,6 +253,9 @@ def _parse_c2_workout(html: str) -> dict:
     out["time"] = stat(r"Time", r"((?:\d+:)?\d{1,2}:\d\d(?:\.\d)?)")
     out["pace"] = stat(r"Pace", r"(\d+:\d\d(?:\.\d)?)")
     out["rate"] = stat(r"(?:Average\s+)?Stroke\s*Rate", r"(\d+)", int, lambda v: 10 <= v <= 60)
+    drag = stat(r"Drag\s*Factor", r"(\d+)", int, lambda v: 50 <= v <= 250)
+    if drag:
+        out["drag"] = drag
     intervals = []
     if "Intervals" in lines:
         start = lines.index("Intervals") + 1
@@ -304,6 +307,17 @@ def concept2_get_workout(workout_id: str, profile_id: str = "") -> str:
     w = _parse_c2_workout(_c2_fetch(f"https://log.concept2.com/profile/{pid}/log/{workout_id}"))
     w["id"] = workout_id
     w["link"] = f"https://log.concept2.com/profile/{pid}/log/{workout_id}"
+    if C2_TOKEN and not w.get("drag"):
+        # the public page does not always show drag; the logbook API does
+        try:
+            raw = _http(f"https://log.concept2.com/api/users/me/results/{workout_id}",
+                        {"Authorization": "Bearer " + C2_TOKEN,
+                         "Accept": "application/vnd.c2logbook.v1+json", "User-Agent": UA})
+            drag = (json.loads(raw).get("data") or {}).get("drag_factor")
+            if drag:
+                w["drag"] = drag
+        except Exception:
+            pass
     return json.dumps(w, ensure_ascii=False, indent=2)
 
 
