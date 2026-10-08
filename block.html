@@ -1678,7 +1678,9 @@ function renderSession(){
       if(pg){
         var pr = el("div","prog");
         pr.appendChild(el("span","pk","Last time \u00b7 " + fmtDay(pg.date) +
-          (pg.alias && !subIntent(x.n) ? "  \u00b7  " + pg.alias : "")));
+          /* name the machine she actually used, unless the swap line below
+             already says it */
+          (pg.alias && !(subIntent(x.n) && priorSub(x.n, d)) ? "  \u00b7  " + pg.alias : "")));
         pr.appendChild(el("span","pv", pg.line));
         pr.appendChild(el("span","pd", pg.verdict));
         row.appendChild(pr);
