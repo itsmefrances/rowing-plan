@@ -749,6 +749,18 @@ function progress(name, prescribed, before, mx){
     var ps = priorSub(name, before);
     if(ps){ alias = ps.name; le = lastEffort(ps.name, before); }
   }
+  /* nothing under this name: the same slot may have run under another
+     machine's name (Chest-supported row last week, Plate-loaded row today) */
+  if(!le && SUBS[name]){
+    var best = null;
+    for(var i = 0; i < SHEET_ROWS.length; i++){
+      var r = SHEET_ROWS[i];
+      if(r.exercise === name || SUBS[r.exercise] !== SUBS[name]) continue;
+      if(!r.date || r.date >= before || !(r.weight > 0 || r.reps > 0)) continue;
+      if(!best || r.date > best.date) best = r;
+    }
+    if(best){ alias = best.exercise; le = lastEffort(best.exercise, before); }
+  }
   if(!le) return null;
   var top = typeof m.reps === "number" ? m.reps : null;
   var heaviest = workingLoad(le.sets), tallest = 0, allHit = !!top, easy = true, rirTxt = "";
@@ -795,7 +807,7 @@ function progress(name, prescribed, before, mx){
 }
 function suggestFor(x, d){
   var base = x.load ? x.load() : "";
-  var pg = progress(x.n, firstNum(base), d);
+  var pg = progress(x.n, firstNum(base), d, metaFor(x));
   return pg && pg.next ? pg.next : base;
 }
 
@@ -902,6 +914,18 @@ function openLog(d, x, m, startAt){
   mo.appendChild(h);
 
   var b = el("div","modal-b");
+  /* last time's sets sit above the grid, so the weights are in view while
+     she fills it in */
+  var pgl = progress(x.n, firstNum(x.load ? x.load() : 0), d, m);
+  if(pgl){
+    var lt = el("div","prog");
+    lt.appendChild(el("span","pk","Last time \u00b7 " + fmtDay(pgl.date) +
+      (pgl.alias ? "  \u00b7  " + pgl.alias : "")));
+    lt.appendChild(el("span","pv", pgl.line));
+    b.appendChild(lt);
+  } else {
+    b.appendChild(el("p","note","No earlier sets logged for " + x.n + "."));
+  }
   var head = el("div","setgrid head" + (wantsH ? " h5" : ""));
   (wantsH ? ["", "Reps", "Weight", "Height", "RIR / RPE"]
           : ["", "Reps", "Weight", "RIR / RPE"])
