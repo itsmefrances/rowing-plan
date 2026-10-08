@@ -656,15 +656,47 @@ var RXMETA = {
 function meta(n){ return RXMETA[n] || {sets:3,reps:"",rir:"RIR 2",rest:"1:30",tier:3}; }
 /* weeks 2-13 come from block-plan.json, whose exercises carry their own tier and
    whose set/rep counts read off the prescription text rather than RXMETA */
+/* what the prescription text itself says about effort and rest. RXMETA is
+   week one's table; block-plan cards write their own targets into rx. */
+function rirFromRx(rx){
+  var t = String(rx || "");
+  var m = /\b(RPE|RIR)\b[^·,;.—]*/.exec(t);
+  if(m) return m[0].trim();
+  m = /(\d+(?:\s*[–-]\s*\d+)?)\s+reps?\s+in\s+reserve/i.exec(t);
+  return m ? "RIR " + m[1].replace(/\s+/g, "") : "";
+}
+function restFromRx(rx){
+  var t = String(rx || "");
+  var m = /\brest\s+(\d[\d:]*s?(?:\s*[–-]\s*\d[\d:]*s?)?)/i.exec(t) ||
+          /(\d[\d:]*s?(?:\s*[–-]\s*\d[\d:]*s?)?)\s+rest\b/i.exec(t);
+  return m ? m[1].replace(/\s+/g, "") : "";
+}
+/* a power set with no RPE or RIR written: speed is the effort target */
+function speedFromRx(rx){
+  return /as fast as|maximal intent|max intent|explosive/i.test(String(rx || "")) ? "max speed" : "";
+}
 function metaFor(x){
   /* the plyo block changes sets and reps every week, so its entries carry
      their own meta rather than one fixed RXMETA row */
   if(x.meta) return x.meta;
-  if(RXMETA[x.n]) return RXMETA[x.n];
-  var m = /^(\d+)\s*\u00d7\s*(\d+)/.exec(x.rx || "");
-  return {sets: m ? +m[1] : (x.star ? 1 : 3), reps: m ? +m[2] : (x.star ? 1 : ""),
-          rir: x.star ? "top set" : "RIR 2", rest: x.star ? "4:00" : "2:00",
-          tier: x.tier != null ? x.tier : 3};
+  /* the prescription text is the authority; RXMETA only fills what it leaves out */
+  var base = RXMETA[x.n];
+  var m = /^(\d+)\s*×\s*(\d+)/.exec(x.rx || "");
+  var tier = x.tier != null ? x.tier : (base ? base.tier : 3);
+  var rir = rirFromRx(x.rx), rest = restFromRx(x.rx);
+  if(m) return {sets: +m[1], reps: +m[2],
+    rir: rir || (base ? base.rir : (speedFromRx(x.rx) || (x.star ? "top set" : "RIR 2"))),
+    rest: rest || (base ? base.rest : (x.star ? "4:00" : "2:00")), tier: tier};
+  if(base){
+    var o = {}; for(var k in base) o[k] = base[k];
+    if(rir) o.rir = rir;
+    if(rest) o.rest = rest;
+    o.tier = tier;
+    return o;
+  }
+  return {sets: x.star ? 1 : 3, reps: x.star ? 1 : "",
+          rir: rir || speedFromRx(x.rx) || (x.star ? "top set" : "RIR 2"),
+          rest: rest || (x.star ? "4:00" : "2:00"), tier: tier};
 }
 
 /* ---------- double progression, read back out of recomp-log ----------
@@ -706,8 +738,9 @@ function workingLoad(sets){
   }
   return best;
 }
-function progress(name, prescribed, before){
-  var m = meta(name);
+function progress(name, prescribed, before, mx){
+  /* mx is the card's own meta, so the rep target matches what was prescribed */
+  var m = mx || meta(name);
   var le = lastEffort(name, before);
   /* if the slot was swapped last time, the rows are under the substitute's
      name - follow the swap so the card still has something to show */
@@ -1617,7 +1650,7 @@ function renderSession(){
       top2.appendChild(fb);
       row.appendChild(top2);
 
-      var pg = progress(x.n, firstNum(x.load ? x.load() : 0), d);
+      var pg = progress(x.n, firstNum(x.load ? x.load() : 0), d, metaFor(x));
       if(pg){
         var pr = el("div","prog");
         pr.appendChild(el("span","pk","Last time \u00b7 " + fmtDay(pg.date) +
