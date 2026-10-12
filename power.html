@@ -351,7 +351,7 @@ function drawStroke(){
   var anyMissing = on.some(function(e){ return e.first > 1; });
   document.getElementById("p1note").textContent =
     (on.length ? "Solid lines are dead-stop efforts; dashed are rolling or unconfirmed starts. " : "Pick an effort below to plot it. ") +
-    (anyMissing ? "Stroke 1 wasn't recorded for the September sessions, so their lines start at stroke 2." : "");
+    (anyMissing ? "Sessions recorded through ErgZone are logged about once a second, not once a stroke, so their stroke numbers are approximate." : "");
 }
 
 function hover(svg, host, tip, pts, Wd, H, label){
