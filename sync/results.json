@@ -620,5 +620,19 @@
   "shape": "4 × 0:40",
   "key": "t40x4",
   "v": 2
+ },
+ "2026-10-12": {
+  "id": 121585485,
+  "link": "https://log.concept2.com/profile/2198296/log/121585485",
+  "dist": 838,
+  "time": "2:40.0",
+  "pace": "1:35.5",
+  "rate": 43,
+  "band": "1:26.9–1:28.9",
+  "verdict": "below",
+  "note": "8 × 20s — avg work pace 1:35.5 /500m vs 1:26.9–1:28.9 target: slower than target (below zone). Rate 43 s/m.",
+  "shape": "8 × 20s",
+  "key": "t20x8",
+  "v": 2
  }
 }
