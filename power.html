@@ -136,6 +136,7 @@ td.w span{display:block;min-width:34px;padding:3px 2px;border-radius:4px;text-al
 
   <div class="foot">
     <p id="srcnote"></p>
+    <p>Pace held, on goal-pace reps: from the first split at 1:32.5 or faster until the split stays slower than 1:33.0 for 3 seconds or more.</p>
     <p>Force curves aren't in the Concept2 logbook, so they aren't here yet.</p>
   </div>
 </div>
@@ -413,7 +414,7 @@ function drawTrend(){
 function table(){
   var t = document.getElementById("tbl"); t.innerHTML = "";
   var hd = h("tr");
-  ["Date","Effort","Start","Drag","At 10 s","Peak","Rate 2–6"].forEach(function(x){ hd.appendChild(h("th", null, x)); });
+  ["Date","Effort","Start","Drag","At 10 s","Peak","Rate 2–6","Pace held"].forEach(function(x){ hd.appendChild(h("th", null, x)); });
   for(var n = 1; n <= 10; n++) hd.appendChild(h("th", null, "S" + n));
   var th = h("thead"); th.appendChild(hd); t.appendChild(th);
   var tb = h("tbody");
@@ -427,6 +428,11 @@ function table(){
     var m = h("td", e.m10 != null && e.m10 >= D.target.m10 ? "hit" : null, e.m10 != null ? e.m10.toFixed(1) : "—"); tr.appendChild(m);
     var p = peak(e); tr.appendChild(h("td", null, p ? p.w + " · S" + p.n : "—"));
     var r = rate26(e); tr.appendChild(h("td", null, r != null ? r.toFixed(0) : "—"));
+    /* goal-pace reps: the stretch spent at goal pace, from reaching it to losing it */
+    var hd = e.hold;
+    var hc = h("td", hd && hd.to >= hd.of ? "hit" : null, hd ? Math.round(hd.from) + "–" + Math.round(hd.to) + " s of " + hd.of : "—");
+    if(hd) hc.title = "Held " + Math.round(hd.to - hd.from) + " s at goal pace";
+    tr.appendChild(hc);
     var byN = {}; strokes(e).forEach(function(z){ byN[z.n] = z; });
     for(var n = 1; n <= 10; n++){
       var c = h("td","w"), z = byN[n], sp = h("span");
