@@ -50,8 +50,8 @@ var PLYO = {
     px("B","Vertical jump","3 × 3 · on the mat, full countermovement · height (in) in Height",3,3,"max intent",PLYO_INT_REST,"int")
   ]},
   "2026-10-19": {mode:"int", wk:7, ex:[
-    px("A","Broad jump","2 × 3 · single efforts, full reset between reps · distance (cm) in Height · trimmed — erg test today",2,3,"max intent",PLYO_INT_REST,"int"),
-    px("B","Consecutive vertical jump","2 × 5 · continuous, no reset between reps · best height (in) in Height · trimmed — erg test today",2,5,"continuous",PLYO_INT_REST,"int")
+    px("A","Broad jump","2 × 3 · single efforts, full reset between reps · distance (cm) in Height · trimmed — 5 × 100 m today",2,3,"max intent",PLYO_INT_REST,"int"),
+    px("B","Consecutive vertical jump","2 × 5 · continuous, no reset between reps · best height (in) in Height · trimmed — 5 × 100 m today",2,5,"continuous",PLYO_INT_REST,"int")
   ]},
   "2026-10-26": {mode:"int", wk:8, ex:[
     px("A","Broad jump","5 × 3 · single efforts, full reset between reps · distance (cm) in Height",5,3,"max intent",PLYO_INT_REST,"int"),
