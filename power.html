@@ -118,6 +118,20 @@ td.w span{display:block;min-width:34px;padding:3px 2px;border-radius:4px;text-al
     <div class="legend" id="leg0"></div>
   </section>
 
+  <section class="card" aria-labelledby="arch">
+    <div class="card-h">
+      <h2 id="arch">The minute, second by second</h2>
+      <div class="seg" id="arcseg" role="group" aria-label="How to plot the minute">
+        <button type="button" data-a="g" aria-pressed="true">Gap to plan</button>
+        <button type="button" data-a="d" aria-pressed="false">Distance</button>
+      </div>
+    </div>
+    <p class="sub" style="margin-bottom:8px;max-width:62ch">The 325 m plan laid across the full 60 seconds, with the average of each kind of effort on top of it. Each line stops where that effort stopped. The shaded wedge after the longest one is where a full minute would land: the top edge holds the pace you rowed from 33 to 43 seconds, the bottom edge keeps the slowdown of your last 5 seconds.</p>
+    <div class="plot" id="p3"><div class="tip" id="tip3" hidden></div></div>
+    <div class="chipgrp" id="arcchips" style="margin-top:10px"></div>
+    <p class="sub" id="arcnote" style="margin-top:8px;max-width:62ch"></p>
+  </section>
+
   <section class="card" aria-labelledby="sumh">
     <div class="card-h"><h2 id="sumh">Latest session</h2><span class="sub mono" id="sumdate"></span></div>
     <div class="stats" id="stats"></div>
@@ -126,7 +140,7 @@ td.w span{display:block;min-width:34px;padding:3px 2px;border-radius:4px;text-al
   <section class="card" aria-labelledby="strokeh">
     <div class="card-h">
       <h2 id="strokeh">Each stroke, across efforts</h2>
-      <div class="seg" role="group" aria-label="What to plot">
+      <div class="seg" id="strokeseg" role="group" aria-label="What to plot">
         <button type="button" data-m="w" aria-pressed="true">Watts</button>
         <button type="button" data-m="r" aria-pressed="false">Rate</button>
         <button type="button" data-m="d" aria-pressed="false">Metres</button>
@@ -228,21 +242,28 @@ function init(data){
     .forEach(function(e){ state.on[e.id] = true; });
   if(best) state.on[best.id] = true;
   document.getElementById("srcnote").textContent = D.note || "";
-  if(D.plan && D.race){ planStats(); drawPlan(); }
+  if(D.plan && D.race){ planStats(); drawPlan(); drawArc(); }
+  document.querySelectorAll("#arcseg button").forEach(function(b){
+    b.addEventListener("click", function(){
+      ARC.mode = b.getAttribute("data-a");
+      document.querySelectorAll("#arcseg button").forEach(function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      drawArc();
+    });
+  });
   summary(last);
   chips();
   drawStroke();
   drawTrend();
   table();
-  document.querySelectorAll(".seg button").forEach(function(b){
+  document.querySelectorAll("#strokeseg button").forEach(function(b){
     b.addEventListener("click", function(){
       state.m = b.getAttribute("data-m");
-      document.querySelectorAll(".seg button").forEach(function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      document.querySelectorAll("#strokeseg button").forEach(function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
       drawStroke();
     });
   });
   var mq = window.matchMedia("(prefers-color-scheme: dark)");
-  var redrawPlan = function(){ if(D.plan && D.race) drawPlan(); };
+  var redrawPlan = function(){ if(D.plan && D.race){ drawPlan(); drawArc(); } };
   if(mq.addEventListener) mq.addEventListener("change", function(){ redrawPlan(); drawStroke(); drawTrend(); table(); });
   window.addEventListener("resize", function(){ redrawPlan(); drawStroke(); drawTrend(); });
 }
@@ -353,6 +374,188 @@ function drawPlan(){
   [["\u25CB","Rolling or fumbled start"],["\u25C7","Start not recorded"],["\u2504","Day average, dead stops"]].forEach(function(x){
     var s = h("span"), g = h("b", null, x[0]); g.style.color = "var(--ink-2)"; s.appendChild(g); s.appendChild(document.createTextNode(x[1])); lg.appendChild(s);
   });
+}
+
+/* ---------- the minute, second by second ---------- */
+var ARC = {mode:"g", best:false, off:{}};
+function curveAt(p, t){
+  if(t <= p[0][0]) return p[0][1];
+  for(var i = 1; i < p.length; i++){
+    if(t <= p[i][0]){
+      var a = p[i-1], b = p[i];
+      return b[0] === a[0] ? b[1] : a[1] + (t - a[0]) / (b[0] - a[0]) * (b[1] - a[1]);
+    }
+  }
+  return null;
+}
+function arcCats(){
+  var cats = {}, order = [];
+  function put(key, name, color, e){
+    if(!cats[key]){ cats[key] = {key:key, name:name, color:color, all:[]}; order.push(key); }
+    cats[key].all.push(e);
+  }
+  EF.forEach(function(e){
+    if(e.kind !== "start" || e.from !== "dead") return;
+    var pts = [[0,0]].concat(e.s.map(function(r){ return [r[0], r[1]]; }));
+    put("start", "10-stroke starts", "--c7", {date:e.date, label:e.label, from:e.from, p:pts, T:pts[pts.length-1][0], d:pts[pts.length-1][1], m10:e.m10});
+  });
+  (D.race || []).forEach(function(r){
+    if(!r.p) return;
+    var pts = [[0,0]].concat(r.p);
+    put(r.set, r.set === "0:38 max" ? "0:38 single max" : r.set === "100 m" ? "100 m" : r.set + " reps", r.set === "0:38 max" ? "--ink-2" : (SETC[r.set] || "--ink-2"),
+        {date:r.date, label:r.label, from:r.from, p:pts, T:r.t, d:r.d});
+  });
+  order.forEach(function(k){
+    var c = cats[k];
+    /* the average is dead-stop efforts only, unless a set never had one */
+    var dead = c.all.filter(function(e){ return e.from === "dead"; });
+    c.use = dead.length ? dead : c.all;
+    if(!dead.length) c.name += c.all[0].from === "rolling" ? " (rolling start)" : " (start not recorded)";
+    c.tEnd = Math.min.apply(null, c.use.map(function(e){ return e.T; }));
+    c.avg = [];
+    for(var t = 0; t <= c.tEnd + 1e-9; t += 0.25){
+      var v = c.use.map(function(e){ return curveAt(e.p, t); });
+      c.avg.push([t, v.reduce(function(a,b){ return a+b; }, 0) / v.length]);
+    }
+    if(c.avg[c.avg.length-1][0] < c.tEnd){
+      c.avg.push([c.tEnd, c.use.map(function(e){ return curveAt(e.p, c.tEnd); }).reduce(function(a,b){ return a+b; }, 0) / c.use.length]);
+    }
+    c.best = c.use.reduce(function(a, e){
+      if(!a) return e;
+      if(k === "start") return e.m10 > a.m10 ? e : a;
+      if(k === "100 m") return e.T < a.T ? e : a;
+      return e.d > a.d ? e : a;
+    }, null);
+    c.latest = c.all.reduce(function(a, e){ return e.date > a ? e.date : a; }, "");
+  });
+  return order.map(function(k){ return cats[k]; }).sort(function(a, b){ return a.tEnd - b.tEnd; });
+}
+/* the plan before 10 s uses the shape of your best start, scaled to 54 m at
+   10 s, so the first strokes are judged against a real start and not a
+   straight line no one can row */
+function arcPlanFn(cats){
+  var st = cats.filter(function(c){ return c.key === "start"; })[0];
+  var b = st && st.best && curveAt(st.best.p, 10) ? st.best : null;
+  var k = b ? D.plan.m10 / curveAt(b.p, 10) : 0;
+  return function(t){ return t < 10 && b ? curveAt(b.p, t) * k : planAt(t); };
+}
+function drawArc(){
+  var host = document.getElementById("p3"), tip = document.getElementById("tip3");
+  var cats = arcCats(), plan = arcPlanFn(cats);
+  var Wd = Math.max(320, Math.min(780, host.clientWidth || 600)), H = Math.round(Wd * 0.62);
+  var L = 42, Rm = 40, T = 14, B = 30, iw = Wd - L - Rm, ih = H - T - B;
+  var svg = frame(host, Wd, H);
+  svg.setAttribute("aria-label", "The 325 m plan across 60 seconds with the average of each kind of effort");
+  var g = ARC.mode === "g";
+  var vis = cats.filter(function(c){ return !ARC.off[c.key]; });
+  var long = cats.filter(function(c){ return c.tEnd >= 40; }).sort(function(a, b){ return a.latest < b.latest ? 1 : a.latest > b.latest ? -1 : b.tEnd - a.tEnd; })[0];
+  /* where a full minute would land from the longest recent set: hold the pace
+     of the last clean 10 seconds, or keep the slowdown of the final 5 */
+  var proj = null;
+  if(long && !ARC.off[long.key]){
+    var e1 = long.tEnd, cE = curveAt(long.avg, e1);
+    var hold = (curveAt(long.avg, e1 - 2) - curveAt(long.avg, e1 - 12)) / 10;
+    var fade = (cE - curveAt(long.avg, e1 - 5)) / 5;
+    proj = {t0:e1, d0:cE, hi:cE + (60 - e1) * Math.max(hold, fade), lo:cE + (60 - e1) * Math.min(hold, fade),
+            sh:Math.max(hold, fade), sl:Math.min(hold, fade), cat:long};
+  }
+  var yv = function(t, d){ return g ? d - plan(t) : d; };
+  var lo, hi;
+  if(g){
+    var vals = [];
+    vis.forEach(function(c){ c.avg.forEach(function(q){ if(q[0] >= 1) vals.push(yv(q[0], q[1])); });
+      if(ARC.best && c.best) for(var t = 1; t <= c.best.T; t += 1) vals.push(yv(t, curveAt(c.best.p, t))); });
+    if(proj){ vals.push(proj.hi - plan(60)); vals.push(proj.lo - plan(60)); }
+    lo = Math.min(-4, Math.floor(Math.min.apply(null, vals) / 2) * 2);
+    hi = Math.max(4, Math.ceil(Math.max.apply(null, vals) / 2) * 2);
+  } else { lo = 0; hi = 340; }
+  var X = function(t){ return L + t / 60 * iw; };
+  var Y = function(v){ return T + ih - (Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo) * ih; };
+  var grid = css("--grid"), tgt = css("--erg"), surf = css("--surface"), ink2 = css("--ink-2");
+  var step = g ? (hi - lo > 16 ? 4 : 2) : 50;
+  for(var v = lo; v <= hi + 1e-9; v += step){
+    el("line", {x1:L, x2:L+iw, y1:Y(v), y2:Y(v), stroke:grid, "stroke-width":1}, svg);
+    var tt = el("text", {x:L-6, y:Y(v)+4, "text-anchor":"end"}, svg); tt.textContent = g && v > 0 ? "+" + v : v;
+  }
+  [0,10,20,30,40,50,60].forEach(function(s){
+    el("line", {x1:X(s), x2:X(s), y1:T, y2:T+ih, stroke:grid, "stroke-width":1}, svg);
+    var tx = el("text", {x:X(s), y:T+ih+18, "text-anchor":"middle"}, svg); tx.textContent = s + "s";
+  });
+  /* the plan's three parts, marked where they change */
+  [[10,"54 m","start",3],[25,"1:31.5","middle",0],[40,"1:33.5","start",3]].forEach(function(m){
+    var tx = el("text", {x:X(m[0]) + m[3], y:T + 10, "text-anchor":m[2]}, svg); tx.textContent = m[1];
+  });
+  if(g){
+    el("rect", {x:L, y:Y(hi), width:iw, height:Y(0) - Y(hi), fill:css("--erg-soft"), opacity:0.55}, svg);
+    el("line", {x1:L, x2:L+iw, y1:Y(0), y2:Y(0), stroke:tgt, "stroke-width":2}, svg);
+    var zl = el("text", {x:L+iw-4, y:Y(0)+14, "text-anchor":"end", style:"fill:" + tgt + ";font-weight:600"}, svg); zl.textContent = "325 plan";
+  } else {
+    var dd = "";
+    for(var t = 0; t <= 60.001; t += 0.5) dd += (t ? "L" : "M") + X(t).toFixed(1) + "," + Y(plan(t)).toFixed(1);
+    el("path", {d:dd, fill:"none", stroke:tgt, "stroke-width":2.5}, svg);
+    [[325,"325"],[322,"322"]].forEach(function(m, i){
+      el("line", {x1:X(60)-5, x2:X(60)+5, y1:Y(m[0]), y2:Y(m[0]), stroke:i ? ink2 : tgt, "stroke-width":2}, svg);
+      var tx = el("text", {x:X(60)+7, y:Y(m[0]) + (i ? 10 : -2), "text-anchor":"start", style:"fill:" + (i ? ink2 : tgt)}, svg); tx.textContent = m[1];
+    });
+  }
+  if(proj){
+    var c0 = css(proj.cat.color), pd = "";
+    var pts2 = [[proj.t0, proj.d0, proj.d0], [60, proj.hi, proj.lo]];
+    for(var t = proj.t0; t <= 60.001; t += 1){
+      pd += (t === proj.t0 ? "M" : "L") + X(t).toFixed(1) + "," + Y(yv(t, proj.d0 + (t - proj.t0) * proj.sh)).toFixed(1);
+    }
+    for(var t2 = 60; t2 >= proj.t0 - 0.001; t2 -= 1){
+      pd += "L" + X(t2).toFixed(1) + "," + Y(yv(t2, proj.d0 + (t2 - proj.t0) * proj.sl)).toFixed(1);
+    }
+    el("path", {d:pd + "Z", fill:c0, opacity:0.16, stroke:"none"}, svg);
+    el("line", {x1:X(proj.t0), y1:Y(yv(proj.t0, proj.d0)), x2:X(60), y2:Y(yv(60, proj.hi)), stroke:c0, "stroke-width":1.5, "stroke-dasharray":"2 3"}, svg);
+    el("line", {x1:X(proj.t0), y1:Y(yv(proj.t0, proj.d0)), x2:X(60), y2:Y(yv(60, proj.lo)), stroke:c0, "stroke-width":1.5, "stroke-dasharray":"2 3"}, svg);
+    if(g){
+      var a1 = el("text", {x:X(60)+4, y:Y(yv(60, proj.hi))+4, "text-anchor":"start", style:"fill:" + ink2}, svg); a1.textContent = Math.round(proj.hi);
+      var a2 = el("text", {x:X(60)+4, y:Y(yv(60, proj.lo))+4, "text-anchor":"start", style:"fill:" + ink2}, svg); a2.textContent = Math.round(proj.lo);
+    }
+  }
+  var hp = [];
+  vis.forEach(function(c){
+    var col = css(c.color), d1 = "";
+    c.avg.forEach(function(q, i){ d1 += (i ? "L" : "M") + X(q[0]).toFixed(1) + "," + Y(yv(q[0], q[1])).toFixed(1); });
+    el("path", {d:d1, fill:"none", stroke:col, "stroke-width":2.5, "stroke-linejoin":"round", "stroke-linecap":"round"}, svg);
+    var last = c.avg[c.avg.length-1];
+    el("circle", {cx:X(last[0]), cy:Y(yv(last[0], last[1])), r:4, fill:col, stroke:surf, "stroke-width":2}, svg);
+    for(var t = 1; t <= c.tEnd; t += 1) hp.push({x:X(t), y:Y(yv(t, curveAt(c.avg, t))), c:c, t:t, d:curveAt(c.avg, t), kind:"Average of " + c.use.length});
+    if(ARC.best && c.best && c.use.length > 1){
+      var b = c.best, d2 = "";
+      for(var tb = 0; tb <= b.T + 1e-9; tb += 0.25){ var vb = curveAt(b.p, Math.min(tb, b.T)); d2 += (tb ? "L" : "M") + X(tb).toFixed(1) + "," + Y(yv(tb, vb)).toFixed(1); }
+      el("path", {d:d2, fill:"none", stroke:col, "stroke-width":1.5, "stroke-dasharray":"5 3", opacity:0.9}, svg);
+      for(var t3 = 1; t3 <= b.T; t3 += 1) hp.push({x:X(t3), y:Y(yv(t3, curveAt(b.p, t3))), c:c, t:t3, d:curveAt(b.p, t3), kind:"Best \u00b7 " + fmtDate(b.date) + " \u00b7 " + b.label});
+    }
+  });
+  host.insertBefore(svg, tip);
+  hover(svg, host, tip, hp, Wd, H, function(q){
+    var gp = q.d - plan(q.t);
+    return q.c.name + " \u00b7 " + q.kind + "\n" + q.t + " s \u00b7 " + q.d.toFixed(1) + " m\n" +
+      (gp >= 0 ? "+" : "\u2212") + Math.abs(gp).toFixed(1) + " m vs plan (" + plan(q.t).toFixed(1) + ")";
+  });
+  var box = document.getElementById("arcchips"); box.innerHTML = "";
+  cats.forEach(function(c){
+    var bt = h("button","chip"); bt.type = "button";
+    var sw = h("span","sw"); sw.style.background = "var(" + c.color + ")";
+    bt.appendChild(sw); bt.appendChild(document.createTextNode(c.name + (ARC.best && c.use.length > 1 ? " \u00b7 best " + fmtDate(c.best.date) : "")));
+    bt.title = c.use.length + " effort" + (c.use.length > 1 ? "s" : "") + " averaged; best " + fmtDate(c.best.date);
+    bt.setAttribute("aria-pressed", ARC.off[c.key] ? "false" : "true");
+    bt.addEventListener("click", function(){ if(ARC.off[c.key]) delete ARC.off[c.key]; else ARC.off[c.key] = true; drawArc(); });
+    box.appendChild(bt);
+  });
+  var bb = h("button","chip"); bb.type = "button";
+  bb.appendChild(h("span", null, "- - "));
+  bb.appendChild(document.createTextNode("Best of each, with date"));
+  bb.setAttribute("aria-pressed", ARC.best ? "true" : "false");
+  bb.addEventListener("click", function(){ ARC.best = !ARC.best; drawArc(); });
+  box.appendChild(bb);
+  var note = document.getElementById("arcnote");
+  note.textContent = proj
+    ? "From your " + proj.cat.name.replace(" reps","") + " average (" + proj.cat.use.length + " reps, latest " + fmtDate(proj.cat.latest) + "): holding the 33\u201343 s pace to the buzzer gives about " + Math.round(proj.hi) + " m; keeping the slowdown of the last 5 seconds gives about " + Math.round(proj.lo) + " m. The plan is 325, the Nov 2 checkpoint 322. The 50 s and 55 s Fridays narrow this."
+    : "";
 }
 
 function summary(last){
