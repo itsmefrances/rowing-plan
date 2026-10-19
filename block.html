@@ -763,6 +763,18 @@ function progress(name, prescribed, before, mx){
     if(best){ alias = best.exercise; le = lastEffort(best.exercise, before); }
   }
   if(!le) return null;
+  /* jumps are scored on height or distance, never on load: the broad jump
+     test writes centimetres into the weight column, so read it as distance */
+  if(/jump|hop/i.test(name)){
+    var broad = /broad/i.test(name), unit = broad ? " cm" : "\u2033", bestJ = 0;
+    var jl = le.sets.map(function(z){
+      var v = z.height > 0 ? z.height : (broad ? z.weight : 0);
+      if(v > bestJ) bestJ = v;
+      return v > 0 ? v + unit : (z.reps || 0) + " reps";
+    }).join("   ");
+    return {date:le.date, alias:alias, line:jl, next:null,
+      verdict: bestJ ? "Best " + bestJ + unit + " \u2014 beat it" : "Match it"};
+  }
   var top = typeof m.reps === "number" ? m.reps : null;
   var heaviest = workingLoad(le.sets), tallest = 0, allHit = !!top, easy = true, rirTxt = "";
   le.sets.forEach(function(z){
@@ -805,6 +817,18 @@ function progress(name, prescribed, before, mx){
       : "Prescribed " + prescribed + " lb";
   }
   return {date:le.date, alias:alias, line:line, verdict:verdict, next:next};
+}
+/* The card note is for the workout in front of her. Bookkeeping about which
+   Rowfit session was swapped, ErgZone ids and the squad stays in the plan
+   file and the coach doc, not on the card. */
+function tidyNote(t){
+  if(!t) return "";
+  var parts = String(t).split(/\.\s+(?=[A-Z0-9(])/);
+  var keep = parts.map(function(q){ return q.trim(); }).filter(function(q){
+    return q && !/ErgZone|squad|Rowfit|\bwid\b/.test(q) &&
+      !/^1-minute focus, target 325 m by Nov 15\.?$/.test(q);
+  });
+  return keep.map(function(q){ return /[.!?)]$/.test(q) ? q : q + "."; }).join(" ");
 }
 function suggestFor(x, d){
   var base = x.load ? x.load() : "";
@@ -1540,9 +1564,10 @@ function renderSession(){
     seed:s.broadVal, btn:"Log broad jump"
   }));
 
-  if(s.note){
+  var sNote = tidyNote(s.note);
+  if(sNote){
     var nb = el("div"); nb.style.padding = "13px"; nb.style.borderBottom = "1px solid var(--rule)";
-    nb.appendChild(el("p","note w", s.note));
+    nb.appendChild(el("p","note w", sNote));
     host.appendChild(nb);
   }
 

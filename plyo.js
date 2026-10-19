@@ -99,10 +99,10 @@ var PLYO_DROP = {
 };
 
 var PLYO_NOTE = {
-  int: "Intensive jump day. The CMJ at the top is the readiness test, not training — three jumps, fresh, before anything else touches your legs, and a few low-effort jumps before those three so the test reads your readiness and not your warm-up. Working jumps log under their own names, which keeps the jump history a clean fresh-state series: numbers go in Height (inches for vertical and box, cm for broad), Weight stays empty unless you loaded it. Rest 2–4 minutes between sets and treat every rep as a single — a jump more than 10% off your best for the day means the set is over.",
-  ext: "Extensive jump day. Volume, not intensity — rhythmic and fluid, no stutter between reps, knees bending generously to absorb and redirect. Nothing here should feel maximal. Log reps only and leave Height and Weight empty unless you loaded the jump squats. Broad jumps are the item to titrate against the hamstring: hold the low end until a week passes with no next-morning soreness at the origin."
+  int: "Rest 2–4 minutes between jump sets. A jump more than 10% off today's best ends the set.",
+  ext: "Rhythmic, nothing maximal. Log reps only; leave Height empty unless you loaded the jump squats."
 };
-var PLYO_ERG_LEAD = "Jumps first, then the sprint piece — the pairing is the point: the week's max-intent work on one fresh day. Finish the last jump 10–15 minutes before the first hard stroke and run the normal erg warm-up in between. ";
+var PLYO_ERG_LEAD = "Jumps first, finished 10–15 minutes before the first hard stroke. ";
 
 /* Letters are positional, so anything inserted has to renumber what follows.
    The special markers — the star single, the tests, the hang challenge — are
@@ -145,8 +145,8 @@ function applyPlyoTo(S){
     s.plyo = p.mode;
     s.plyoWk = p.wk;
     if(p.mode === "int") s.gate = true;
-    s.note = (s.note ? s.note + "  " : "") + (s.kind === "erg" ? PLYO_ERG_LEAD : "") +
-             PLYO_NOTE[p.mode] + " (coach week " + p.wk + " of 8.)";
+    s.note = (s.note ? s.note + " " : "") + (s.kind === "erg" ? PLYO_ERG_LEAD : "") +
+             PLYO_NOTE[p.mode];
   });
   Object.keys(PLYO_DROP).forEach(function(name){
     PLYO_DROP[name].forEach(function(dt){
