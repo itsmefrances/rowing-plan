@@ -304,7 +304,7 @@ function planAt(t){
   if(i0 >= PLANTAB.length - 1) return PLANTAB[PLANTAB.length - 1];
   return PLANTAB[i0] + f * (PLANTAB[i0 + 1] - PLANTAB[i0]);
 }
-var SETC = {"100 m":"--c1","0:20":"--c2","0:30":"--c3","0:38 max":"--c7","0:40":"--c4","0:45":"--c5","0:50":"--c6","0:55":"--c8","1:00":"--c8"};
+var SETC = {"1:00 test":"--c8","100 m":"--c1","0:20":"--c2","0:30":"--c3","0:38 max":"--c7","0:40":"--c4","0:45":"--c5","0:50":"--c6","0:55":"--c8","1:00":"--c8"};
 function planStats(){
   var box = document.getElementById("planstats"); box.innerHTML = "";
   function tile(v, unit, k, gap, cls){
@@ -432,8 +432,8 @@ function arcCats(){
   (D.race || []).forEach(function(r){
     if(!r.p) return;
     var pts = [[0,0]].concat(r.p);
-    put(r.set, r.set === "0:38 max" ? "0:38 single max" : r.set === "100 m" ? "100 m" : r.set + " reps", r.set === "0:38 max" ? "--ink-2" : (SETC[r.set] || "--ink-2"),
-        {date:r.date, label:r.label, from:r.from, p:pts, T:r.t, d:r.d});
+    put(r.set, r.splits ? fmtDate(r.date) + " 1:00 test (splits)" : r.set === "0:38 max" ? "0:38 single max" : r.set === "100 m" ? "100 m" : r.set + " reps", r.set === "0:38 max" ? "--ink-2" : (SETC[r.set] || "--ink-2"),
+        {date:r.date, label:r.label, from:r.from, p:pts, T:r.t, d:r.d, t0:r.splits ? r.p[0][0] : 0});
   });
   order.forEach(function(k){
     var c = cats[k];
@@ -457,6 +457,8 @@ function arcCats(){
       return e.d > a.d ? e : a;
     }, null);
     c.latest = c.all.reduce(function(a, e){ return e.date > a ? e.date : a; }, "");
+    /* a test known only from its splits has no shape before the first split */
+    c.t0 = Math.max.apply(null, c.use.map(function(e){ return e.t0 || 0; }));
   });
   return order.map(function(k){ return cats[k]; }).sort(function(a, b){ return a.tEnd - b.tEnd; });
 }
@@ -479,9 +481,9 @@ function shapeTable(){
   ["Date","Effort","Reps"].concat(marks.map(function(m){ return m + " s"; })).forEach(function(x){ hd.appendChild(h("th", null, x)); });
   var th = h("thead"); th.appendChild(hd); t.appendChild(th);
   var groups = {}, order = [];
-  function add(key, date, name, p, T){
+  function add(key, date, name, p, T, t0){
     if(!groups[key]){ groups[key] = {date:date, name:name, ps:[]}; order.push(key); }
-    groups[key].ps.push({p:p, T:T});
+    groups[key].ps.push({p:p, T:T, t0:t0 || 0});
   }
   EF.forEach(function(e){
     if(e.kind !== "start" || e.from !== "dead") return;
@@ -490,7 +492,7 @@ function shapeTable(){
   });
   (D.race || []).forEach(function(r){
     if(!r.p || r.from !== "dead") return;
-    add(r.date + "|" + r.set, r.date, r.set === "100 m" ? "100 m" : r.set === "0:38 max" ? "0:38 max" : r.set + " reps", [[0,0]].concat(r.p), r.t);
+    add(r.date + "|" + r.set, r.date, r.splits ? "1:00 test (splits)" : r.set === "100 m" ? "100 m" : r.set === "0:38 max" ? "0:38 max" : r.set + " reps", [[0,0]].concat(r.p), r.t, r.splits ? r.p[0][0] : 0);
   });
   var tb = h("tbody");
   order.sort(function(a, b){
@@ -503,7 +505,7 @@ function shapeTable(){
     tr.appendChild(h("td", null, g.name));
     tr.appendChild(h("td", null, g.ps.length));
     marks.forEach(function(m){
-      var ok = g.ps.every(function(x){ return x.T >= m - 0.05; });
+      var ok = g.ps.every(function(x){ return x.T >= m - 0.05 && m >= x.t0; });
       if(!ok){ tr.appendChild(h("td", null, "")); return; }
       var gap = g.ps.map(function(x){ return curveAt(x.p, Math.min(m, x.T)); }).reduce(function(a, b){ return a + b; }, 0) / g.ps.length - planAt(m);
       var c = h("td", gap >= -0.5 ? "hit" : null, (gap >= 0 ? "+" : "\u2212") + Math.abs(gap).toFixed(1));
@@ -584,11 +586,11 @@ function drawArc(){
   var hp = [];
   vis.forEach(function(c){
     var col = css(c.color), d1 = "";
-    c.avg.forEach(function(q, i){ d1 += (i ? "L" : "M") + X(q[0]).toFixed(1) + "," + Y(yv(q[0], q[1])).toFixed(1); });
+    c.avg.filter(function(q){ return q[0] >= c.t0; }).forEach(function(q, i){ d1 += (i ? "L" : "M") + X(q[0]).toFixed(1) + "," + Y(yv(q[0], q[1])).toFixed(1); });
     el("path", {d:d1, fill:"none", stroke:col, "stroke-width":2.5, "stroke-linejoin":"round", "stroke-linecap":"round"}, svg);
     var last = c.avg[c.avg.length-1];
     el("circle", {cx:X(last[0]), cy:Y(yv(last[0], last[1])), r:4, fill:col, stroke:surf, "stroke-width":2}, svg);
-    for(var t = 1; t <= c.tEnd; t += 1) hp.push({x:X(t), y:Y(yv(t, curveAt(c.avg, t))), c:c, t:t, d:curveAt(c.avg, t), kind:"Average of " + c.use.length});
+    for(var t = Math.max(1, Math.ceil(c.t0)); t <= c.tEnd; t += 1) hp.push({x:X(t), y:Y(yv(t, curveAt(c.avg, t))), c:c, t:t, d:curveAt(c.avg, t), kind:"Average of " + c.use.length});
     if(ARC.best && c.best && c.use.length > 1){
       var b = c.best, d2 = "";
       for(var tb = 0; tb <= b.T + 1e-9; tb += 0.25){ var vb = curveAt(b.p, Math.min(tb, b.T)); d2 += (tb ? "L" : "M") + X(tb).toFixed(1) + "," + Y(yv(tb, vb)).toFixed(1); }
@@ -686,12 +688,12 @@ function drawArcPace(){
     });
   }
   var hp = [];
-  function line(fn, tEnd, col, w, dash, c, kind){
+  function line(fn, tEnd, col, w, dash, c, kind, t0){
     var d = "", f = true;
     /* the last stroke or two before the buzzer is only partly counted, so
        each line stops 1.5 s short of its end rather than diving */
     var tE = tEnd - 1.5;
-    for(var t = 1.5; t <= tE + 1e-9; t += 0.25){
+    for(var t = Math.max(1.5, (t0 || 0) + 1.5); t <= tE + 1e-9; t += 0.25){
       var ps = paceOf(fn, t, tE);
       if(ps == null) continue;
       d += (f ? "M" : "L") + X(t).toFixed(1) + "," + Y(ps).toFixed(1); f = false;
@@ -703,7 +705,7 @@ function drawArcPace(){
   }
   vis.forEach(function(c){
     var col = css(c.color);
-    line(function(t){ return curveAt(c.avg, t); }, c.tEnd, col, 2.5, null, c, "Average of " + c.use.length);
+    line(function(t){ return curveAt(c.avg, t); }, c.tEnd, col, 2.5, c.t0 ? "7 4" : null, c, c.t0 ? "From splits" : "Average of " + c.use.length, c.t0);
     if(ARC.best && c.best && c.use.length > 1){
       var b = c.best;
       line(function(t){ return curveAt(b.p, Math.min(t, b.T)); }, b.T, col, 1.5, "5 3", c, "Best \u00b7 " + fmtDate(b.date) + " \u00b7 " + b.label);
