@@ -122,11 +122,12 @@ td.w span{display:block;min-width:34px;padding:3px 2px;border-radius:4px;text-al
     <div class="card-h">
       <h2 id="arch">The minute, second by second</h2>
       <div class="seg" id="arcseg" role="group" aria-label="How to plot the minute">
-        <button type="button" data-a="g" aria-pressed="true">Gap to plan</button>
+        <button type="button" data-a="p" aria-pressed="true">Pace</button>
+        <button type="button" data-a="g" aria-pressed="false">Gap</button>
         <button type="button" data-a="d" aria-pressed="false">Distance</button>
       </div>
     </div>
-    <p class="sub" style="margin-bottom:8px;max-width:62ch">The 325 m plan laid across the full 60 seconds, with the average of each kind of effort on top of it. Each line stops where that effort stopped. The shaded wedge after the longest one is where a full minute would land: the top edge holds the pace you rowed from 33 to 43 seconds, the bottom edge keeps the slowdown of your last 5 seconds.</p>
+    <p class="sub" style="margin-bottom:8px;max-width:62ch">The thick teal line is the 325 m race plan: the start ramping up to speed, 1:31.5 to 40 seconds, then 1:33.5 to the buzzer. Each coloured line is the shape of one kind of effort, averaged, stopping where that effort stopped. Faster is higher. Gap shows the same thing as metres ahead or behind; Distance as total metres.</p>
     <div class="plot" id="p3"><div class="tip" id="tip3" hidden></div></div>
     <div class="chipgrp" id="arcchips" style="margin-top:10px"></div>
     <p class="sub" id="arcnote" style="margin-top:8px;max-width:62ch"></p>
@@ -377,7 +378,7 @@ function drawPlan(){
 }
 
 /* ---------- the minute, second by second ---------- */
-var ARC = {mode:"g", best:false, off:{}};
+var ARC = {mode:"p", best:false, off:{}};
 function curveAt(p, t){
   if(t <= p[0][0]) return p[0][1];
   for(var i = 1; i < p.length; i++){
@@ -440,6 +441,7 @@ function arcPlanFn(cats){
   return function(t){ return t < 10 && b ? curveAt(b.p, t) * k : planAt(t); };
 }
 function drawArc(){
+  if(ARC.mode === "p") return drawArcPace();
   var host = document.getElementById("p3"), tip = document.getElementById("tip3");
   var cats = arcCats(), plan = arcPlanFn(cats);
   var Wd = Math.max(320, Math.min(780, host.clientWidth || 600)), H = Math.round(Wd * 0.62);
@@ -448,17 +450,7 @@ function drawArc(){
   svg.setAttribute("aria-label", "The 325 m plan across 60 seconds with the average of each kind of effort");
   var g = ARC.mode === "g";
   var vis = cats.filter(function(c){ return !ARC.off[c.key]; });
-  var long = cats.filter(function(c){ return c.tEnd >= 40; }).sort(function(a, b){ return a.latest < b.latest ? 1 : a.latest > b.latest ? -1 : b.tEnd - a.tEnd; })[0];
-  /* where a full minute would land from the longest recent set: hold the pace
-     of the last clean 10 seconds, or keep the slowdown of the final 5 */
-  var proj = null;
-  if(long && !ARC.off[long.key]){
-    var e1 = long.tEnd, cE = curveAt(long.avg, e1);
-    var hold = (curveAt(long.avg, e1 - 2) - curveAt(long.avg, e1 - 12)) / 10;
-    var fade = (cE - curveAt(long.avg, e1 - 5)) / 5;
-    proj = {t0:e1, d0:cE, hi:cE + (60 - e1) * Math.max(hold, fade), lo:cE + (60 - e1) * Math.min(hold, fade),
-            sh:Math.max(hold, fade), sl:Math.min(hold, fade), cat:long};
-  }
+  var proj = arcProj(cats);
   var yv = function(t, d){ return g ? d - plan(t) : d; };
   var lo, hi;
   if(g){
@@ -536,6 +528,9 @@ function drawArc(){
     return q.c.name + " \u00b7 " + q.kind + "\n" + q.t + " s \u00b7 " + q.d.toFixed(1) + " m\n" +
       (gp >= 0 ? "+" : "\u2212") + Math.abs(gp).toFixed(1) + " m vs plan (" + plan(q.t).toFixed(1) + ")";
   });
+  arcChips(cats, proj);
+}
+function arcChips(cats, proj){
   var box = document.getElementById("arcchips"); box.innerHTML = "";
   cats.forEach(function(c){
     var bt = h("button","chip"); bt.type = "button";
@@ -554,8 +549,101 @@ function drawArc(){
   box.appendChild(bb);
   var note = document.getElementById("arcnote");
   note.textContent = proj
-    ? "From your " + proj.cat.name.replace(" reps","") + " average (" + proj.cat.use.length + " reps, latest " + fmtDate(proj.cat.latest) + "): holding the 33\u201343 s pace to the buzzer gives about " + Math.round(proj.hi) + " m; keeping the slowdown of the last 5 seconds gives about " + Math.round(proj.lo) + " m. The plan is 325, the Nov 2 checkpoint 322. The 50 s and 55 s Fridays narrow this."
+    ? "From your " + proj.cat.name.replace(" reps","") + " average (" + proj.cat.use.length + " reps, latest " + fmtDate(proj.cat.latest) + "): at " + proj.t0 + " s you are " + proj.behind.toFixed(1) + " m behind the plan. Holding your best late pace (" + fmtPace(500 / proj.sh) + ") to the buzzer gives about " + Math.round(proj.hi) + " m; rowing the rest at your slowest late pace (" + fmtPace(500 / proj.sl) + ") gives about " + Math.round(proj.lo) + " m. 325 needs the start and the middle closer to the line, not just the finish."
     : "";
+}
+function fmtPace(s){ var m = Math.floor(s / 60), r = s - m * 60; return m + ":" + (r < 10 ? "0" : "") + r.toFixed(1); }
+function arcProj(cats){
+  var long = cats.filter(function(c){ return c.tEnd >= 40; }).sort(function(a, b){ return a.latest < b.latest ? 1 : a.latest > b.latest ? -1 : b.tEnd - a.tEnd; })[0];
+  if(!long || ARC.off[long.key]) return null;
+  var e1 = long.tEnd, cE = curveAt(long.avg, e1);
+  var hold = (curveAt(long.avg, e1 - 2) - curveAt(long.avg, e1 - 12)) / 10;
+  var fade = (curveAt(long.avg, e1 - 1.5) - curveAt(long.avg, e1 - 6)) / 4.5;
+  return {behind:planAt(e1) - cE, t0:e1, d0:cE, hi:cE + (60 - e1) * Math.max(hold, fade), lo:cE + (60 - e1) * Math.min(hold, fade),
+          sh:Math.max(hold, fade), sl:Math.min(hold, fade), cat:long};
+}
+/* pace through the minute: the speed over a 2-second window either side of
+   each moment, as a split. The plan is the same three parts as everywhere
+   else on the page, so its line ramps through the start, sits at 1:31.5,
+   then steps to 1:33.5 at 40 s */
+function drawArcPace(){
+  var host = document.getElementById("p3"), tip = document.getElementById("tip3");
+  var cats = arcCats(), plan = arcPlanFn(cats), proj = arcProj(cats);
+  var Wd = Math.max(320, Math.min(780, host.clientWidth || 600)), H = Math.round(Wd * 0.62);
+  var L = 46, Rm = 44, T = 14, B = 30, iw = Wd - L - Rm, ih = H - T - B;
+  var svg = frame(host, Wd, H);
+  svg.setAttribute("aria-label", "Pace through the minute: the 325 m plan and the average shape of each kind of effort");
+  var vis = cats.filter(function(c){ return !ARC.off[c.key]; });
+  /* a 3-second window: the logbook records distance once a stroke, so a
+     narrower one shows the stroke rhythm rather than the speed */
+  function paceOf(fn, t, tEnd){
+    var a = Math.max(0, t - 1.5), b = Math.min(tEnd, t + 1.5);
+    var v = (fn(b) - fn(a)) / (b - a);
+    return v > 0 ? 500 / v : null;
+  }
+  var top = 84, bot = 106;
+  var X = function(t){ return L + t / 60 * iw; };
+  var Y = function(s){ return T + (Math.max(top, Math.min(bot, s)) - top) / (bot - top) * ih; };
+  var grid = css("--grid"), tgt = css("--erg"), surf = css("--surface"), ink2 = css("--ink-2");
+  for(var v = top; v <= bot; v += 2){
+    el("line", {x1:L, x2:L+iw, y1:Y(v), y2:Y(v), stroke:grid, "stroke-width":1}, svg);
+    if(v % 4 === 0){ var tt = el("text", {x:L-6, y:Y(v)+4, "text-anchor":"end"}, svg); tt.textContent = fmtPace(v).replace(".0",""); }
+  }
+  [0,10,20,30,40,50,60].forEach(function(s){
+    el("line", {x1:X(s), x2:X(s), y1:T, y2:T+ih, stroke:grid, "stroke-width":1}, svg);
+    var tx = el("text", {x:X(s), y:T+ih+18, "text-anchor":"middle"}, svg); tx.textContent = s + "s";
+  });
+  /* the plan */
+  var pdp = "", first = true;
+  for(var t = 1; t <= 60.001; t += 0.25){
+    var ps = paceOf(plan, t, 60);
+    if(ps == null) continue;
+    pdp += (first ? "M" : "L") + X(t).toFixed(1) + "," + Y(ps).toFixed(1); first = false;
+  }
+  el("path", {d:pdp, fill:"none", stroke:tgt, "stroke-width":4, opacity:0.85, "stroke-linejoin":"round"}, svg);
+  var pl = el("text", {x:X(41), y:Y(93.5)+16, "text-anchor":"start", style:"fill:" + tgt + ";font-weight:600"}, svg); pl.textContent = "325 plan";
+  /* where a full minute would land */
+  if(proj){
+    var c0 = css(proj.cat.color), ph = 500 / proj.sh, plo = 500 / proj.sl;
+    el("rect", {x:X(proj.t0), y:Y(ph), width:X(60) - X(proj.t0), height:Math.max(1, Y(plo) - Y(ph)), fill:c0, opacity:0.14}, svg);
+    [[ph, proj.hi],[plo, proj.lo]].forEach(function(z){
+      el("line", {x1:X(proj.t0), x2:X(60), y1:Y(z[0]), y2:Y(z[0]), stroke:c0, "stroke-width":1.5, "stroke-dasharray":"2 3"}, svg);
+      var tx = el("text", {x:X(60)+4, y:Y(z[0])+4, "text-anchor":"start", style:"fill:" + ink2}, svg); tx.textContent = Math.round(z[1]) + " m";
+    });
+  }
+  var hp = [];
+  function line(fn, tEnd, col, w, dash, c, kind){
+    var d = "", f = true;
+    /* the last stroke or two before the buzzer is only partly counted, so
+       each line stops 1.5 s short of its end rather than diving */
+    var tE = tEnd - 1.5;
+    for(var t = 1.5; t <= tE + 1e-9; t += 0.25){
+      var ps = paceOf(fn, t, tE);
+      if(ps == null) continue;
+      d += (f ? "M" : "L") + X(t).toFixed(1) + "," + Y(ps).toFixed(1); f = false;
+      if(Math.abs(t - Math.round(t)) < 1e-9 && t >= 2) hp.push({x:X(t), y:Y(ps), c:c, t:t, ps:ps, pp:paceOf(plan, t, 60), d:fn(t), kind:kind});
+    }
+    var a = {d:d, fill:"none", stroke:col, "stroke-width":w, "stroke-linejoin":"round", "stroke-linecap":"round"};
+    if(dash) a["stroke-dasharray"] = dash;
+    el("path", a, svg);
+  }
+  vis.forEach(function(c){
+    var col = css(c.color);
+    line(function(t){ return curveAt(c.avg, t); }, c.tEnd, col, 2.5, null, c, "Average of " + c.use.length);
+    if(ARC.best && c.best && c.use.length > 1){
+      var b = c.best;
+      line(function(t){ return curveAt(b.p, Math.min(t, b.T)); }, b.T, col, 1.5, "5 3", c, "Best \u00b7 " + fmtDate(b.date) + " \u00b7 " + b.label);
+    }
+  });
+  var fl = el("text", {x:L+4, y:T+10, "text-anchor":"start"}, svg); fl.textContent = "faster";
+  var sl = el("text", {x:L+4, y:T+ih-4, "text-anchor":"start"}, svg); sl.textContent = "slower";
+  host.insertBefore(svg, tip);
+  hover(svg, host, tip, hp, Wd, H, function(q){
+    var dv = q.ps - q.pp;
+    return q.c.name + " \u00b7 " + q.kind + "\n" + q.t + " s \u00b7 " + fmtPace(q.ps) + " /500m \u00b7 " + q.d.toFixed(1) + " m\n" +
+      "Plan " + fmtPace(q.pp) + " \u00b7 " + (Math.abs(dv) < 0.05 ? "on it" : Math.abs(dv).toFixed(1) + " s " + (dv < 0 ? "faster" : "slower"));
+  });
+  arcChips(cats, proj);
 }
 
 function summary(last){
