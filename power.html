@@ -110,7 +110,7 @@ td.w span{display:block;min-width:34px;padding:3px 2px;border-radius:4px;text-al
 
   <section class="card" aria-labelledby="planh">
     <div class="card-h"><h2 id="planh">Against the 325 m plan</h2><span class="sub">Nov 2 checkpoint 322 m &middot; Nov 13 goal 325 m</span></div>
-    <p class="sub" style="margin-bottom:10px;max-width:62ch">The race plan in three parts: 54 m by 10 s, 1:31.5 from 10 to 40 s, 1:33.5 from 40 to 60 s. Each tile is your best so far against its part.</p>
+    <p class="sub" style="margin-bottom:10px;max-width:62ch">The target shape for 325 m: 54 m by 10 s, about 1:30 to 30 s (165 m), drifting to 1:32.5 by 45 s (246 m) and no slower than 1:35 to the buzzer. Each tile is your best so far at that mark, from a dead stop.</p>
     <div class="stats" id="planstats"></div>
     <h3 class="ph">Every hard rep against the plan</h3>
     <p class="sub" style="margin-bottom:6px;max-width:62ch">Metres ahead of or behind where the 325 m plan would be at that rep's length. Zero is on 325 pace. Longer reps are harder, so a &minus;3 at 45 s is worth more than a 0 at 20 s.</p>
@@ -127,10 +127,13 @@ td.w span{display:block;min-width:34px;padding:3px 2px;border-radius:4px;text-al
         <button type="button" data-a="d" aria-pressed="false">Distance</button>
       </div>
     </div>
-    <p class="sub" style="margin-bottom:8px;max-width:62ch">The thick teal line is the 325 m race plan: the start ramping up to speed, 1:31.5 to 40 seconds, then 1:33.5 to the buzzer. Each coloured line is the shape of one kind of effort, averaged, stopping where that effort stopped. Faster is higher. Gap shows the same thing as metres ahead or behind; Distance as total metres.</p>
+    <p class="sub" style="margin-bottom:8px;max-width:62ch">The thick teal line is the target shape for 325 m: your start, about 1:29 at 10 s, drifting steadily slower to 1:31 at 30 s, 1:34 at 45 s and 1:36 at the buzzer. Each coloured line is the shape of one kind of effort, averaged, stopping where that effort stopped. Faster is higher. Gap shows the same thing as metres ahead or behind; Distance as total metres. The table underneath shows how close each session came, mark by mark.</p>
     <div class="plot" id="p3"><div class="tip" id="tip3" hidden></div></div>
     <div class="chipgrp" id="arcchips" style="margin-top:10px"></div>
     <p class="sub" id="arcnote" style="margin-top:8px;max-width:62ch"></p>
+    <h3 class="ph">Against the shape, session by session</h3>
+    <p class="sub" style="margin-bottom:6px;max-width:62ch">Metres ahead (+) or behind (&minus;) the target shape at each mark, averaged over that session's dead-stop reps of one kind. A blank means the reps were shorter than the mark. Within half a metre counts as on it.</p>
+    <div class="tbl-wrap"><table id="shapetbl" style="min-width:560px"></table></div>
   </section>
 
   <section class="card" aria-labelledby="sumh">
@@ -243,7 +246,7 @@ function init(data){
     .forEach(function(e){ state.on[e.id] = true; });
   if(best) state.on[best.id] = true;
   document.getElementById("srcnote").textContent = D.note || "";
-  if(D.plan && D.race){ planStats(); drawPlan(); drawArc(); }
+  if(D.plan && D.race){ planStats(); drawPlan(); drawArc(); shapeTable(); }
   document.querySelectorAll("#arcseg button").forEach(function(b){
     b.addEventListener("click", function(){
       ARC.mode = b.getAttribute("data-a");
@@ -271,11 +274,35 @@ function init(data){
 
 /* where the 325 m plan has you at t seconds: 54 m by 10 s, then 1:31.5 to
    40 s, then 1:33.5 to the end */
+/* the target shape: 54 m by 10 s, then a split that starts fast and drifts
+   slower through the minute, along straight lines between the knots in
+   D.plan.knots (seconds, split in s/500m). Integrated once and scaled so the
+   minute lands on the goal exactly. */
+var PLANTAB = null;
+function planPaceAt(t){
+  var K = D.plan.knots;
+  if(t <= K[0][0]) return K[0][1];
+  for(var i = 1; i < K.length; i++){
+    if(t <= K[i][0]) return K[i-1][1] + (t - K[i-1][0]) / (K[i][0] - K[i-1][0]) * (K[i][1] - K[i-1][1]);
+  }
+  return K[K.length-1][1];
+}
 function planAt(t){
   var P = D.plan;
   if(t <= 10) return P.m10 * t / 10;
-  if(t <= 40) return P.m10 + (t - 10) * 500 / P.mid;
-  return planAt(40) + (t - 40) * 500 / P.back;
+  if(!P.knots){
+    if(t <= 40) return P.m10 + (t - 10) * 500 / P.mid;
+    return planAt(40) + (t - 40) * 500 / P.back;
+  }
+  if(!PLANTAB){
+    var dt = 0.05, d = 0, raw = [0];
+    for(var s = 10; s < 60 - 1e-9; s += dt){ d += dt * 500 / planPaceAt(s + dt / 2); raw.push(d); }
+    var k = (P.goal - P.m10) / d;
+    PLANTAB = raw.map(function(x){ return P.m10 + x * k; });
+  }
+  var i = (Math.min(t, 60) - 10) / 0.05, i0 = Math.floor(i), f = i - i0;
+  if(i0 >= PLANTAB.length - 1) return PLANTAB[PLANTAB.length - 1];
+  return PLANTAB[i0] + f * (PLANTAB[i0 + 1] - PLANTAB[i0]);
 }
 var SETC = {"100 m":"--c1","0:20":"--c2","0:30":"--c3","0:38 max":"--c7","0:40":"--c4","0:45":"--c5","0:50":"--c6","0:55":"--c8","1:00":"--c8"};
 function planStats(){
@@ -295,22 +322,24 @@ function planStats(){
     var g10 = b10.m10 - P.m10;
     tile(b10.m10.toFixed(1), "m", "Start: best at 10 s, dead stop · " + fmtDate(b10.date), g10 >= 0 ? "On target" : Math.abs(g10).toFixed(1) + " m short of " + P.m10, g10 >= 0 ? "hit" : "");
   }
-  var at40 = (D.race || []).filter(function(r){ return r.d40 != null && r.from === "dead"; });
-  var b40 = at40.reduce(function(a, r){ return !a || r.d40 > a.d40 ? r : a; }, null);
-  var p40 = planAt(40);
-  if(b40){
-    var g40 = b40.d40 - p40;
-    tile(b40.d40.toFixed(1), "m", "To 40 s: best metres at 40 s · " + fmtDate(b40.date), g40 >= 0 ? "On target" : Math.abs(g40).toFixed(1) + " m short of " + p40.toFixed(1), g40 >= 0 ? "hit" : "");
-  }
-  var longest = (D.race || []).reduce(function(a, r){ return r.t > a ? r.t : a; }, 0);
-  var back = (D.race || []).filter(function(r){ return r.t >= 60; });
-  if(back.length){
-    var bb = back.reduce(function(a, r){ return !a || r.d > a.d ? r : a; }, null);
-    var gb = bb.d - planAt(60);
-    tile(String(bb.d), "m", "Full minute · " + fmtDate(bb.date), gb >= 0 ? "On target" : Math.abs(gb).toFixed(1) + " m short of " + P.goal, gb >= 0 ? "hit" : "");
-  } else {
-    tile("—", "", "40 to 60 s at 1:33.5 (" + (planAt(60) - p40).toFixed(0) + " m)", "Not rowed yet: longest rep so far " + longest + " s. Oct 23 goes to 50 s, Nov 6 to 55 s.", "open");
-  }
+  /* the shape's marks, scored from the full stroke curve of every dead-stop rep
+     long enough to reach them */
+  (D.plan.marks || [40]).forEach(function(mk){
+    var best = null;
+    (D.race || []).forEach(function(r){
+      if(!r.p || r.from !== "dead" || r.t < mk) return;
+      var v = curveAt([[0,0]].concat(r.p), mk);
+      if(v != null && (!best || v > best.v)) best = {v:v, r:r};
+    });
+    var pm = planAt(mk);
+    if(best){
+      var gm = best.v - pm;
+      tile(best.v.toFixed(1), "m", "At " + mk + " s: best so far · " + fmtDate(best.r.date) + " · " + best.r.set, gm >= 0 ? "On target" : Math.abs(gm).toFixed(1) + " m short of " + pm.toFixed(0), gm >= 0 ? "hit" : "");
+    } else {
+      var longest = (D.race || []).reduce(function(a, r){ return r.t > a ? r.t : a; }, 0);
+      tile("\u2014", "", "At " + mk + " s: target " + pm.toFixed(0) + " m", "Not rowed yet: longest rep so far " + longest + " s.", "open");
+    }
+  });
 }
 function drawPlan(){
   var host = document.getElementById("p0"), tip = document.getElementById("tip0");
@@ -435,10 +464,55 @@ function arcCats(){
    10 s, so the first strokes are judged against a real start and not a
    straight line no one can row */
 function arcPlanFn(cats){
+  /* the first 10 s take the shape of your average dead-stop start, scaled to
+     54 m: a real start, not a straight line and not one lucky peak */
   var st = cats.filter(function(c){ return c.key === "start"; })[0];
-  var b = st && st.best && curveAt(st.best.p, 10) ? st.best : null;
-  var k = b ? D.plan.m10 / curveAt(b.p, 10) : 0;
-  return function(t){ return t < 10 && b ? curveAt(b.p, t) * k : planAt(t); };
+  var a10 = st && st.avg ? curveAt(st.avg, 10) : null;
+  var k = a10 ? D.plan.m10 / a10 : 0;
+  return function(t){ return t < 10 && a10 ? curveAt(st.avg, t) * k : planAt(t); };
+}
+function shapeTable(){
+  var t = document.getElementById("shapetbl"); if(!t) return;
+  t.innerHTML = "";
+  var marks = [10, 20, 30, 40, 45, 50, 55, 60];
+  var hd = h("tr");
+  ["Date","Effort","Reps"].concat(marks.map(function(m){ return m + " s"; })).forEach(function(x){ hd.appendChild(h("th", null, x)); });
+  var th = h("thead"); th.appendChild(hd); t.appendChild(th);
+  var groups = {}, order = [];
+  function add(key, date, name, p, T){
+    if(!groups[key]){ groups[key] = {date:date, name:name, ps:[]}; order.push(key); }
+    groups[key].ps.push({p:p, T:T});
+  }
+  EF.forEach(function(e){
+    if(e.kind !== "start" || e.from !== "dead") return;
+    var pts = [[0,0]].concat(e.s.map(function(r){ return [r[0], r[1]]; }));
+    add(e.date + "|start", e.date, "10-stroke starts", pts, pts[pts.length-1][0]);
+  });
+  (D.race || []).forEach(function(r){
+    if(!r.p || r.from !== "dead") return;
+    add(r.date + "|" + r.set, r.date, r.set === "100 m" ? "100 m" : r.set === "0:38 max" ? "0:38 max" : r.set + " reps", [[0,0]].concat(r.p), r.t);
+  });
+  var tb = h("tbody");
+  order.sort(function(a, b){
+    var A = groups[a], B = groups[b];
+    if(A.date !== B.date) return A.date < B.date ? 1 : -1;
+    return Math.max.apply(null, B.ps.map(function(x){ return x.T; })) - Math.max.apply(null, A.ps.map(function(x){ return x.T; }));
+  }).forEach(function(k){
+    var g = groups[k], tr = h("tr");
+    tr.appendChild(h("td", null, fmtDate(g.date)));
+    tr.appendChild(h("td", null, g.name));
+    tr.appendChild(h("td", null, g.ps.length));
+    marks.forEach(function(m){
+      var ok = g.ps.every(function(x){ return x.T >= m - 0.05; });
+      if(!ok){ tr.appendChild(h("td", null, "")); return; }
+      var gap = g.ps.map(function(x){ return curveAt(x.p, Math.min(m, x.T)); }).reduce(function(a, b){ return a + b; }, 0) / g.ps.length - planAt(m);
+      var c = h("td", gap >= -0.5 ? "hit" : null, (gap >= 0 ? "+" : "\u2212") + Math.abs(gap).toFixed(1));
+      if(gap < -0.5) c.style.color = "var(--test)";
+      tr.appendChild(c);
+    });
+    tb.appendChild(tr);
+  });
+  t.appendChild(tb);
 }
 function drawArc(){
   if(ARC.mode === "p") return drawArcPace();
@@ -474,7 +548,7 @@ function drawArc(){
     var tx = el("text", {x:X(s), y:T+ih+18, "text-anchor":"middle"}, svg); tx.textContent = s + "s";
   });
   /* the plan's three parts, marked where they change */
-  [[10,"54 m","start",3],[25,"1:31.5","middle",0],[40,"1:33.5","start",3]].forEach(function(m){
+  [[10,"54 m","start",3],[30,"165","middle",0],[45,"246","middle",0]].forEach(function(m){
     var tx = el("text", {x:X(m[0]) + m[3], y:T + 10, "text-anchor":m[2]}, svg); tx.textContent = m[1];
   });
   if(g){
@@ -601,7 +675,7 @@ function drawArcPace(){
     pdp += (first ? "M" : "L") + X(t).toFixed(1) + "," + Y(ps).toFixed(1); first = false;
   }
   el("path", {d:pdp, fill:"none", stroke:tgt, "stroke-width":4, opacity:0.85, "stroke-linejoin":"round"}, svg);
-  var pl = el("text", {x:X(41), y:Y(93.5)+16, "text-anchor":"start", style:"fill:" + tgt + ";font-weight:600"}, svg); pl.textContent = "325 plan";
+  var pl = el("text", {x:X(56), y:Y(planPaceAt(56))-8, "text-anchor":"middle", style:"fill:" + tgt + ";font-weight:600"}, svg); pl.textContent = "325 shape";
   /* where a full minute would land */
   if(proj){
     var c0 = css(proj.cat.color), ph = 500 / proj.sh, plo = 500 / proj.sl;
