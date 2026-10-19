@@ -91,6 +91,10 @@ td.w span{display:block;min-width:34px;padding:3px 2px;border-radius:4px;text-al
 .hit{color:var(--erg);font-weight:600;}
 .pill{display:inline-block;font:600 10.5px var(--f-d);padding:1px 7px;border-radius:999px;background:var(--surface-2);color:var(--ink-2);}
 .pill.dead{background:var(--erg-soft);color:var(--erg-ink);}
+.ph{font-size:13.5px;font-weight:700;margin:16px 0 2px;}
+.stat .g{font-family:var(--f-m);font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--test);}
+.stat .g.hit{color:var(--erg);}
+.stat .g.open{color:var(--muted);font-weight:500;}
 .foot{margin-top:14px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:6px;max-width:68ch;}
 @media (prefers-reduced-motion:no-preference){.plot path.ln{transition:opacity .15s;}}
 </style>
@@ -103,6 +107,16 @@ td.w span{display:block;min-width:34px;padding:3px 2px;border-radius:4px;text-al
     <h1>Starts, stroke by stroke</h1>
     <p class="lede">Every start and the first strokes of every longer rep, cut to the strokes that matter. The target is 54 m at 10 seconds from a dead stop, with 500 W showing by stroke 4.</p>
   </div>
+
+  <section class="card" aria-labelledby="planh">
+    <div class="card-h"><h2 id="planh">Against the 325 m plan</h2><span class="sub">Nov 2 checkpoint 322 m &middot; Nov 13 goal 325 m</span></div>
+    <p class="sub" style="margin-bottom:10px;max-width:62ch">The race plan in three parts: 54 m by 10 s, 1:31.5 from 10 to 40 s, 1:33.5 from 40 to 60 s. Each tile is your best so far against its part.</p>
+    <div class="stats" id="planstats"></div>
+    <h3 class="ph">Every hard rep against the plan</h3>
+    <p class="sub" style="margin-bottom:6px;max-width:62ch">Metres ahead of or behind where the 325 m plan would be at that rep's length. Zero is on 325 pace. Longer reps are harder, so a &minus;3 at 45 s is worth more than a 0 at 20 s.</p>
+    <div class="plot" id="p0"><div class="tip" id="tip0" hidden></div></div>
+    <div class="legend" id="leg0"></div>
+  </section>
 
   <section class="card" aria-labelledby="sumh">
     <div class="card-h"><h2 id="sumh">Latest session</h2><span class="sub mono" id="sumdate"></span></div>
@@ -214,6 +228,7 @@ function init(data){
     .forEach(function(e){ state.on[e.id] = true; });
   if(best) state.on[best.id] = true;
   document.getElementById("srcnote").textContent = D.note || "";
+  if(D.plan && D.race){ planStats(); drawPlan(); }
   summary(last);
   chips();
   drawStroke();
@@ -227,8 +242,117 @@ function init(data){
     });
   });
   var mq = window.matchMedia("(prefers-color-scheme: dark)");
-  if(mq.addEventListener) mq.addEventListener("change", function(){ drawStroke(); drawTrend(); table(); });
-  window.addEventListener("resize", function(){ drawStroke(); drawTrend(); });
+  var redrawPlan = function(){ if(D.plan && D.race) drawPlan(); };
+  if(mq.addEventListener) mq.addEventListener("change", function(){ redrawPlan(); drawStroke(); drawTrend(); table(); });
+  window.addEventListener("resize", function(){ redrawPlan(); drawStroke(); drawTrend(); });
+}
+
+/* where the 325 m plan has you at t seconds: 54 m by 10 s, then 1:31.5 to
+   40 s, then 1:33.5 to the end */
+function planAt(t){
+  var P = D.plan;
+  if(t <= 10) return P.m10 * t / 10;
+  if(t <= 40) return P.m10 + (t - 10) * 500 / P.mid;
+  return planAt(40) + (t - 40) * 500 / P.back;
+}
+var SETC = {"100 m":"--c1","0:20":"--c2","0:30":"--c3","0:38 max":"--c7","0:40":"--c4","0:45":"--c5","0:50":"--c6","0:55":"--c8","1:00":"--c8"};
+function planStats(){
+  var box = document.getElementById("planstats"); box.innerHTML = "";
+  function tile(v, unit, k, gap, cls){
+    var s = h("div","stat"), vv = h("span","v"); vv.textContent = v;
+    if(unit) vv.appendChild(h("small", null, " " + unit));
+    s.appendChild(vv); s.appendChild(h("span","k",k));
+    s.appendChild(h("span","g" + (cls ? " " + cls : ""), gap));
+    if(cls === "open") s.style.gridColumn = "1 / -1";
+    box.appendChild(s);
+  }
+  var P = D.plan;
+  var dead = EF.filter(function(e){ return e.from === "dead" && e.m10 != null; });
+  var b10 = dead.reduce(function(a, e){ return !a || e.m10 > a.m10 ? e : a; }, null);
+  if(b10){
+    var g10 = b10.m10 - P.m10;
+    tile(b10.m10.toFixed(1), "m", "Start: best at 10 s, dead stop · " + fmtDate(b10.date), g10 >= 0 ? "On target" : Math.abs(g10).toFixed(1) + " m short of " + P.m10, g10 >= 0 ? "hit" : "");
+  }
+  var at40 = (D.race || []).filter(function(r){ return r.d40 != null && r.from === "dead"; });
+  var b40 = at40.reduce(function(a, r){ return !a || r.d40 > a.d40 ? r : a; }, null);
+  var p40 = planAt(40);
+  if(b40){
+    var g40 = b40.d40 - p40;
+    tile(b40.d40.toFixed(1), "m", "To 40 s: best metres at 40 s · " + fmtDate(b40.date), g40 >= 0 ? "On target" : Math.abs(g40).toFixed(1) + " m short of " + p40.toFixed(1), g40 >= 0 ? "hit" : "");
+  }
+  var longest = (D.race || []).reduce(function(a, r){ return r.t > a ? r.t : a; }, 0);
+  var back = (D.race || []).filter(function(r){ return r.t >= 60; });
+  if(back.length){
+    var bb = back.reduce(function(a, r){ return !a || r.d > a.d ? r : a; }, null);
+    var gb = bb.d - planAt(60);
+    tile(String(bb.d), "m", "Full minute · " + fmtDate(bb.date), gb >= 0 ? "On target" : Math.abs(gb).toFixed(1) + " m short of " + P.goal, gb >= 0 ? "hit" : "");
+  } else {
+    tile("—", "", "40 to 60 s at 1:33.5 (" + (planAt(60) - p40).toFixed(0) + " m)", "Not rowed yet: longest rep so far " + longest + " s. Oct 23 goes to 50 s, Nov 6 to 55 s.", "open");
+  }
+}
+function drawPlan(){
+  var host = document.getElementById("p0"), tip = document.getElementById("tip0");
+  var R0 = D.race || [];
+  var Wd = Math.max(320, Math.min(780, host.clientWidth || 600)), H = Math.round(Wd * 0.5);
+  var L = 40, Rm = 14, T = 14, B = 30, iw = Wd - L - Rm, ih = H - T - B;
+  var svg = frame(host, Wd, H);
+  svg.setAttribute("aria-label", "Metres ahead of or behind the 325 m plan for each hard rep, by date");
+  R0.forEach(function(r){ r.gap = r.d - planAt(r.t); });
+  var dates = []; R0.forEach(function(r){ if(dates.indexOf(r.date) < 0) dates.push(r.date); }); dates.sort();
+  var lo = Math.min(-10, Math.floor(Math.min.apply(null, R0.map(function(r){ return r.gap; })) / 2) * 2);
+  var hi = Math.max(6, Math.ceil(Math.max.apply(null, R0.map(function(r){ return r.gap; })) / 2) * 2);
+  /* sessions are evenly spaced rather than by calendar, so back-to-back
+     days don't pile their dots and labels on top of each other */
+  var X = function(i){ return dates.length < 2 ? L + iw/2 : L + 30 + i / (dates.length - 1) * (iw - 60); };
+  var Y = function(v){ return T + ih - (v - lo) / (hi - lo) * ih; };
+  var grid = css("--grid"), tgt = css("--erg"), surf = css("--surface");
+  for(var v = lo; v <= hi; v += 2){
+    el("line", {x1:L, x2:L+iw, y1:Y(v), y2:Y(v), stroke:grid, "stroke-width":1}, svg);
+    var tt = el("text", {x:L-6, y:Y(v)+4, "text-anchor":"end"}, svg); tt.textContent = (v > 0 ? "+" : "") + v;
+  }
+  /* above zero is ahead of 325 pace: shade it so the goal side reads at a glance */
+  el("rect", {x:L, y:Y(hi), width:iw, height:Y(0) - Y(hi), fill:css("--erg-soft"), opacity:0.55}, svg);
+  el("line", {x1:L, x2:L+iw, y1:Y(0), y2:Y(0), stroke:tgt, "stroke-width":1.5}, svg);
+  var zl = el("text", {x:L+4, y:Y(0)+14, "text-anchor":"start", style:"fill:" + tgt + ";font-weight:600"}, svg); zl.textContent = "on 325 pace";
+  var al = el("text", {x:L+4, y:Y(hi)+12, "text-anchor":"start"}, svg); al.textContent = "ahead";
+  var bl = el("text", {x:L+4, y:Y(lo)-4, "text-anchor":"start"}, svg); bl.textContent = "behind";
+  dates.forEach(function(d, i){ var t = el("text", {x:X(i), y:T+ih+18, "text-anchor":"middle"}, svg); t.textContent = fmtDate(d); });
+  /* one line through each day's average, dead-stop reps only, so the trend
+     isn't carried by rolling starts */
+  var means = [];
+  dates.forEach(function(d, i){
+    var g = R0.filter(function(r){ return r.date === d && r.from === "dead"; }).map(function(r){ return r.gap; });
+    if(g.length) means.push([X(i), Y(g.reduce(function(a,b){ return a+b; }, 0) / g.length)]);
+  });
+  if(means.length > 1) el("path", {d:"M" + means.map(function(p){ return p[0].toFixed(1) + "," + p[1].toFixed(1); }).join("L"), fill:"none", stroke:css("--ink-2"), "stroke-width":1.5, "stroke-dasharray":"3 3", opacity:0.7}, svg);
+  var pts = [];
+  dates.forEach(function(d, i){
+    var rs = R0.filter(function(r){ return r.date === d; });
+    rs.forEach(function(r, k){
+      var x = X(i) + (k - (rs.length - 1) / 2) * Math.min(9, 54 / rs.length), y = Y(Math.max(lo, Math.min(hi, r.gap)));
+      var c = css(SETC[r.set] || "--ink-2");
+      if(r.from === "dead") el("circle", {cx:x, cy:y, r:5, fill:c, stroke:surf, "stroke-width":2}, svg);
+      else if(r.from === "unknown") el("rect", {x:x-4.5, y:y-4.5, width:9, height:9, transform:"rotate(45 " + x + " " + y + ")", fill:surf, stroke:c, "stroke-width":2}, svg);
+      else el("circle", {cx:x, cy:y, r:4.5, fill:surf, stroke:c, "stroke-width":2}, svg);
+      pts.push({x:x, y:y, r:r});
+    });
+  });
+  host.insertBefore(svg, tip);
+  hover(svg, host, tip, pts, Wd, H, function(p){
+    var r = p.r, g = r.gap;
+    return fmtDate(r.date) + " · " + r.label + " · " + FROM[r.from] + "\n" +
+      r.d + " m in " + r.t + " s · plan " + planAt(r.t).toFixed(1) + " m\n" +
+      (g >= 0 ? "+" : "\u2212") + Math.abs(g).toFixed(1) + " m vs 325 pace" + (r.note ? "\n" + r.note : "");
+  });
+  var lg = document.getElementById("leg0"); lg.innerHTML = "";
+  var sets = []; R0.forEach(function(r){ if(sets.indexOf(r.set) < 0) sets.push(r.set); });
+  sets.forEach(function(sname){
+    var s = h("span"), sw = h("b", null, "\u25CF"); sw.style.color = "var(" + (SETC[sname] || "--ink-2") + ")";
+    s.appendChild(sw); s.appendChild(document.createTextNode(sname)); lg.appendChild(s);
+  });
+  [["\u25CB","Rolling or fumbled start"],["\u25C7","Start not recorded"],["\u2504","Day average, dead stops"]].forEach(function(x){
+    var s = h("span"), g = h("b", null, x[0]); g.style.color = "var(--ink-2)"; s.appendChild(g); s.appendChild(document.createTextNode(x[1])); lg.appendChild(s);
+  });
 }
 
 function summary(last){
