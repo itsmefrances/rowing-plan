@@ -340,6 +340,7 @@ button.ceyebrow:focus-visible{outline:2px solid #4FB3AC;outline-offset:3px;}
 <body>
 
 <div class="wrap">
+<p class="sample-note" style="margin:0 0 14px;"><strong>Logging has moved.</strong> This console is read-only; sets logged here are not saved anywhere. Log in the Block Console artifact on claude.ai: <a href="https://claude.ai/artifact/1T8JyamcKfuMdVpfDMrKT1">open it</a>.</p>
 
 <header>
   <div class="hrow">
@@ -1892,6 +1893,9 @@ function jsonp(params, cb, onErr){
 }
 function setStatus(t){ var e = document.getElementById("status"); if(e) e.textContent = t; }
 function pushRow(r){
+  /* retired Oct 20: the Block Console artifact and its own database are the record now */
+  setStatus("Not saved: logging moved to the Block Console artifact on claude.ai.");
+  return;
   setStatus("Writing to recomp-log…");
   jsonp({write:1, date:r.date, day_type:r.day_type, exercise:r.exercise,
     prescribed:r.prescribed, set_num:r.set_num, reps:r.reps, weight:r.weight,
