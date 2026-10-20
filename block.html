@@ -763,6 +763,14 @@ function progress(name, prescribed, before, mx){
     if(best){ alias = best.exercise; le = lastEffort(best.exercise, before); }
   }
   if(!le) return null;
+  /* the timed leg press keeps its load; the clock is the target, so a short
+     rep count is not a miss and the weight never steps up on its own */
+  if(/strength-endurance/i.test(name)){
+    var hl = workingLoad(le.sets);
+    return {date:le.date, alias:alias, next:hl || null,
+      line: le.sets.map(function(z){ return (z.weight > 0 ? z.weight + " lb \u00d7 " : "") + z.reps + " reps"; }).join("   "),
+      verdict: hl ? "Same load, " + hl + " lb \u00b7 the clock is the target, reps are the result" : "Match the time"};
+  }
   /* jumps are scored on height or distance, never on load: the broad jump
      test writes centimetres into the weight column, so read it as distance */
   if(/jump|hop/i.test(name)){
