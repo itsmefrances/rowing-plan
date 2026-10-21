@@ -676,5 +676,19 @@
   "shape": "5 × 100m",
   "key": "d100x5",
   "v": 2
+ },
+ "2026-10-21": {
+  "id": 121921260,
+  "link": "https://log.concept2.com/profile/2198296/log/121921260",
+  "dist": 9380,
+  "time": "45:00.0",
+  "pace": "2:23.9",
+  "rate": 25,
+  "band": "2:19.9–2:29.9",
+  "verdict": "in",
+  "note": "9,380m in 45:00.0 — avg 2:23.9 /500m vs 2:19.9–2:29.9 target: in zone. Rate 25 s/m.",
+  "shape": "",
+  "key": "",
+  "v": 2
  }
 }
