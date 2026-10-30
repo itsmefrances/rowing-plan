@@ -718,5 +718,19 @@
   "shape": "4 mixed intervals",
   "key": "m0x4",
   "v": 2
+ },
+ "2026-10-30": {
+  "id": 122269312,
+  "link": "https://log.concept2.com/profile/2198296/log/122269312",
+  "dist": 400,
+  "time": "1:13.4",
+  "pace": "1:31.8",
+  "rate": 48,
+  "band": "1:31.9–1:33.4",
+  "verdict": "in",
+  "note": "2 × 200m — avg work pace 1:31.8 /500m vs 1:31.9–1:33.4 target: in zone. Rate 48 s/m.",
+  "shape": "2 × 200m",
+  "key": "d200x2",
+  "v": 2
  }
 }
